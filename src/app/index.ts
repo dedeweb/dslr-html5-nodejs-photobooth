@@ -1,2 +1,2 @@
-export {environment} from './environment';
-export {TamerboothAppComponent} from './tamerbooth.component';
+export * from './app.component';
+export * from './app.module';
