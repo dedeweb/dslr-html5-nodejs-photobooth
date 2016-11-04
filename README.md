@@ -9,9 +9,19 @@ backend made using express server. Setup inspered by  https://javascriptrocks.wo
 	$ npm install
 	$ npm install -g angular-cli
 	$ ng build
-	$ node dist/app
+	
+#launch backend (port 3000)
 
-website is launched on 127.0.0.1:3000
+	$ npm run back
+	
+#launch frontend (port 4200)
+
+	$npm run frontend
+	
+#launch everything 
+	
+	$npm start
+
 
 
 ### Credits

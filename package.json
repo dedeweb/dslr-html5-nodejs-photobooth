@@ -4,7 +4,9 @@
   "license": "MIT",
   "angular-cli": {},
   "scripts": {
-    "start": "ng serve",
+	"front": "ng serve --proxy-config proxy.conf.json",
+	"back": "node src_back/app",
+	"start" : "concurrently --kill-others \"npm run back\" \"npm run front\"",
     "lint": "tslint \"src/**/*.ts\"",
     "test": "ng test",
     "pree2e": "webdriver-manager update",
