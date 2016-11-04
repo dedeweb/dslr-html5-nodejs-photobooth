@@ -21,7 +21,7 @@ backend made using express server. Setup inspered by  https://javascriptrocks.wo
 	
 ### launch frontend (port 4200)
 
-	$npm run frontend
+	$npm run front
 	
 ### launch everything 
 	

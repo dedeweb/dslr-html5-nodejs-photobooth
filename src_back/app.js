@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var child = require('child_process');
 var app = express();
+var cameraControl = require('./camera-control');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -23,14 +24,19 @@ app.get('*/stream.mjpg', function (req, res) {
 
 app.get('*/streamtest.ogg', function (req, res) {
 	//var gpCmd = child.spawn('pwd');
-	var gpCmd = child.spawn('sh', ['src_back/fakestream.sh']);
-	gpCmd.stdout.pipe(res);
-	gpCmd.stderr.pipe(res);
-
+	//cameraControl.setFakeCamera(false);
+	cameraControl.getLiveView(res);
 });
 
 app.get('*/test', function (req, res) {
-	res.send('api is working ! ');
+	//res.send('api is working ! ');
+	res.send(cameraControl.foo);
+});
+
+app.get('*/test2', function (req, res) {
+	//res.send('api is working ! ');
+	cameraControl.foo = 'pliplpop';
+	res.send(cameraControl.foo);
 });
 
 // app.get('/*', function (req, res) {
