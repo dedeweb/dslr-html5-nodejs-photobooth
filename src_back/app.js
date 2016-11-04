@@ -5,7 +5,6 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var child = require('child_process');
-var MjpegProxy = require('mjpeg-proxy').MjpegProxy;
 var app = express();
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -22,7 +21,13 @@ app.get('*/stream.mjpg', function (req, res) {
 });
 
 
-app.get('*/stream.jpg', new MjpegProxy('/stream.mjpg').proxyRequest);
+app.get('*/streamtest.ogg', function (req, res) {
+	//var gpCmd = child.spawn('pwd');
+	var gpCmd = child.spawn('sh', ['src_back/fakestream.sh']);
+	gpCmd.stdout.pipe(res);
+	gpCmd.stderr.pipe(res);
+
+});
 
 app.get('*/test', function (req, res) {
 	res.send('api is working ! ');

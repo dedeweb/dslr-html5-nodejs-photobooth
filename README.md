@@ -4,21 +4,26 @@ A photobooth web app, used to control a DSLR connected to computer.
 
 backend made using express server. Setup inspered by  https://javascriptrocks.wordpress.com/2016/06/04/express-with-angular-cli-in-5-minutes/
 
-# install
+### prerequisite
+	* node and npm
+	* gphoto2
+	* ffmpeg
+
+### install
 
 	$ npm install
 	$ npm install -g angular-cli
 	$ ng build
 	
-#launch backend (port 3000)
+### launch backend (port 3000)
 
 	$ npm run back
 	
-#launch frontend (port 4200)
+### launch frontend (port 4200)
 
 	$npm run frontend
 	
-#launch everything 
+### launch everything 
 	
 	$npm start
 
