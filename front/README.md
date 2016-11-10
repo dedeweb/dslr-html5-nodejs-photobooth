@@ -1,40 +1,4 @@
-# tamerbooth
-##/!\ this app is in early stage of devlopment, not working yet !
-A photobooth web app, used to control a DSLR connected to computer. 
-
-backend made using express server. Setup inspered by  https://javascriptrocks.wordpress.com/2016/06/04/express-with-angular-cli-in-5-minutes/
-
-### prerequisite
-#### software
-	* node and npm
-	* gphoto2
-	
-#### hardware
-	* a webcam or any camera accessible through a webbrowser for displaying live viewfinder
-	* a gphoto2 compatible camera, plugged in usb to the server
-	* a device to display frontend to user (ideally a tablet)
-	* a printer if you want to allow user to print their picture
-
-### install
-
-	$ npm install
-	$ npm install -g angular-cli
-	$ ng build
-	
-### dev commands : 
-#### launch backend (port 3000)
-
-	$ npm run server
-	
-#### launch camera-capture (with server)
-	$npm run camera
-
-
-
-### Credits
-
-* somewhat inspired by https://github.com/porkbuns/shmile
-
+# Front
 
 This project was generated with [angular-cli](https://github.com/angular/angular-cli) version 1.0.0-beta.19-3.
 

@@ -1,0 +1,32 @@
+<nav class="navbar navbar-full navbar-dark bg-inverse">
+  <span class="navbar-brand">{{'camera_capture_title' | translate}}</span>
+</nav>
+
+<div class="container">
+	<div class="select">
+	   <label for="videoSource"> {{'video_source' | translate}}: </label>
+		<select name="videoSource" [(ngModel)]="currentMedia" (change)="startStream($event.target.value)">
+			<option *ngFor="let mediaDevice of mediaDevices; let i = index" [value]="mediaDevice.deviceId">  
+			{{mediaDevice.label ? mediaDevice.label : ('camera ' + (i + 1)) }}
+			</option>
+		</select>
+		<div class="row">
+			<div class="col-md-6">
+				<h5 class="text-xs-center">{{'source_image' | translate}} :</h5>
+			</div>
+			<div class="col-md-6 text-center">
+				<h5 class="text-xs-center">{{'broadcast_image' | translate}} :</h5>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<video autoplay [srcObject]="currentStream"></video>
+			</div>
+			<div class="col-md-6">
+				<canvas></canvas>
+			</div>
+		</div>
+	    
+		
+	</div>
+</div>

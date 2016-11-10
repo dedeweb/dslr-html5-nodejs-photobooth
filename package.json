@@ -1,53 +1,44 @@
 {
   "name": "tamerbooth",
-  "version": "0.0.0",
-  "license": "MIT",
-  "angular-cli": {},
-  "scripts": {
-	"front": "ng serve --proxy-config proxy.conf.json",
-	"back": "node src_back/app",
-	"start" : "concurrently --kill-others \"npm run back\" \"npm run front\"",
-    "lint": "tslint \"src/**/*.ts\"",
-    "test": "ng test",
-    "pree2e": "webdriver-manager update",
-    "e2e": "protractor"
-  },
-  "private": true,
+  "version": "1.0.0",
+  "description": "A photobooth webapp using DSLR to take pictures with gphoto2",
+  "main": "index.js",
   "dependencies": {
-    "@angular/common": "~2.1.0",
-    "@angular/compiler": "~2.1.0",
-    "@angular/core": "~2.1.0",
-    "@angular/forms": "~2.1.0",
-    "@angular/http": "~2.1.0",
-    "@angular/platform-browser": "~2.1.0",
-    "@angular/platform-browser-dynamic": "~2.1.0",
-    "@angular/router": "~3.1.0",
     "body-parser": "^1.15.2",
+    "concurrently": "^3.1.0",
     "cookie-parser": "^1.4.3",
-    "core-js": "^2.4.1",
     "express": "^4.14.0",
     "morgan": "^1.7.0",
-    "rxjs": "5.0.0-beta.12",
-    "serve-favicon": "^2.3.0",
-    "ts-helpers": "^1.1.1",
-    "zone.js": "^0.6.23"
+    "serve-favicon": "^2.3.0"
   },
-  "devDependencies": {
-    "@types/jasmine": "^2.2.30",
-    "@types/node": "^6.0.42",
-    "angular-cli": "1.0.0-beta.19-3",
-    "codelyzer": "1.0.0-beta.1",
-    "jasmine-core": "2.4.1",
-    "jasmine-spec-reporter": "2.5.0",
-    "karma": "1.2.0",
-    "karma-chrome-launcher": "^2.0.0",
-    "karma-cli": "^1.0.1",
-    "karma-jasmine": "^1.0.2",
-    "karma-remap-istanbul": "^0.2.1",
-    "protractor": "4.0.9",
-    "ts-node": "1.2.1",
-    "tslint": "3.13.0",
-    "typescript": "~2.0.3",
-    "webdriver-manager": "10.2.5"
-  }
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "node server/app",
+    "camera": "concurrently --kill-others \"npm run server\" \"cd camera_capture && ng serve --proxy-config proxy.conf.json  --host 0.0.0.0\"",
+	"start" : "cd camera_capture && ng build",
+	"postinstall" : "cd admin && npm install && cd ../camera_capture && npm install && cd ../front && npm install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dedeweb/tamerbooth.git"
+  },
+  "keywords": [
+    "photobooth",
+    "booth",
+    "angular2",
+    "express",
+    "node",
+    "js",
+    "webcam",
+    "dslr",
+    "gphoto2",
+    "webapp"
+  ],
+  "author": "Denis Messié",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/dedeweb/tamerbooth/issues"
+  },
+  "homepage": "https://github.com/dedeweb/tamerbooth#readme"
 }
