@@ -1,5 +1,6 @@
 import { Component, ElementRef } from '@angular/core';
 import {TranslateService} from 'ng2-translate';
+import {P2pStreamService} from './p2p-stream.service';
 //import * as _ from 'underscore';
 
 declare var _:any;
@@ -16,7 +17,9 @@ export class AppComponent {
 	private videoElement : HTMLVideoElement;
 	private canvasElement: HTMLCanvasElement;
 	
-	constructor(translate: TranslateService, private el: ElementRef) {
+	constructor(translate: TranslateService, 
+				private el: ElementRef,
+				private p2pStreamService : P2pStreamService) {
 		// this language will be used as a fallback when a translation isn't found in the current language
 		translate.setDefaultLang('en');
 
@@ -38,6 +41,7 @@ export class AppComponent {
 			canvasElement.height = this.videoHeight -100;
 			canvasElement.width = this.videoWidth -100;
 		}
+		this.p2pStreamService.streamVideo();
 		this.videoElement.addEventListener('play', function () {
 			console.log('play');
 			var that = this;

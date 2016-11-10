@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import {TranslateModule} from 'ng2-translate';
-
+import {P2pStreamService} from './p2p-stream.service';
 import { AppComponent } from './app.component';
 
 @NgModule({
@@ -16,7 +16,7 @@ import { AppComponent } from './app.component';
     HttpModule,
 	TranslateModule.forRoot()
   ],
-  providers: [],
+  providers: [ P2pStreamService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
