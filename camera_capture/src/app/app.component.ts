@@ -41,7 +41,7 @@ export class AppComponent {
 			canvasElement.height = this.videoHeight -100;
 			canvasElement.width = this.videoWidth -100;
 		}
-		this.p2pStreamService.streamVideo();
+		
 		this.videoElement.addEventListener('play', function () {
 			console.log('play');
 			var that = this;
@@ -54,6 +54,7 @@ export class AppComponent {
 			  }
 			})();
 		},false);
+		this.p2pStreamService.streamVideo(canvasElement.captureStream(30));
 	}
 	
 	refreshDevices () {
