@@ -15,7 +15,8 @@ export class AppComponent {
 	private mediaDevices = [];
 	private currentStream : MediaStream = null;
 	private videoElement : HTMLVideoElement;
-	private canvasElement: HTMLCanvasElement;
+	private canvasElement: any;//HTMLCanvasElement;
+	private remoteStream : MediaStream = null;
 	
 	constructor(translate: TranslateService, 
 				private el: ElementRef,
@@ -54,7 +55,6 @@ export class AppComponent {
 			  }
 			})();
 		},false);
-		this.p2pStreamService.streamVideo(canvasElement.captureStream(30));
 	}
 	
 	refreshDevices () {
@@ -70,16 +70,22 @@ export class AppComponent {
 	}
 	
 	startStream(mediaId : string) {
-		console.log('start stream : '  + mediaId);
-		var that = this;
-		navigator.mediaDevices.getUserMedia({
-			video: {
-				deviceId: mediaId
-			}
-		}).then(function (stream) {
-			that.currentStream = stream;
-			// Refresh button list in case labels have become available
-			that.refreshDevices();
-		});
+		if(mediaId) {
+			console.log('start stream : '  + mediaId);
+			var that = this;
+			navigator.mediaDevices.getUserMedia({
+				video: {
+					deviceId: mediaId
+				}
+			}).then(function (stream) {
+				that.currentStream = stream;
+				// Refresh button list in case labels have become available
+				that.refreshDevices();
+			});
+		}
+	}
+	broadcastStream (event) {
+		//this.remoteStream = this.canvasElement.captureStream(25.0);		
+		this.p2pStreamService.streamVideo(this.currentStream);
 	}
 }

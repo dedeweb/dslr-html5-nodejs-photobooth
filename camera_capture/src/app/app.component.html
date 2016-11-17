@@ -6,6 +6,7 @@
 	<div class="select">
 	   <label for="videoSource"> {{'video_source' | translate}}: </label>
 		<select name="videoSource" [(ngModel)]="currentMedia" (change)="startStream($event.target.value)">
+			<option value="">Select device</option>
 			<option *ngFor="let mediaDevice of mediaDevices; let i = index" [value]="mediaDevice.deviceId">  
 			{{mediaDevice.label ? mediaDevice.label : ('camera ' + (i + 1)) }}
 			</option>
@@ -29,4 +30,6 @@
 	    
 		
 	</div>
+	<button (click)="broadcastStream()" class="button button-primary">send stream</button>
+	<!-- <video autoplay [srcObject]="remoteStream"></video> -->
 </div>
