@@ -9,24 +9,52 @@ function LiveCamSignaling(){
 }
 LiveCamSignaling.prototype = {
 	initialize: function(server){
+		this.cameraReady = false;
 		
-		//this.cameraOffer = false;
 		var that = this;
 		
 		io.on('connection', function (socket) {
 			console.log('user connected');
+			var socketCamera;
+			
+			
 			socket.on('camera-ready', function (data) {
-				console.log('camera is ready');
-				console.log(JSON.stringify(data));
-				that.cameraOffer = data;
+				if(data) {
+					console.log('camera ready.');
+					socketCamera = socket;
+				} else {
+					console.log('camera unavailble.');	
+				}
+				that.cameraReady = data;
+				
 				socket.broadcast.emit('camera-ready', data);
 			});
 			
-			socket.on('camera-client-ready', function (data) { 
+			socket.on('request-camera-stream', function () { 
+				socket.broadcast.emit('request-camera-stream');
+			});
+			
+			socket.on('disconnect', function () {
+				console.log('client disconnect');
+				if(socket === socketCamera) {
+					that.cameraReady = false;
+					socket.broadcast.emit('camera-ready', false);
+				}
+				
+			});
+			
+			socket.on('camera-connect', function (data) {
+				console.log('camera is ready');
+				console.log(JSON.stringify(data));
+				
+				socket.broadcast.emit('camera-connect', data);
+			});
+			
+			socket.on('camera-client-connect', function (data) { 
 				console.log('client is ready');
 				console.log(JSON.stringify(data));
-				that.clientOffer = data;
-				socket.broadcast.emit('camera-client-ready', data);
+				
+				socket.broadcast.emit('camera-client-connect', data);
 			});
 			
 			socket.on('camera-ice-candidate', function (data) {
@@ -37,6 +65,10 @@ LiveCamSignaling.prototype = {
 				console.log('client ICE : \n' + JSON.stringify(data));
 				socket.broadcast.emit('camera-client-ice-candidate', data);
 			});
+			
+			if(that.cameraReady) {
+				socket.emit('camera-ready', true);
+			}
 			/*
 			if(that.cameraOffer) {
 				//if cameraOffer already set, send it on connection to client;

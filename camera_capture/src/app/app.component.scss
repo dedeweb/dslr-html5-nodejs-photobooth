@@ -9,3 +9,18 @@ video {
 canvas {
 	width: 100%;
 }
+.client-status {
+
+	display: inline-block;
+	height: 10px;
+	width: 10px;
+	border-radius: 5px;
+}
+
+.client-connected {
+	background: #5cb85c;
+}
+
+.client-disconnected {
+	background: #d9534f;
+}

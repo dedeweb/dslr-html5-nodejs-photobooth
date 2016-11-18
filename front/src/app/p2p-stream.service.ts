@@ -1,17 +1,16 @@
 import { Injectable } from '@angular/core';
 declare var io:any;
+declare var RTCPeerConnection:any;
 declare var mozRTCPeerConnection:any;
 declare var webkitRTCPeerConnection:any;
-declare var RTCPeerConnection:any;
 declare var RTCSessionDescription:any;
-declare var mozRTCSessionDescription:any;
 declare var RTCIceCandidate : any;
 
 @Injectable()
 export class P2pStreamService {
 	private pc : any;
 	public onAddStream : (stream : MediaStream) => void;
-	constructor() { 
+	initPC() {
 		if(typeof RTCPeerConnection !== 'undefined') {
 			this.pc = new RTCPeerConnection(null);
 		} else if(typeof mozRTCPeerConnection !== 'undefined') {
@@ -21,26 +20,40 @@ export class P2pStreamService {
 		} else {
 			console.error('WebRTC not available on this browser !');
 		}
+	}
+	constructor() { 
+		
+		this.initPC();
 		
 		var socket = io( {path: '/api/socket'});
-		var pc = this.pc;
-		socket.on('camera-ready', function (offer) {
+		var that = this;
+		
+		socket.on('camera-ready', function (status){
+			if(status) {
+				console.log('camera ready, requesting stream');
+				socket.emit('request-camera-stream');
+			} else {
+				console.log('camera not ready, disconnecting.');
+				that.pc.close();
+				location.reload();
+			}
+		});
+		
+		socket.on('camera-connect', function (offer) {
 			console.log('offer received : ' + JSON.stringify(offer));
 			var sessionDescription = null;
-			if(typeof RTCSessionDescription !== 'undefined') {
-				sessionDescription = new RTCSessionDescription(offer);
-			} else if(typeof mozRTCSessionDescription !== 'undefined') {
-				sessionDescription = new mozRTCSessionDescription(offer);
-			}
-			pc.setRemoteDescription(sessionDescription).then(function() {
+			
+			sessionDescription = new RTCSessionDescription(offer);
+			
+			that.pc.setRemoteDescription(sessionDescription).then(function() {
 				var localOffer;
-				pc.createAnswer().then(function (answer) {
+				that.pc.createAnswer().then(function (answer) {
 					localOffer = answer;
 					console.log('set local description');
-					return pc.setLocalDescription(localOffer);
+					return that.pc.setLocalDescription(localOffer);
 				}).then(function () {
 					console.log('send answer');
-					socket.emit('camera-client-ready', localOffer);
+					socket.emit('camera-client-connect', localOffer);
 				}); 
 			});
 		});
@@ -48,32 +61,32 @@ export class P2pStreamService {
 		socket.on('camera-ice-candidate', function (candidate) {
 			console.log('camera ice candidate received' + JSON.stringify(candidate));
 		
-			pc.addIceCandidate(new RTCIceCandidate(candidate));
+			that.pc.addIceCandidate(new RTCIceCandidate(candidate));
 		});
 		
-		var that = this;
-		pc.onaddstream = function (event) {
+		
+		this.pc.onaddstream = function (event) {
 			console.log('stream received !!! (service)');
 			that.onAddStream(event.stream);
 		};
-		pc.ontrack = function(event) {
+		this.pc.ontrack = function(event) {
 			console.log('on track');
 		};
 		
-		pc.onsignalingstatechange  = function (state) {
-			console.log('[WEBRTC]signaling state changed : ' + pc.signalingState);
-			console.log('[WEBRTC]local streams : ' + pc.getLocalStreams().length);
-			console.log('[WEBRTC]remote streams : ' + pc.getRemoteStreams().length);
+		this.pc.onsignalingstatechange  = function (state) {
+			console.log('[WEBRTC]signaling state changed : ' + that.pc.signalingState);
+			console.log('[WEBRTC]local streams : ' + that.pc.getLocalStreams().length);
+			console.log('[WEBRTC]remote streams : ' + that.pc.getRemoteStreams().length);
 		};
 		
-		pc.ondatachannel = function (ev) {
+		this.pc.ondatachannel = function (ev) {
 			console.log('Data channel is created!');
 			ev.channel.onopen = function() {
 				console.log('Data channel is open and ready to be used.');
 			};
 		}
 		
-		pc.onicecandidate = function (e) {
+		this.pc.onicecandidate = function (e) {
 			if(e.candidate) {
 				console.log(' ICE candidate: \n' + JSON.stringify(e.candidate) );
 				socket.emit('camera-client-ice-candidate', e.candidate);

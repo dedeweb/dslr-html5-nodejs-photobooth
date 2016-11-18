@@ -17,6 +17,7 @@ export class AppComponent {
 	private videoElement : HTMLVideoElement;
 	private canvasElement: any;//HTMLCanvasElement;
 	private remoteStream : MediaStream = null;
+	private clientConnected: boolean = false;
 	
 	constructor(translate: TranslateService, 
 				private el: ElementRef,
@@ -28,7 +29,10 @@ export class AppComponent {
 		let browserLang = translate.getBrowserLang();
 		translate.use('en');
 		//translate.use(browserLang.match(/en|fr/) ? browserLang : 'en');
-		
+		var that = this;
+		p2pStreamService.onClientStatusChange = function (connected: boolean) {
+			that.clientConnected = connected;
+		};
 		
 	}
 	
@@ -81,11 +85,15 @@ export class AppComponent {
 				that.currentStream = stream;
 				// Refresh button list in case labels have become available
 				that.refreshDevices();
+				that.p2pStreamService.cameraReady(true, stream);
 			});
+		} 
+		else {
+			this.p2pStreamService.cameraReady(false, null);
 		}
 	}
 	broadcastStream (event) {
 		//this.remoteStream = this.canvasElement.captureStream(25.0);		
-		this.p2pStreamService.streamVideo(this.currentStream);
+		//this.p2pStreamService.streamVideo();
 	}
 }

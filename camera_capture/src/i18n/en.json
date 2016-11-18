@@ -2,5 +2,7 @@
 	"camera_capture_title" : "Camera capture",
 	"video_source" : "Device",
 	"source_image" : "Source image",
-	"broadcast_image" : "Broadcast image"
+	"broadcast_image" : "Broadcast image",
+	"select_device" : "select device",
+	"client_status" : "client status"
 }

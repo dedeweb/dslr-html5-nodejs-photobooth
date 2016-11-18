@@ -13,9 +13,12 @@ declare var RTCIceCandidate:any;
 export class P2pStreamService {
 
   private pc : any ;
+  private socket: any;
+  private stream:MediaStream;
+  public onClientStatusChange: (connected : boolean) => void;
   
   constructor() { 
-	
+	this.socket = io( {path: '/api/socket'});
 	if(typeof RTCPeerConnection !== 'undefined') {
 		this.pc = new RTCPeerConnection(null);
 	} else if(typeof mozRTCPeerConnection !== 'undefined') {
@@ -25,33 +28,41 @@ export class P2pStreamService {
 	} else {
 		console.error('WebRTC not available on this browser !');
 	}
+	var that = this;
+	this.socket.on('request-camera-stream', function () {
+		that.streamVideo();
+	});
 	
   }
   
+  cameraReady(status: boolean, stream: MediaStream) {
+	this.stream = stream;
+	this.socket.emit('camera-ready', status);
+  }
   
-  streamVideo(mediaStream : MediaStream ) {
-	var socket = io( {path: '/api/socket'});
-	var pc = this.pc;
-	
+  streamVideo() {
+	if(!this.stream) {
+		console.log('camera not ready, nothing to stream ! ');
+		return;
+	}
 	console.log('add stream to peer connection');
-	pc.addStream(mediaStream);
+	var socket = this.socket;
+	var pc = this.pc;
+	var that = this;
 	
-	
-	console.log('streaming video');
-	
-	
+	pc.addStream(this.stream);
 	
 	pc.createOffer().then(function(desc) {
 		pc.setLocalDescription(desc).then(function () {
 			// send the offer to a server to be forwarded to the friend you're calling.
 			console.log('local offer set, sending to remote peer.');
-			socket.emit('camera-ready', desc);
+			socket.emit('camera-connect', desc);
 		});
 	}, function (err) {
 		console.error('error creating offer'  + err);
 	});
 	
-	socket.on('camera-client-ready', function (offer) {
+	socket.on('camera-client-connect', function (offer) {
 		console.log('offer received');
 		var sessionDescription = null;
 			if(typeof RTCSessionDescription !== 'undefined') {
@@ -67,7 +78,7 @@ export class P2pStreamService {
 	});
 	socket.on('camera-client-ice-candidate', function (candidate) {
 		console.log('camera ice candidate received' + JSON.stringify(candidate));
-		pc.addIceCandidate(new RTCIceCandidate(candidate));
+		pc.addIceCandidate(new RTCIceCandidate(candidate));		
 	});
 		
 	pc.ondatachannel = function (ev) {
@@ -82,6 +93,19 @@ export class P2pStreamService {
 			console.log(' ICE candidate: \n' + JSON.stringify(e.candidate));
 			socket.emit('camera-ice-candidate', e.candidate);
 		}		
+	};
+	
+	pc.oniceconnectionstatechange = function(event) {
+		if(pc.iceConnectionState === 'completed') {
+			if(that.onClientStatusChange) {
+				that.onClientStatusChange(true);
+			}
+		} else if (pc.iceConnectionState === 'disconnected') {
+			if(that.onClientStatusChange) {
+				that.onClientStatusChange(false);
+			}
+		}
+		console.log('pc.iceconnectionstate = ' + pc.iceConnectionState);
 	};
 	
 	pc.onsignalingstatechange  = function (state) {
