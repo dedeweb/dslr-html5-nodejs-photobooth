@@ -5,6 +5,7 @@ declare var webkitRTCPeerConnection:any;
 declare var RTCPeerConnection:any;
 declare var RTCSessionDescription:any;
 declare var mozRTCSessionDescription:any;
+declare var RTCIceCandidate : any;
 
 @Injectable()
 export class P2pStreamService {
@@ -46,7 +47,8 @@ export class P2pStreamService {
 		
 		socket.on('camera-ice-candidate', function (candidate) {
 			console.log('camera ice candidate received' + JSON.stringify(candidate));
-			pc.addIceCandidate(candidate);
+		
+			pc.addIceCandidate(new RTCIceCandidate(candidate));
 		});
 		
 		var that = this;
