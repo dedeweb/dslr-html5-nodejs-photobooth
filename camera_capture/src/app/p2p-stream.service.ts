@@ -4,6 +4,7 @@ declare var io:any;
 //interface webkitRTCPeerConnection extends RTCPeerConnection {};
 declare var mozRTCPeerConnection:any;
 declare var webkitRTCPeerConnection:any;
+declare var RTCPeerConnection: any;
 //type mozRTCPeerConnection = RTCPeerConnection;
 //type webkitRTCPeerConnection = RTCPeerConnection;
 declare var RTCSessionDescription: any;

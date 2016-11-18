@@ -79,7 +79,9 @@ export class AppComponent {
 			var that = this;
 			navigator.mediaDevices.getUserMedia({
 				video: {
-					deviceId: mediaId
+					deviceId: mediaId,
+					width: 1280,
+					height: 720
 				}
 			}).then(function (stream) {
 				that.currentStream = stream;
