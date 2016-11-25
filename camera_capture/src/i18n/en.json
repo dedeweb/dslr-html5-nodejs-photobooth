@@ -4,5 +4,6 @@
 	"source_image" : "Source image",
 	"broadcast_image" : "Broadcast image",
 	"select_device" : "select device",
-	"client_status" : "client status"
+	"client_status" : "client status",
+	"video_quality" : "Video quality"
 }

@@ -12,12 +12,20 @@ declare var _:any;
 export class AppComponent {
 	title = 'app works!';
 	private currentMedia: string = '';
+	private currentQuality: string = '2';
 	private mediaDevices = [];
 	private currentStream : MediaStream = null;
 	private videoElement : HTMLVideoElement;
 	private canvasElement: any;//HTMLCanvasElement;
 	private remoteStream : MediaStream = null;
 	private clientConnected: boolean = false;
+	
+	private videoQuality : any[] = [ 
+		{ val: 1, label: "QVGA (320x240)" },
+		{ val: 2, label: "VGA (640x480)" },
+		{ val: 3, label: "XGA (1024x768)" },
+		{ val: 4, label: "UXGA (1600x1200)" }
+	];
 	
 	constructor(translate: TranslateService, 
 				private el: ElementRef,
@@ -73,15 +81,48 @@ export class AppComponent {
 		});
 	}
 	
-	startStream(mediaId : string) {
-		if(mediaId) {
-			console.log('start stream : '  + mediaId);
+	private getQualityWidth() : number {
+	
+		switch(this.currentQuality) {
+			case '1':
+				return 320;
+			case '2':
+				return 640;
+			case '3':
+				return 1024;
+			case '4':
+				return 1600;
+			default:
+				return 640;
+		}
+	}
+	
+	private getQualityHeight() : number {
+	
+		switch(this.currentQuality) {
+			case '1':
+				return 240;
+			case '2':
+				return 480;
+			case '3':
+				return 768;
+			case '4':
+				return 1200;
+			default:
+				return 480;
+		}
+	}
+	
+	startStream() {
+		if(this.currentMedia) {
+			console.log('start stream : '  + this.currentMedia);
 			var that = this;
 			navigator.mediaDevices.getUserMedia({
+				audio: false,
 				video: {
-					deviceId: mediaId,
-					width: 1280,
-					height: 720
+					deviceId: this.currentMedia,
+					width: this.getQualityWidth(),
+					height: this.getQualityHeight()
 				}
 			}).then(function (stream) {
 				that.currentStream = stream;

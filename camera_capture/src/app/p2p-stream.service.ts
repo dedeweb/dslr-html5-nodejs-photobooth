@@ -18,8 +18,17 @@ export class P2pStreamService {
   private stream:MediaStream;
   public onClientStatusChange: (connected : boolean) => void;
   
-  constructor() { 
-	this.socket = io( {path: '/api/socket'});
+  constructor() { 	
+	this.initSocket();
+	
+  }
+  
+  private initPeerConnection() {
+	var that = this;
+	console.log('creating front peer connection');
+	if(this.pc) {
+		this.pc.close();
+	}
 	if(typeof RTCPeerConnection !== 'undefined') {
 		this.pc = new RTCPeerConnection(null);
 	} else if(typeof mozRTCPeerConnection !== 'undefined') {
@@ -29,12 +38,68 @@ export class P2pStreamService {
 	} else {
 		console.error('WebRTC not available on this browser !');
 	}
+	
+	
+	this.pc.ondatachannel = function (ev) {
+		console.log('Data channel is created!');
+		ev.channel.onopen = function() {
+			console.log('Data channel is open and ready to be used.');
+		};
+	};
+	
+	this.pc.onicecandidate = function (e) {
+		if(e.candidate) {
+			console.log(' ICE candidate: \n' + JSON.stringify(e.candidate));
+			that.socket.emit('camera-ice-candidate', e.candidate);
+		}		
+	};
+	
+	this.pc.oniceconnectionstatechange = function(event) {
+		if(that.pc.iceConnectionState === 'connected') {
+			if(that.onClientStatusChange) {
+				that.onClientStatusChange(true);
+			}
+		} else if (that.pc.iceConnectionState === 'disconnected') {
+			if(that.onClientStatusChange) {
+				that.onClientStatusChange(false);
+			}
+		}
+		console.log('pc.iceconnectionstate = ' + that.pc.iceConnectionState);
+	};
+	
+	this.pc.onsignalingstatechange  = function (state) {
+		console.log('[WEBRTC]signaling state changed : ' + that.pc.signalingState);
+		console.log('[WEBRTC]local streams : ' + that.pc.getLocalStreams().length);
+		console.log('[WEBRTC]remote streams : ' + that.pc.getRemoteStreams().length);
+	};
+	
+  }
+  
+  private initSocket() {
 	var that = this;
+	this.socket = io( {path: '/api/socket'});
 	this.socket.on('request-camera-stream', function () {
 		that.streamVideo();
 	});
 	
+	this.socket.on('camera-client-connect', function (offer) {
+		console.log('offer received');
+		console.log('SIGNALING STATE : ' + that.pc.signalingState);
+		console.log('ICE STATE : ' + that.pc.iceConnectionState);
+		
+			
+		that.pc.setRemoteDescription(new RTCSessionDescription(offer)).then(function () {
+			console.log('camera client connected');
+		}, function (error) {
+			console.error('error connecting : ' + error);
+		});
+	});
+	this.socket.on('camera-client-ice-candidate', function (candidate) {
+		console.log('camera ice candidate received' + JSON.stringify(candidate));
+		that.pc.addIceCandidate(new RTCIceCandidate(candidate));		
+	});
   }
+  
   
   cameraReady(status: boolean, stream: MediaStream) {
 	this.stream = stream;
@@ -42,6 +107,8 @@ export class P2pStreamService {
   }
   
   streamVideo() {
+	this.initPeerConnection();
+	
 	if(!this.stream) {
 		console.log('camera not ready, nothing to stream ! ');
 		return;
@@ -49,7 +116,6 @@ export class P2pStreamService {
 	console.log('add stream to peer connection');
 	var socket = this.socket;
 	var pc = this.pc;
-	var that = this;
 	
 	pc.addStream(this.stream);
 	
@@ -63,56 +129,8 @@ export class P2pStreamService {
 		console.error('error creating offer'  + err);
 	});
 	
-	socket.on('camera-client-connect', function (offer) {
-		console.log('offer received');
-		var sessionDescription = null;
-			if(typeof RTCSessionDescription !== 'undefined') {
-				sessionDescription = new RTCSessionDescription(offer);
-			} else if(typeof mozRTCSessionDescription !== 'undefined') {
-				sessionDescription = new mozRTCSessionDescription(offer);
-			}
-		pc.setRemoteDescription(sessionDescription).then(function () {
-			console.log('camera client connected');
-		}, function (error) {
-			console.error('error connecting : ' + error);
-		});
-	});
-	socket.on('camera-client-ice-candidate', function (candidate) {
-		console.log('camera ice candidate received' + JSON.stringify(candidate));
-		pc.addIceCandidate(new RTCIceCandidate(candidate));		
-	});
+	
 		
-	pc.ondatachannel = function (ev) {
-		console.log('Data channel is created!');
-		ev.channel.onopen = function() {
-			console.log('Data channel is open and ready to be used.');
-		};
-	};
 	
-	pc.onicecandidate = function (e) {
-		if(e.candidate) {
-			console.log(' ICE candidate: \n' + JSON.stringify(e.candidate));
-			socket.emit('camera-ice-candidate', e.candidate);
-		}		
-	};
-	
-	pc.oniceconnectionstatechange = function(event) {
-		if(pc.iceConnectionState === 'completed') {
-			if(that.onClientStatusChange) {
-				that.onClientStatusChange(true);
-			}
-		} else if (pc.iceConnectionState === 'disconnected') {
-			if(that.onClientStatusChange) {
-				that.onClientStatusChange(false);
-			}
-		}
-		console.log('pc.iceconnectionstate = ' + pc.iceConnectionState);
-	};
-	
-	pc.onsignalingstatechange  = function (state) {
-		console.log('[WEBRTC]signaling state changed : ' + pc.signalingState);
-		console.log('[WEBRTC]local streams : ' + pc.getLocalStreams().length);
-		console.log('[WEBRTC]remote streams : ' + pc.getRemoteStreams().length);
-	};
   }
 }

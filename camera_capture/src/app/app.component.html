@@ -4,17 +4,31 @@
 
 <div class="container">
 	<div class="select">
-	   <label for="videoSource"> {{'video_source' | translate}}: </label>
-		<select name="videoSource" [(ngModel)]="currentMedia" (change)="startStream($event.target.value)">
-			<option value="">{{'select_device' | translate}}</option>
-			<option *ngFor="let mediaDevice of mediaDevices; let i = index" [value]="mediaDevice.deviceId">  
-			{{mediaDevice.label ? mediaDevice.label : ('camera ' + (i + 1)) }}
-			</option>
-		</select>
-		<div> 
+		<div class="row">
+			<div class="col-md-6">
+				<label for="videoSource"> {{'video_source' | translate}}: </label>
+				<select name="videoSource" [(ngModel)]="currentMedia" (ngModelChange)="startStream()">
+					<option value="">{{'select_device' | translate}}</option>
+					<option *ngFor="let mediaDevice of mediaDevices; let i = index" [value]="mediaDevice.deviceId">  
+					{{mediaDevice.label ? mediaDevice.label : ('camera ' + (i + 1)) }}
+					</option>
+				</select>
+			</div>
+			<div class="col-md-6">
+				<label for="videoQuality"> {{'video_quality' | translate}}: </label>
+				<select name="videoQuality" [(ngModel)]="currentQuality" (ngModelChange)="startStream()">
+					<option *ngFor="let quality of videoQuality" [value]="quality.val">  
+						{{quality.label}}
+					</option>
+				</select>
+			</div>
+		</div>
+		<div class="row"> 
+			<div class="col-md-12">
 			<span>{{'client_status' | translate}} : </span>
 			<span [hidden]="!clientConnected" class="client-connected client-status"></span>
 			<span [hidden]="clientConnected" class="client-disconnected client-status"></span>
+			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-6">
