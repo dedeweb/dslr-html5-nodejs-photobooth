@@ -115,6 +115,7 @@ export class AppComponent {
 	
 	startStream() {
 		if(this.currentMedia) {
+			
 			console.log('start stream : '  + this.currentMedia);
 			var that = this;
 			navigator.mediaDevices.getUserMedia({
@@ -125,6 +126,7 @@ export class AppComponent {
 					height: this.getQualityHeight()
 				}
 			}).then(function (stream) {
+				
 				that.currentStream = stream;
 				// Refresh button list in case labels have become available
 				that.refreshDevices();

@@ -19,6 +19,16 @@ export class P2pStreamService {
 	
 	private initPeerConnection() {
 		var that = this;
+		if(this.pc) {
+			this.pc.close();
+			this.pc.onaddstream = null;
+			this.pc.ontrack = null;
+			this.pc.oniceconnectionstatechange = null;
+			this.pc.onsignalingstatechange = null;
+			this.pc.ondatachannel = null;
+			this.pc.onicecandidate = null;
+			this.pc = null;
+		}
 		if(typeof RTCPeerConnection !== 'undefined') {
 			this.pc = new RTCPeerConnection(null);
 		} else if(typeof mozRTCPeerConnection !== 'undefined') {
@@ -72,8 +82,7 @@ export class P2pStreamService {
 				that.socket.emit('request-camera-stream');
 			} else {
 				console.log('camera not ready, disconnecting.');
-				that.pc.close();
-				location.reload();
+				that.initPeerConnection();
 			}
 		});
 		

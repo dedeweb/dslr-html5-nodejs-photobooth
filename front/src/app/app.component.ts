@@ -10,6 +10,7 @@ import {P2pStreamService} from './p2p-stream.service';
 export class AppComponent {
   title = 'app works!';
   private currentStream : MediaStream = null;
+  private videoElement: any;
   constructor(translate: TranslateService,
 				private p2pStreamService : P2pStreamService,
 				private el: ElementRef) {
@@ -23,6 +24,10 @@ export class AppComponent {
 		//translate.use(browserLang.match(/en|fr/) ? browserLang : 'en');
 		var that = this;
 		p2pStreamService.onAddStream = function(stream) {
+			if(that.currentStream && that.currentStream.getVideoTracks().length > 0 ) {
+				that.currentStream.getVideoTracks()[0].stop();
+				that.currentStream = null;
+			}
 			console.log('stream received. video tracks : ' + stream.getVideoTracks().length);
 			if(stream.getVideoTracks().length> 0) {
 				console.log('track : ' + JSON.stringify(stream.getVideoTracks()[0]));
@@ -31,19 +36,22 @@ export class AppComponent {
 				console.log('track added');
 			};
 			that.currentStream = stream;
+			
+			that.videoElement.play();
+			
 	};
   }
   ngOnInit(){
 	var canvasElement = canvasElement = this.el.nativeElement.querySelector('canvas');
-	var videoElement = this.el.nativeElement.querySelector('video');
+	this.videoElement = this.el.nativeElement.querySelector('video');
 	var ctx= canvasElement.getContext('2d');
 	
-	videoElement.onloadedmetadata = function() {
+	this.videoElement.onloadedmetadata = function() {
 		canvasElement.height = this.videoHeight -100;
 		canvasElement.width  = this.videoWidth -100;
 	}
 	
-	videoElement.addEventListener('play', function () {
+	this.videoElement.addEventListener('play', function () {
 			console.log('play');
 			var that = this;
 			

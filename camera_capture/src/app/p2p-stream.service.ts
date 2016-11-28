@@ -28,6 +28,11 @@ export class P2pStreamService {
 	console.log('creating front peer connection');
 	if(this.pc) {
 		this.pc.close();
+		this.pc.ondatachannel = null;
+		this.pc.onicecandidate = null;
+		this.pc.oniceconnectionstatechange = null;
+		this.pc.onsignalingstatechange = null;
+		this.pc = null;
 	}
 	if(typeof RTCPeerConnection !== 'undefined') {
 		this.pc = new RTCPeerConnection(null);
@@ -55,11 +60,12 @@ export class P2pStreamService {
 	};
 	
 	this.pc.oniceconnectionstatechange = function(event) {
-		if(that.pc.iceConnectionState === 'connected') {
+		if(that.pc.iceConnectionState === 'connected' ||
+			that.pc.iceConnectionState === 'completed') {
 			if(that.onClientStatusChange) {
 				that.onClientStatusChange(true);
 			}
-		} else if (that.pc.iceConnectionState === 'disconnected') {
+		} else {
 			if(that.onClientStatusChange) {
 				that.onClientStatusChange(false);
 			}
@@ -102,11 +108,17 @@ export class P2pStreamService {
   
   
   cameraReady(status: boolean, stream: MediaStream) {
+	if(this.stream && this.stream.getVideoTracks().length > 0 ) {
+		this.stream.getVideoTracks()[0].stop();
+		this.stream = null;
+	}
+  
 	this.stream = stream;
+
 	this.socket.emit('camera-ready', status);
   }
   
-  streamVideo() {
+  private streamVideo() {
 	this.initPeerConnection();
 	
 	if(!this.stream) {
