@@ -23,6 +23,9 @@ CameraControl.prototype = {
 	},
 	setFakeCamera : function (flag) {
 		this.fakeCamera = flag;
+	},
+	getPicture: function (res) {
+		child.spawn('gphoto2', ['--capture-image-and-download', '--filename photo-%Y%m%d-%H%M%S.jpg']);
 	}
 };
 CameraControl.getInstance = function(){

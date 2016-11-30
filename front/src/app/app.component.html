@@ -2,7 +2,26 @@
 
 <div class="capture-area">
 	<canvas></canvas>
-	<div class="bottom-message">
-		{{ 'picture_button_help' | translate}}
+	
+	<div class="area-capture-control" *ngIf="currentCaptureState == captureState.waitForCapture">
+		<a class="capture-button" (click)="launchCountDown()">
+			<i class="fa fa-camera"></i>
+		</a>
+		<div class="arrow-tip">
+			<i class="fa fa-hand-o-up"></i>
+		</div>
+		<div class="bottom-message">
+			{{ 'picture_button_help' | translate}}
+		</div>
+	</div>
+	<div class="area-countdown" *ngIf="currentCaptureState == captureState.countDown">
+		<div class="countdown">
+			<div class="step-0" [ngClass]="{'active': currentStep === 0 }">{{ 'countdown_ready' | translate}}</div>
+			<div class="step-1" [ngClass]="{'active': currentStep === 1 }">5</div>
+			<div class="step-2" [ngClass]="{'active': currentStep === 2 }">4</div>
+			<div class="step-3" [ngClass]="{'active': currentStep === 3 }">3</div>
+			<div class="step-4" [ngClass]="{'active': currentStep === 4 }">2</div>
+			<div class="step-5" [ngClass]="{'active': currentStep === 5 }">1</div>
+		</div>
 	</div>
 </div>

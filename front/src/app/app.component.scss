@@ -1,3 +1,4 @@
+$capture-button-size: 80;
 body {
 	overflow: hidden;
 }
@@ -8,4 +9,83 @@ video {
 canvas {
 	height: 100%;
 	width: 100%;
+}
+
+.bottom-message {
+    cursor: pointer;
+	position: fixed;
+    bottom: 0;
+    right: 25px;
+    text-shadow: 0 0 5px #000000;
+    color: white;
+    font-size: 35px;
+}
+.arrow-tip {
+	position: fixed;
+	bottom: 75px;
+	right: (  $capture-button-size / 2 ) +px;
+	animation: shake 2s infinite; 
+	font-size: ($capture-button-size / 2 ) + px;
+	text-shadow: 0 0 5px #000000;
+    color: white;
+	
+}
+
+.countdown {
+	&>div.active {
+		
+		opacity: 1;
+	}
+	
+	&>div:not(.active) {
+		opacity: 0;
+		transform: scale(1.5);
+		transition: all ease 1s;
+		
+	}
+	
+	&>div {
+		position: fixed;
+		margin: auto;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		/* color: #000000; */
+		font-size: 250px;
+		color: #ffffff;
+		text-shadow: 0 0 5px #000000;
+		height: 300px;
+		line-height: 250px;
+		width: 100%;
+		text-align: center;
+		
+		transition: opacity ease 1s;
+	}
+	
+}
+
+.capture-button {
+    position: fixed;
+    top: 50%;
+    right: 25px;
+	display: block;
+	background: #ffffff;
+	height: $capture-button-size + px;
+	width: $capture-button-size + px;
+	border-radius: ($capture-button-size / 2) + px;
+	margin-top: (-$capture-button-size / 2) + px;
+	text-align: center;
+	box-shadow: 0px 0px 10px 4px rgba(119, 119, 119, 0.75);
+	.fa {
+		line-height: $capture-button-size + px;
+		font-size: ($capture-button-size / 2 ) + px;
+	}
+}
+
+
+@keyframes shake { 
+	0%, 100% {transform: translateY(-5px);}
+	80% {transform: translateY(20px);} 
+	
 }
