@@ -1,3 +1,8 @@
 <nav class="navbar navbar-full navbar-dark bg-inverse">
   <span class="navbar-brand">{{'admin_title' | translate}}</span>
 </nav>
+
+<button class="button" (click)="GetCameraStatus()"> {{'camera_status' | translate }} </button>
+
+<span [hidden]="!cameraReady" class="satus-ok client-status"></span>
+<span [hidden]="cameraReady" class="status-nok client-status"></span>
