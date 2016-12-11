@@ -45,6 +45,11 @@ app.get('/api/plop', function (req, res) {
 	res.send('ploupl');
 });
 
+app.get('/api/cameraStatus', function (req, res)  {
+	cameraControl.getStatus(res);
+
+});
+
 // app.get('*/stream.mjpg', function (req, res) {
 	// var gpCmd = child.spawn('gphoto2 --capture-movie --stdout');
 	// gpCmd.stdout.pipe(res);

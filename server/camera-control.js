@@ -26,6 +26,32 @@ CameraControl.prototype = {
 	},
 	getPicture: function (res) {
 		child.spawn('gphoto2', ['--capture-image-and-download', '--filename photo-%Y%m%d-%H%M%S.jpg']);
+	},
+	
+	getStatus: function (res) {
+		
+		var summaryCmd = child.spawnSync('gphoto2', ['--summary']);
+		
+		if(summaryCmd.stderr) {
+			console.log('response : ' + summaryCmd.stderr)
+			res.status(500).json( {error: true, message: ''+summaryCmd.stderr});
+			
+		} 
+		else 
+		{
+			res.json( {error: false, message : '' + summaryCmd.stdout});
+		}
+		// summaryCmd.stderr.on('data', (message) => {
+			// res.json({plop: 'plop'});
+			// console.log('response : ' + message);
+			// if(message) {
+				// //res.write('jkhkjhk').end();
+				// //res.json({plop: 'plop'});
+				// //res.json( {error: true}).status(500);
+			// }
+		// });
+		
+		//summaryCmd.stderr.pipe(res);
 	}
 };
 CameraControl.getInstance = function(){
