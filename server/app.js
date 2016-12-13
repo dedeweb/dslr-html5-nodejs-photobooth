@@ -50,6 +50,16 @@ app.get('/api/cameraStatus', function (req, res)  {
 
 });
 
+app.get('/api/cameraMode', function (req, res)  {
+	res.json( {fakeCamera: cameraControl.getCameraMode() });
+});
+
+app.post('/api/cameraMode', function (req, res) {
+	var fakeCamera = req.body.fakeCamera;
+	cameraControl.setFakeCamera(fakeCamera);
+	res.end();
+});
+
 // app.get('*/stream.mjpg', function (req, res) {
 	// var gpCmd = child.spawn('gphoto2 --capture-movie --stdout');
 	// gpCmd.stdout.pipe(res);

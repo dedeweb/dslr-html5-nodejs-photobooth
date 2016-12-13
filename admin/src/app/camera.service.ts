@@ -1,30 +1,35 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
+//import 'rxjs/add/operator/catch';
+
 
 @Injectable()
 export class CameraService {
-	private baseUrl: string = 'http://192.168.0.6:4202/api';
+	private baseUrl: string = '/api';
 	constructor(private http : Http) { }
 	
 	public GetStatus() {
 		let result = this.http
-			.get(`${this.baseUrl}/cameraStatus`)
-			.map(function (res:Response) {
-				let body = res.json();
-    			return body.data || { };
-			});/*
-			.catch(function (error: Response | any) {
-				if (error instanceof Response) {
-					return error.json();
-				} else {
-					console.log(error);
-					return error;
-				}
-			});*/
+			.get(`${this.baseUrl}/cameraStatus`);
+			
 		
 		return result;
 	};  
 	
+	public GetMode() {
+		let result = this.http
+			.get(`${this.baseUrl}/cameraMode`);
+			
+		
+		return result;
+	};
+	
+	public SetMode(mode: boolean) {
+		let result = this.http
+			.post(`${this.baseUrl}/cameraMode`, {fakeCamera: mode});
+		
+		return result;
+	};
 	/*
 	private getHeaders(){
 		let headers = new Headers();

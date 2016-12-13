@@ -1,5 +1,10 @@
 var child = require('child_process');
+var process = require('process');
 var instance = null;
+
+//Go to script directory 
+process.chdir(__dirname);
+
 
 function CameraControl(){
 	if(instance !== null){
@@ -10,7 +15,7 @@ function CameraControl(){
 }
 CameraControl.prototype = {
 	initialize: function(){
-		this.fakeCamera = true;
+		this.fakeCamera = false;
 	},
 	getLiveView: function (res) {
 		if(this.fakeCamera) {
@@ -24,34 +29,33 @@ CameraControl.prototype = {
 	setFakeCamera : function (flag) {
 		this.fakeCamera = flag;
 	},
+	getCameraMode: function () {
+		return this.fakeCamera;
+	},
 	getPicture: function (res) {
 		child.spawn('gphoto2', ['--capture-image-and-download', '--filename photo-%Y%m%d-%H%M%S.jpg']);
 	},
 	
 	getStatus: function (res) {
 		
-		var summaryCmd = child.spawnSync('gphoto2', ['--summary']);
+		var summaryCmd;
+		if(this.fakeCamera) {
+			//summaryCmd = child.spawnSync('server/fake_gphoto.sh', ['--summary']);	
+			summaryCmd = child.spawnSync('sh', ['fake_gphoto.sh', '--summary']);	
+		} else {
+			summaryCmd = child.spawnSync('gphoto2', ['--summary']);	
+		}
 		
-		if(summaryCmd.stderr) {
+		if('' + summaryCmd.stderr ) {
 			console.log('response : ' + summaryCmd.stderr)
-			res.status(500).json( {error: true, message: ''+summaryCmd.stderr});
+			//res.json( {error: true, message: ''+summaryCmd.stderr});
+			res.json( {error: true, message: '' + summaryCmd.stderr});
 			
 		} 
 		else 
 		{
 			res.json( {error: false, message : '' + summaryCmd.stdout});
 		}
-		// summaryCmd.stderr.on('data', (message) => {
-			// res.json({plop: 'plop'});
-			// console.log('response : ' + message);
-			// if(message) {
-				// //res.write('jkhkjhk').end();
-				// //res.json({plop: 'plop'});
-				// //res.json( {error: true}).status(500);
-			// }
-		// });
-		
-		//summaryCmd.stderr.pipe(res);
 	}
 };
 CameraControl.getInstance = function(){

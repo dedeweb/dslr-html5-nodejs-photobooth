@@ -29,7 +29,7 @@ store_00010001:
 Device Property Summary:
 Property 0xd402:(read only) (type=0xffff) 'Canon EOS 50D'
 Property 0xd407:(read only) (type=0x6) 1
-Property 0xd406:(readwrite) (type=0xffff) 'Unknown Initiator'"
+Property 0xd406:(readwrite) (type=0xffff) 'Unknown Initiator'" 
 else
 	echo "Usage: gphoto2 [-?qvalLnPTDR] [-?|--help] [--usage] [--debug] [--debug-loglevel=STRING] [--debug-logfile=FILENAME] [-q|--quiet] [--hook-script=FILENAME] [--stdout]
         [--stdout-size] [--auto-detect] [--show-exif=STRING] [--show-info=STRING] [--summary] [--manual] [--about] [--storage-info] [--shell] [-v|--version]
@@ -41,5 +41,5 @@ else
         [-L|--list-files] [-m|--mkdir=DIRNAME] [-r|--rmdir=DIRNAME] [-n|--num-files] [-p|--get-file=RANGE] [-P|--get-all-files] [-t|--get-thumbnail=RANGE]
         [-T|--get-all-thumbnails] [--get-metadata=RANGE] [--get-all-metadata] [--upload-metadata=STRING] [--get-raw-data=RANGE] [--get-all-raw-data] [--get-audio-data=RANGE]
         [--get-all-audio-data] [-d|--delete-file=RANGE] [-D|--delete-all-files] [-u|--upload-file=FILENAME] [--filename=FILENAME_PATTERN] [-f|--folder=FOLDER] [-R|--recurse]
-        [--no-recurse] [--new] [--force-overwrite] [--skip-existing]"
+        [--no-recurse] [--new] [--force-overwrite] [--skip-existing]" 
 fi

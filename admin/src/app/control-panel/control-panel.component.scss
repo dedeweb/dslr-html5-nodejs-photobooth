@@ -1,0 +1,30 @@
+.client-status {
+	font-size: 1.2em;
+}
+
+.status-ok {
+	color: #5cb85c;
+}
+
+.status-nok {
+	color: #d9534f;
+}
+
+.refresh-button {
+	cursor: pointer;
+}
+
+.camera-message {
+	white-space: pre;
+	max-height: 200px;
+	overflow: auto;
+	font-size: 0.8em;
+	margin: 10px;
+}
+
+.main-container {
+	margin-top: 25px;
+}
+.card-camera .container {
+	margin-top: 15px;
+}

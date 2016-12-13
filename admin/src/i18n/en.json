@@ -1,4 +1,13 @@
 {
-	"admin_title" : "Admin panel",
-	"camera_status" : "Camera status"
+	"admin_title" : "Tamerbooth admin",
+	"camera_status" : "Camera status",
+	"control_panel" : "Control panel",
+	"webcam_calibration" : "Webcam calibration",
+	"camera_mode" : "Camera mode",
+	"fake_camera" : "Dummy camera",
+	"real_camera" : "Real camera",
+	"card_header_camera" : "Camera",
+	"card_header_webcam" : "Webcam",
+	"card_header_front" : "Front-end",
+	"log" :"Log"
 }

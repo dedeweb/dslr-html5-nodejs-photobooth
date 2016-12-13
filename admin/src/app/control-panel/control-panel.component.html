@@ -1,0 +1,50 @@
+<div class="container main-container">
+	<div class="card card-camera">
+		<h4 class="card-header"> {{'card_header_camera' | translate }}</h4>
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-2 text-xs-right">
+					{{'camera_mode' | translate }} : 
+				</div>
+				<div class="col-xs-10">
+					<button [hidden]="useFakeCamera" (click)="SetCameraMode(true)" type="button" class="btn btn-success btn-sm">
+						{{'real_camera' | translate }}
+					</button>
+					<button [hidden]="!useFakeCamera" (click)="SetCameraMode(false)" type="button" class="btn btn-danger btn-sm">
+						{{'fake_camera' | translate }}
+					</button>
+					<i class="fa fa-refresh fa-spin" [hidden]="!cameraModeWSLoading"></i> 
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-2 text-xs-right">
+					{{'camera_status' | translate }} : 
+				</div>
+				<div class="col-xs-1">
+					<span [hidden]="!cameraReady" class="status-ok client-status">
+						<i class="fa fa-check-circle"></i>
+					</span>
+					<span [hidden]="cameraReady" class="status-nok client-status">
+						<i class="fa fa-times-circle"></i>
+					</span>
+					<a (click)="GetCameraStatus()" class="refresh-button"   > 
+						<i class="fa fa-refresh" [ngClass]="{'fa-spin': cameraWSLoading }"></i> 
+					</a>
+				</div>
+				<div class="col-xs-9">
+					<div class="camera-message alert" [ngClass]="{'alert-success': cameraReady  , 'alert-danger': !cameraReady }" >{{cameraMessage}}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="card card-webcam">
+		<h4 class="card-header"> {{'card_header_webcam' | translate }}</h4>
+		<div class="container">
+		</div>
+	</div>
+	<div class="card card-front">
+		<h4 class="card-header"> {{'card_header_front' | translate }}</h4>
+		<div class="container">
+		</div>
+	</div>
+</div>
