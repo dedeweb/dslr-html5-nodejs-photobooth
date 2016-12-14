@@ -1,6 +1,7 @@
 import { Component, ElementRef } from '@angular/core';
 import {TranslateService} from 'ng2-translate';
 import {P2pStreamService} from './p2p-stream.service';
+import { LogService } from 'log.service';
 //import * as _ from 'underscore';
 
 declare var _:any;
@@ -23,13 +24,14 @@ export class AppComponent {
 	private videoQuality : any[] = [ 
 		{ val: 1, label: "QVGA (320x240)" },
 		{ val: 2, label: "VGA (640x480)" },
-		{ val: 3, label: "XGA (1024x768)" },
+		{ val: 3, label: "XGA (1024x768)" 	},
 		{ val: 4, label: "UXGA (1600x1200)" }
 	];
 	
 	constructor(translate: TranslateService, 
 				private el: ElementRef,
-				private p2pStreamService : P2pStreamService) {
+				private p2pStreamService : P2pStreamService,
+				private logger: LogService) {
 		// this language will be used as a fallback when a translation isn't found in the current language
 		translate.setDefaultLang('en');
 
@@ -54,14 +56,14 @@ export class AppComponent {
 			canvasElement.height = this.videoHeight -100;
 			canvasElement.width = this.videoWidth -100;
 		}
-		
+		var that= this;
 		this.videoElement.addEventListener('play', function () {
-			console.log('play');
-			var that = this;
+			that.logger.debug('play');
+			var videoElt = this;
 			
 			(function loop() {
-			  if (!that.paused && !that.ended) {
-				ctx.drawImage(that,50, 50, that.videoWidth -100, that.videoHeight -100,
+			  if (!videoElt.paused && !videoElt.ended) {
+				ctx.drawImage(videoElt,50, 50, videoElt.videoWidth -100, videoElt.videoHeight -100,
 									0, 0, canvasElement.width, canvasElement.height);
 				setTimeout(loop, 1000 / 30); // drawing at 30fps
 			  }
@@ -76,8 +78,7 @@ export class AppComponent {
 			that.mediaDevices = _.where(deviceInfos, { kind: 'videoinput'});
 			
 		}).catch(function (error) {
-			//TODO use real logger
-			console.log('navigator.getUserMedia error: ', error);
+			that.logger.error('navigator.getUserMedia error: ' + JSON.stringify(error));
 		});
 	}
 	
@@ -116,7 +117,7 @@ export class AppComponent {
 	startStream() {
 		if(this.currentMedia) {
 			
-			console.log('start stream : '  + this.currentMedia);
+			this.logger.log('start stream : '  + this.currentMedia);
 			var that = this;
 			navigator.mediaDevices.getUserMedia({
 				audio: false,

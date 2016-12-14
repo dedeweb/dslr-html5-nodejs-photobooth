@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { LogService } from 'log.service';
 declare var io:any;
 declare var RTCPeerConnection:any;
 declare var mozRTCPeerConnection:any;
@@ -12,7 +13,7 @@ export class P2pStreamService {
 	private socket : any;
 	public onAddStream : (stream : MediaStream) => void;
 	
-	constructor() { 
+	constructor(private logger: LogService) { 
 		this.initPeerConnection();
 		this.initSocket();		
 	}
@@ -36,36 +37,36 @@ export class P2pStreamService {
 		} else if(typeof webkitRTCPeerConnection !== 'undefined') {
 			this.pc = new webkitRTCPeerConnection(null);
 		} else {
-			console.error('WebRTC not available on this browser !');
+			that.logger.error('WebRTC not available on this browser !');
 		}
 		
 		this.pc.onaddstream = function (event) {
-			console.log('stream received !!! (service)');
+			that.logger.log('stream received !!! (service)');
 			that.onAddStream(event.stream);
 		};
 		this.pc.ontrack = function(event) {
-			console.log('on track');
+			that.logger.log('on track');
 		};
 		
 		this.pc.onsignalingstatechange  = function (state) {
-			console.log('[WEBRTC]signaling state changed : ' + that.pc.signalingState);
-			console.log('[WEBRTC]local streams : ' + that.pc.getLocalStreams().length);
-			console.log('[WEBRTC]remote streams : ' + that.pc.getRemoteStreams().length);
+			that.logger.log('[WEBRTC]signaling state changed : ' + that.pc.signalingState);
+			that.logger.log('[WEBRTC]local streams : ' + that.pc.getLocalStreams().length);
+			that.logger.log('[WEBRTC]remote streams : ' + that.pc.getRemoteStreams().length);
 		};
 		this.pc.oniceconnectionstatechange = function(event) {
-			console.log('ICE connectionstate changed :  ' + that.pc.iceConnectionState);
+			that.logger.log('ICE connectionstate changed :  ' + that.pc.iceConnectionState);
 		};
 		
 		this.pc.ondatachannel = function (ev) {
-			console.log('Data channel is created!');
+			that.logger.log('Data channel is created!');
 			ev.channel.onopen = function() {
-				console.log('Data channel is open and ready to be used.');
+				that.logger.log('Data channel is open and ready to be used.');
 			};
 		}
 		
 		this.pc.onicecandidate = function (e) {
 			if(e.candidate) {
-				console.log(' ICE candidate: \n' + JSON.stringify(e.candidate) );
+				that.logger.log(' ICE candidate: \n' + JSON.stringify(e.candidate) );
 				that.socket.emit('camera-client-ice-candidate', e.candidate);
 			}
 		};
@@ -78,7 +79,7 @@ export class P2pStreamService {
 		
 		this.socket.on('camera-ready', function (status){
 			if(status) {
-				console.log('camera ready, requesting stream');
+				that.logger.log('camera ready, requesting stream');
 				that.socket.emit('request-camera-stream');
 			} else {
 				console.log('camera not ready, disconnecting.');
@@ -87,7 +88,7 @@ export class P2pStreamService {
 		});
 		
 		this.socket.on('camera-connect', function (offer) {
-			console.log('offer received : ' + JSON.stringify(offer));
+			that.logger.log('offer received : ' + JSON.stringify(offer));
 			var sessionDescription = null;
 			
 			sessionDescription = new RTCSessionDescription(offer);
@@ -96,19 +97,19 @@ export class P2pStreamService {
 				var localOffer;
 				that.pc.createAnswer().then(function (answer) {
 					localOffer = answer;
-					console.log('set local description');
+					that.logger.log('set local description');
 					return that.pc.setLocalDescription(localOffer);
 				}).then(function () {
-					console.log('send answer');
-					console.log('SIGNALING STATE : ' + that.pc.signalingState);
-					console.log('ICE STATE : ' + that.pc.iceConnectionState);
+					that.logger.log('send answer');
+					that.logger.log('SIGNALING STATE : ' + that.pc.signalingState);
+					that.logger.log('ICE STATE : ' + that.pc.iceConnectionState);
 					that.socket.emit('camera-client-connect', localOffer);
 				}); 
 			});
 		});
 		
 		this.socket.on('camera-ice-candidate', function (candidate) {
-			console.log('camera ice candidate received' + JSON.stringify(candidate));
+			that.logger.log('camera ice candidate received' + JSON.stringify(candidate));
 		
 			that.pc.addIceCandidate(new RTCIceCandidate(candidate));
 		});

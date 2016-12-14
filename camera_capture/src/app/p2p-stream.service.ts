@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { LogService } from 'log.service';
 declare var io:any;
 //interface mozRTCPeerConnection extends RTCPeerConnection {};
 //interface webkitRTCPeerConnection extends RTCPeerConnection {};
@@ -18,14 +19,13 @@ export class P2pStreamService {
   private stream:MediaStream;
   public onClientStatusChange: (connected : boolean) => void;
   
-  constructor() { 	
+  constructor(private logger: LogService) { 	
 	this.initSocket();
-	
   }
   
   private initPeerConnection() {
 	var that = this;
-	console.log('creating front peer connection');
+	this.logger.log('creating front peer connection');
 	if(this.pc) {
 		this.pc.close();
 		this.pc.ondatachannel = null;
@@ -41,20 +41,21 @@ export class P2pStreamService {
 	} else if(typeof webkitRTCPeerConnection !== 'undefined') {
 		this.pc = new webkitRTCPeerConnection(null);
 	} else {
-		console.error('WebRTC not available on this browser !');
+		this.logger.error('WebRTC not available on this browser !');
 	}
 	
 	
 	this.pc.ondatachannel = function (ev) {
-		console.log('Data channel is created!');
+		this.logger.log('Data channel is created!');
+		
 		ev.channel.onopen = function() {
-			console.log('Data channel is open and ready to be used.');
+			that.logger.log('Data channel is open and ready to be used.');
 		};
 	};
 	
 	this.pc.onicecandidate = function (e) {
 		if(e.candidate) {
-			console.log(' ICE candidate: \n' + JSON.stringify(e.candidate));
+			that.logger.log(' ICE candidate: \n' + JSON.stringify(e.candidate));
 			that.socket.emit('camera-ice-candidate', e.candidate);
 		}		
 	};
@@ -70,13 +71,13 @@ export class P2pStreamService {
 				that.onClientStatusChange(false);
 			}
 		}
-		console.log('pc.iceconnectionstate = ' + that.pc.iceConnectionState);
+		that.logger.log('pc.iceconnectionstate = ' + that.pc.iceConnectionState);
 	};
 	
 	this.pc.onsignalingstatechange  = function (state) {
-		console.log('[WEBRTC]signaling state changed : ' + that.pc.signalingState);
-		console.log('[WEBRTC]local streams : ' + that.pc.getLocalStreams().length);
-		console.log('[WEBRTC]remote streams : ' + that.pc.getRemoteStreams().length);
+		that.logger.log('[WEBRTC]signaling state changed : ' + that.pc.signalingState);
+		that.logger.log('[WEBRTC]local streams : ' + that.pc.getLocalStreams().length);
+		that.logger.log('[WEBRTC]remote streams : ' + that.pc.getRemoteStreams().length);
 	};
 	
   }
@@ -89,19 +90,19 @@ export class P2pStreamService {
 	});
 	
 	this.socket.on('camera-client-connect', function (offer) {
-		console.log('offer received');
-		console.log('SIGNALING STATE : ' + that.pc.signalingState);
-		console.log('ICE STATE : ' + that.pc.iceConnectionState);
+		that.logger.log('offer received');
+		that.logger.log('SIGNALING STATE : ' + that.pc.signalingState);
+		that.logger.log('ICE STATE : ' + that.pc.iceConnectionState);
 		
 			
 		that.pc.setRemoteDescription(new RTCSessionDescription(offer)).then(function () {
-			console.log('camera client connected');
+			that.logger.log('camera client connected');
 		}, function (error) {
-			console.error('error connecting : ' + error);
+			that.logger.error('error connecting : ' + error);
 		});
 	});
 	this.socket.on('camera-client-ice-candidate', function (candidate) {
-		console.log('camera ice candidate received' + JSON.stringify(candidate));
+		that.logger.log('camera ice candidate received' + JSON.stringify(candidate));
 		that.pc.addIceCandidate(new RTCIceCandidate(candidate));		
 	});
   }
@@ -122,27 +123,24 @@ export class P2pStreamService {
 	this.initPeerConnection();
 	
 	if(!this.stream) {
-		console.log('camera not ready, nothing to stream ! ');
+		this.logger.log('camera not ready, nothing to stream ! ');
 		return;
 	}
-	console.log('add stream to peer connection');
+	this.logger.log('add stream to peer connection');
 	var socket = this.socket;
 	var pc = this.pc;
+	var that =this;
 	
 	pc.addStream(this.stream);
 	
 	pc.createOffer().then(function(desc) {
 		pc.setLocalDescription(desc).then(function () {
 			// send the offer to a server to be forwarded to the friend you're calling.
-			console.log('local offer set, sending to remote peer.');
+			that.logger.log('local offer set, sending to remote peer.');
 			socket.emit('camera-connect', desc);
 		});
 	}, function (err) {
-		console.error('error creating offer'  + err);
+		that.logger.error('error creating offer'  + err);
 	});
-	
-	
-		
-	
   }
 }

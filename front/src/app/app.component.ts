@@ -1,6 +1,7 @@
 import { Component, ElementRef } from '@angular/core';
 import {TranslateService} from 'ng2-translate';
 import {P2pStreamService} from './p2p-stream.service';
+import { LogService } from 'log.service';
 
 enum captureState {
 	waitForCapture,
@@ -25,7 +26,8 @@ export class AppComponent {
   
 	constructor(translate: TranslateService,
 				private p2pStreamService : P2pStreamService,
-				private el: ElementRef) {
+				private el: ElementRef,
+				private logger: LogService) {
 				
 		// this language will be used as a fallback when a translation isn't found in the current language
 		translate.setDefaultLang('en');
@@ -40,12 +42,12 @@ export class AppComponent {
 				that.currentStream.getVideoTracks()[0].stop();
 				that.currentStream = null;
 			}
-			console.log('stream received. video tracks : ' + stream.getVideoTracks().length);
+			that.logger.log('stream received. video tracks : ' + stream.getVideoTracks().length);
 			if(stream.getVideoTracks().length> 0) {
-				console.log('track : ' + JSON.stringify(stream.getVideoTracks()[0]));
+				that.logger.log('track : ' + JSON.stringify(stream.getVideoTracks()[0]));
 			}
 			stream.onaddtrack = function () {
-				console.log('track added');
+				that.logger.log('track added');
 			};
 			that.currentStream = stream;
 			
@@ -62,9 +64,9 @@ export class AppComponent {
 			canvasElement.height = this.videoHeight -100;
 			canvasElement.width  = this.videoWidth -100;
 		}
-		
+		var that = this;
 		this.videoElement.addEventListener('play', function () {
-				console.log('play');
+				that.logger.log('play');
 				var that = this;
 				
 				(function loop() {
@@ -86,7 +88,7 @@ export class AppComponent {
 		this.currentCaptureState = captureState.countDown;
 		var updateCountDown = function () {
 			that.currentStep = that.currentStep + 1 ;
-			console.log('countdown:' + that.currentStep);
+			that.logger.log('countdown:' + that.currentStep);
 			if(that.currentStep === 0) {
 				//first step (ready?) displayed longer
 				setTimeout(updateCountDown, 3000);
