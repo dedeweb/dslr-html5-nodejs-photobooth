@@ -1,0 +1,26 @@
+.status-ok {
+	color: #5cb85c;
+}
+
+.status-nok {
+	color: #d9534f;
+}
+
+.module-front .module-label{
+	color: #5A97AA;
+}
+
+.module-webcam .module-label{
+	color: #F3B136;
+}
+
+.module-admin {
+}
+
+.log-entries {
+	position: absolute;
+    overflow: auto;
+    top: 0;
+    bottom: 0;
+    margin-top: 80px;
+}

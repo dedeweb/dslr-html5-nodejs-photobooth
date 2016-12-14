@@ -12,6 +12,10 @@
     "target": "es5",
     "typeRoots": [
       "../node_modules/@types"
-    ]
+    ],
+	"paths": {
+      "log.service": ["../../common/log.service"]
+    },
+	"baseUrl"  : "."
   }
 }

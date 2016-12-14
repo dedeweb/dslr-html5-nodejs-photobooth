@@ -9,6 +9,9 @@ import { AppComponent } from './app.component';
 import { CalibrateWebcamComponent } from './calibrate-webcam/calibrate-webcam.component';
 import { ControlPanelComponent } from './control-panel/control-panel.component';
 import { LogComponent } from './log/log.component';
+import { LogService, LogModule } from 'log.service';
+import { LogEntryComponent } from './log-entry/log-entry.component';
+import { ScrollGlueDirective } from './scroll-glue.directive';
 
 
 const appRoutes: Routes = [
@@ -22,7 +25,9 @@ const appRoutes: Routes = [
     AppComponent,
 	CalibrateWebcamComponent,
 	ControlPanelComponent,
-	LogComponent
+	LogComponent,
+	LogEntryComponent,
+	ScrollGlueDirective
   ],
   imports: [
     BrowserModule,
@@ -31,7 +36,14 @@ const appRoutes: Routes = [
 	TranslateModule.forRoot(),
     RouterModule.forRoot(appRoutes)
   ],
-  providers: [CameraService],
+  providers: [
+	CameraService,
+	{ provide: LogService, useFactory : function () { 
+		let logService =  new LogService(LogModule.Admin);
+		logService.plugLogEvents();
+		return logService;
+	} }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

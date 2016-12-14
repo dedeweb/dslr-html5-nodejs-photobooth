@@ -1,3 +1,41 @@
-<p>
-  log works!
-</p>
+<div class="container">
+	<div class="row">
+		<div class="module-front col-xs-4">
+			<span class="module-label">
+			Front-end : 
+			</span>
+			<span [hidden]="!logger.frontEndConnected" class="status-ok ">
+				<i class="fa fa-check-circle"></i>
+			</span>
+			<span [hidden]="logger.frontEndConnected" class="status-nok ">
+				<i class="fa fa-times-circle"></i>
+			</span>
+		</div>
+		<div class="module-webcam col-xs-4">
+			<span class="module-label">
+			Webcam : 
+			</span>
+			<span [hidden]="!logger.webcamConnected" class="status-ok ">
+				<i class="fa fa-check-circle"></i>
+			</span>
+			<span [hidden]="logger.webcamConnected" class="status-nok ">
+				<i class="fa fa-times-circle"></i>
+			</span>
+		</div>
+		<div class="module-admin col-xs-4">
+			<span class="module-label">
+			Admin : 
+			</span>
+			<span [hidden]="!logger.adminConnected" class="status-ok ">
+				<i class="fa fa-check-circle"></i>
+			</span>
+			<span [hidden]="logger.adminConnected" class="status-nok ">
+				<i class="fa fa-times-circle"></i>
+			</span>
+		</div>
+	</div>
+</div>
+<div class="log-entries" scroll-glue>
+<app-log-entry *ngFor="let entry of logger.logEntries" [entry]="entry">
+</app-log-entry>
+</div>
