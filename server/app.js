@@ -25,6 +25,17 @@ io.on('connection', function (socket) {
 	logSignaling.plugEvents(socket);
 });
 
+//API part : authorize. 
+app.get('/api/authorizeModule/:module', function (req, res)  {
+	if(logSignaling.isAlreadyConnected(req.params.module)) {
+		res.status(403).send('Module already launched. Please close the other window and refresh page.');
+	} else {
+		res.status(200).send('OK');
+	}
+});
+
+
+
 //API part : camera control. 
 app.get('/api/cameraStatus', function (req, res)  {
 	cameraControl.getStatus(res);

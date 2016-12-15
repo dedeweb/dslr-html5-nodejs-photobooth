@@ -9,12 +9,24 @@ function LogSignaling(){
 LogSignaling.prototype = {
 	initialize: function(){
 		this.cameraReady = false;
-		
+		this.moduleArray= [];
+		this.nberOfConnection = [];
 	},
-	
+	checkConnection : function (module) {
+		for(var i in this.moduleArray) {
+			if(this.moduleArray[i] === module) {
+				return true;
+			}
+		}
+		return false;
+	},
+	isAlreadyConnected : function (module) {
+		return (this.nberOfConnection[module] && this.nberOfConnection[module] > 0);
+	},
 	plugEvents: function (socket) {
 		var that = this;
-		this.currentModule = -1;
+		this.moduleArray[socket.id] = -1;
+		
 		socket.on('log-message', function (data) {
 			if(data) {
 				console.log('log received : ' + data.message);
@@ -22,17 +34,35 @@ LogSignaling.prototype = {
 				console.log('empty log received.');	
 			}
 			
-			socket.broadcast.emit('new-log', data);
+			socket.broadcast.emit('log-message', data);
 		});
 		
 		socket.on('log-connect', function (data) { 
-			that.currentModule = data;
+			that.moduleArray[socket.id] = data;
+			if(that.checkConnection(data)) {
+				//module already connected ! 
+				that.nberOfConnection[data] = (that.nberOfConnection[data] ? that.nberOfConnection[data] + 1 : 1);
+			} else {
+				that.nberOfConnection[data] = 0;
+			}
+			console.log('log connect ' + that.moduleArray[socket.id]);
 			socket.broadcast.emit('log-connect', data);
+			
+			for(var i in that.moduleArray) {
+				
+				if(that.moduleArray[i] !== -1) {
+					console.log('log connect refresh ' + that.moduleArray[i]);
+					socket.emit('log-connect', that.moduleArray[i] );
+				}
+			}
 		});
 		
 		socket.on('disconnect', function () {
-			console.log('log disconnect');
-			socket.broadcast.emit('log-disconnect', that.currentModule );
+			console.log('log disconnect ' + that.moduleArray[socket.id]);
+			that.nberOfConnection[that.moduleArray[socket.id]] --;
+			socket.broadcast.emit('log-disconnect', that.moduleArray[socket.id] );
+			that.moduleArray[socket.id] = -1;
+			
 		});
 		
 	}
