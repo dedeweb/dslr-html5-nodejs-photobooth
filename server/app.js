@@ -22,7 +22,12 @@ app.use(express.static(__dirname));
 io.on('connection', function (socket) {
 	console.log('user connected');
 	liveCamSignaling.plugEvents(socket);
-	logSignaling.plugEvents(socket);
+	logSignaling.plugEvents(socket, io);
+	socket.on('request-calibration-images', function () { 
+		socket.broadcast.emit('request-calibration-images');
+		//TODO : sending image from camera
+		
+	});
 });
 
 //API part : authorize. 

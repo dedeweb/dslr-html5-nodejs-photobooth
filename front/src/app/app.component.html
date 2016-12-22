@@ -1,7 +1,8 @@
 <video autoplay [srcObject]="currentStream"></video>
 
 <div class="capture-area">
-	<canvas></canvas>
+	<canvas id="displayCanvas"></canvas>
+	<canvas id="getImgCanvas"></canvas>
 	
 	<div class="area-capture-control" *ngIf="currentCaptureState == captureState.waitForCapture">
 		<a class="capture-button" (click)="launchCountDown()">

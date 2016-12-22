@@ -1,3 +1,24 @@
-<p>
-  calibrate-webcam works!
-</p>
+<div class="container panel-webcam">
+	<div class="row">
+		<div class="col-xs-2">
+			<button type="button" class="btn btn-primary" (click)="requestCalibration()" >{{'refresh_images' | translate}}</button>
+		</div>
+		<div class="col-xs-10">
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-6">
+			<h4>{{'viewfinder' | translate}}</h4>
+		</div>
+		<div class="col-xs-6">
+			<h4>{{'camera' | translate}}</h4>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-6">
+			<img src="{{webcamImgSrc}}"/>
+		</div>
+		<div class="col-xs-6">
+		</div>
+	</div>
+</div>

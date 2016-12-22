@@ -33,7 +33,7 @@ export class ControlPanelComponent implements OnInit {
 		this.cameraReady = false;
 		this.cameraMessage = '';
 		
-		this.cameraService.GetStatus().subscribe(
+		this.cameraService.getStatus().subscribe(
 			function success(data) {
 				that.cameraReady = !data.json().error;
 				that.cameraMessage = data.json().message;
@@ -49,7 +49,7 @@ export class ControlPanelComponent implements OnInit {
 	RefreshCameraMode() {
 		var that = this;
 		this.cameraModeWSLoading = true;
-		this.cameraService.GetMode().subscribe(
+		this.cameraService.getMode().subscribe(
 			function success(data) {
 				that.useFakeCamera = data.json().fakeCamera;
 				that.cameraModeWSLoading = false;
@@ -63,7 +63,7 @@ export class ControlPanelComponent implements OnInit {
 	SetCameraMode(mode: boolean) {
 		var that = this;
 		this.cameraModeWSLoading = true;
-		this.cameraService.SetMode(mode).subscribe(
+		this.cameraService.setMode(mode).subscribe(
 			function success() {
 				that.RefreshCameraMode();
 				that.GetCameraStatus();

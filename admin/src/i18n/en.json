@@ -9,5 +9,8 @@
 	"card_header_camera" : "Camera",
 	"card_header_webcam" : "Webcam",
 	"card_header_front" : "Front-end",
-	"log" :"Log"
+	"log" :"Log",
+	"refresh_images" : "Refresh Images",
+	"viewfinder" : "Viewfinder ( webcam )",
+	"camera" : "Camera"
 }

@@ -1,14 +1,30 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
+import { LogService } from 'log.service';
 //import 'rxjs/add/operator/catch';
+declare var io:any;
 
 
 @Injectable()
 export class CameraService {
 	private baseUrl: string = '/api';
-	constructor(private http : Http) { }
+	private socket: any;
+	public onWebcamImageReceived: (image:any) => void;
 	
-	public GetStatus() {
+	constructor(private http : Http, private logger: LogService) {
+		var that = this;
+		this.socket = io( {path: '/api/socket'});
+		
+		
+		this.socket.on('webcam-image', function (data) {
+			logger.log('webcam-image received');
+			if(that.onWebcamImageReceived) {
+				that.onWebcamImageReceived(data);
+			}
+		});
+	}
+	
+	public getStatus() {
 		let result = this.http
 			.get(`${this.baseUrl}/cameraStatus`);
 			
@@ -16,7 +32,7 @@ export class CameraService {
 		return result;
 	};  
 	
-	public GetMode() {
+	public getMode() {
 		let result = this.http
 			.get(`${this.baseUrl}/cameraMode`);
 			
@@ -24,7 +40,12 @@ export class CameraService {
 		return result;
 	};
 	
-	public SetMode(mode: boolean) {
+	public requestImages() {
+		this.socket.emit('request-calibration-images');
+		this.logger.log('Request calibration sent');
+	};
+	
+	public setMode(mode: boolean) {
 		let result = this.http
 			.post(`${this.baseUrl}/cameraMode`, {fakeCamera: mode});
 		

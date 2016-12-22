@@ -23,7 +23,7 @@ LogSignaling.prototype = {
 	isAlreadyConnected : function (module) {
 		return (this.nberOfConnection[module] && this.nberOfConnection[module] > 0);
 	},
-	plugEvents: function (socket) {
+	plugEvents: function (socket, io) {
 		var that = this;
 		this.moduleArray[socket.id] = -1;
 		
@@ -34,7 +34,7 @@ LogSignaling.prototype = {
 				console.log('empty log received.');	
 			}
 			
-			socket.broadcast.emit('log-message', data);
+			io.emit('log-message', data);
 		});
 		
 		socket.on('log-connect', function (data) { 

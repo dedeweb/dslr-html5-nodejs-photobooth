@@ -23,6 +23,7 @@ export class AppComponent {
 	private videoElement: any;
 	private currentStep: number = -1;
 	private currentCaptureState: captureState = captureState.waitForCapture;
+	private requestImage: boolean = false;
   
 	constructor(translate: TranslateService,
 				private p2pStreamService : P2pStreamService,
@@ -54,26 +55,42 @@ export class AppComponent {
 			that.videoElement.play();
 			
 		};
+		
+		p2pStreamService.onRequestImage =  function () {
+			that.requestImage = true;
+		};
 	}
 	ngOnInit(){
-		var canvasElement = canvasElement = this.el.nativeElement.querySelector('canvas');
+		var dispCanvasElement = this.el.nativeElement.querySelector('#displayCanvas');
+		var imgCanvasElement = this.el.nativeElement.querySelector('#getImgCanvas');
 		this.videoElement = this.el.nativeElement.querySelector('video');
-		var ctx= canvasElement.getContext('2d');
+		var dispCtx= dispCanvasElement.getContext('2d');
+		var imgCtx= imgCanvasElement.getContext('2d');
 		
 		this.videoElement.onloadedmetadata = function() {
-			canvasElement.height = this.videoHeight -100;
-			canvasElement.width  = this.videoWidth -100;
+			dispCanvasElement.height = this.videoHeight -100;
+			dispCanvasElement.width  = this.videoWidth -100;
+			imgCanvasElement.height = this.videoHeight;
+			imgCanvasElement.width = this.videoWidth;
 		}
-		var that = this;
+
+		var componentClass = this; 
 		this.videoElement.addEventListener('play', function () {
-				that.logger.log('play');
+				componentClass.logger.log('play');
 				var that = this;
 				
 				(function loop() {
 				  if (!that.paused && !that.ended) {
-					ctx.drawImage(that,50, 50, that.videoWidth -100, that.videoHeight -100,
-										0, 0, canvasElement.width, canvasElement.height);
+					dispCtx.drawImage(that,50, 50, that.videoWidth -100, that.videoHeight -100,
+										0, 0, dispCanvasElement.width, dispCanvasElement.height);
 					setTimeout(loop, 1000 / 30); // drawing at 30fps
+				  }
+				  if(componentClass.requestImage) {
+					componentClass.requestImage = false;
+					
+					imgCtx.drawImage(that,0, 0, that.videoWidth, that.videoHeight,
+										0, 0, imgCanvasElement.width, imgCanvasElement.height);
+					componentClass.p2pStreamService.sendCalibrationImage(imgCanvasElement.toDataURL());
 				  }
 				})();
 			},false);

@@ -63,9 +63,13 @@ LiveCamSignaling.prototype = {
 			socket.broadcast.emit('camera-client-ice-candidate', data);
 		});
 		
+		socket.on('webcam-image', function (img) {
+			socket.broadcast.emit('webcam-image', img);
+		});
 		if(that.cameraReady) {
 			socket.emit('camera-ready', true);
 		}
+		
 		/*
 		if(that.cameraOffer) {
 			//if cameraOffer already set, send it on connection to client;

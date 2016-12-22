@@ -6,9 +6,12 @@ video {
 	display: none;
 }
 
-canvas {
+#displayCanvas {
 	height: 100%;
 	width: 100%;
+}
+#getImgCanvas {
+	display: none;
 }
 
 .bottom-message {

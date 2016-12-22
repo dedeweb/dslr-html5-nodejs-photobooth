@@ -12,6 +12,7 @@ export class P2pStreamService {
 	private pc : any;
 	private socket : any;
 	public onAddStream : (stream : MediaStream) => void;
+	public onRequestImage: () => void;
 	
 	constructor(private logger: LogService) { 
 		this.initPeerConnection();
@@ -114,6 +115,18 @@ export class P2pStreamService {
 			that.pc.addIceCandidate(new RTCIceCandidate(candidate));
 		});
 		
+		this.socket.on('request-calibration-images', function () {
+			if(that.onRequestImage) {
+				that.logger.log('request for webcam image received.');
+				that.onRequestImage();
+			}
+		});
+		
+	}
+	
+	public sendCalibrationImage(image: any) {
+		this.logger.log('sending webcam image for calibration.');
+		this.socket.emit('webcam-image', image);
 	}
 	
 
