@@ -1,3 +1,32 @@
 .panel-webcam {
 	margin-top: 15px;
 }
+.calibrate-images-wrapper {
+	display: flex;
+	.left-col {
+		width: 100%;
+		height: 100%;
+	}
+	.right-col {
+		width: 400px;
+		padding:  0 25px;
+	}
+}
+#imageCropper {
+	height: 100%;
+	img {
+		max-width: 100%;
+	}
+		
+}
+
+#croppedWebcamPreview {
+	width: 375px;
+	height: 250px;
+	overflow: hidden;
+	left: 0;
+    right: 0;
+    margin: auto;
+	position: relative;
+
+}

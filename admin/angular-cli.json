@@ -20,10 +20,12 @@
       "styles": [
 		"../node_modules/bootstrap/dist/css/bootstrap.css",
 		"../node_modules/font-awesome/css/font-awesome.css",
+		"../node_modules/cropperjs/dist/cropper.css",
         "styles.css"
       ],
       "scripts": [
 		"../node_modules/jquery/dist/jquery.js",
+		"../node_modules/cropperjs/dist/cropper.js",
 		"../node_modules/tether/dist/js/tether.js",
 		"../node_modules/bootstrap/dist/js/bootstrap.js",
 		"../node_modules/socket.io-client/dist/socket.io.js"],

@@ -1,4 +1,4 @@
-<div class="container panel-webcam">
+<div class="container-fluid panel-webcam"  (window:resize)="onResize($event)">
 	<div class="row">
 		<div class="col-xs-2">
 			<button type="button" class="btn btn-primary" (click)="requestCalibration()" >{{'refresh_images' | translate}}</button>
@@ -6,19 +6,31 @@
 		<div class="col-xs-10">
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-xs-6">
+	<div class="calibrate-images-wrapper">
+		<div class="left-col" >
+			<div id="imageCropper">
+				<img [src]="webcamImgSrc" (load)="initCropper()" />
+			</div>
+		</div>
+		<div class="right-col">
+			<div id="croppedWebcamPreview"></div>
+		</div>
+	</div>
+	
+	<!--<div class="row">
+		<div class="col-xs-8">
 			<h4>{{'viewfinder' | translate}}</h4>
 		</div>
-		<div class="col-xs-6">
+		<div class="col-xs-4">
 			<h4>{{'camera' | translate}}</h4>
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-xs-6">
-			<img src="{{webcamImgSrc}}"/>
+		<div class="col-xs-8">
+			
 		</div>
-		<div class="col-xs-6">
+		<div class="col-xs-4">
+			
 		</div>
-	</div>
+	</div>-->
 </div>
