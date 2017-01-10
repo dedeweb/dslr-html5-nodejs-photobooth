@@ -11,10 +11,8 @@
     "morgan": "^1.7.0",
     "serve-favicon": "^2.3.0",
     "socket.io": "^1.5.1",
-    "socket.io-p2p-server": "^1.2.0"
-  },
-  "devDependencies": {
-    "jimp": "^0.2.27"
+    "socket.io-p2p-server": "^1.2.0",
+	"sharp": "^0.17.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

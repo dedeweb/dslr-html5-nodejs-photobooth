@@ -1,7 +1,7 @@
 var child = require('child_process');
 var process = require('process');
 var fs = require('fs');
-var jimp = require('jimp');
+var sharp = require('sharp');
 var instance = null;
 
 //Go to script directory 
@@ -103,14 +103,24 @@ CameraControl.prototype = {
 			if(match && match.length > 1 ) {
 				var jpegFile = match[1] + '.jpg';
 				console.log('['+new Date().toString()+']resizing jpeg ' + jpegFile);
-				
+				sharp(jpegFile).resize(1600,1200).toBuffer()
+				.then(function (data) {
+					console.log('['+new Date().toString()+']sending jpeg ' + jpegFile );
+					res.status(200).send(data.toString('base64'));
+				}).catch(function(err) {
+					console.log(err);
+					res.status(500).send(err);
+				});
+				/*
 				jimp.read(jpegFile, function (err, file) {
 					console.log('['+new Date().toString()+']file loaded ' + jpegFile);
+					
 					file.resize(1600,1200).quality(60).getBuffer(jimp.MIME_JPEG, function (err, buffer) {
 						console.log('['+new Date().toString()+']sending jpeg ' + jpegFile );
 						res.status(200).send(buffer.toString('base64'));
 					});
 				});
+				*/
 				 // read binary data
 				//var img = fs.readFileSync(jpegFile);
 				// convert binary data to base64 encoded string

@@ -28,7 +28,9 @@ testem.log
 /*/libpeerconnection.log
 /*/typings
 
-
+/server/*.cr2
+/server/*.jpg
+/server/*.jepg
 
 # e2e
 /*/e2e/*.js
