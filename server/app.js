@@ -44,7 +44,14 @@ app.get('/api/authorizeModule/:module', function (req, res)  {
 //API part : camera control. 
 app.get('/api/cameraStatus', function (req, res)  {
 	cameraControl.getStatus(res);
+});
 
+app.get('/api/capturePreview', function (req, res)  {
+	cameraControl.capturePreview(res);
+});
+
+app.get('/api/captureImage', function (req, res)  {
+	cameraControl.captureImage(res);
 });
 
 app.get('/api/cameraMode', function (req, res)  {
@@ -53,6 +60,7 @@ app.get('/api/cameraMode', function (req, res)  {
 
 app.post('/api/cameraMode', function (req, res) {
 	var fakeCamera = req.body.fakeCamera;
+	console.log('set fake camera : ' + fakeCamera);
 	cameraControl.setFakeCamera(fakeCamera);
 	res.end();
 });

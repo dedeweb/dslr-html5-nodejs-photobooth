@@ -30,6 +30,18 @@ Device Property Summary:
 Property 0xd402:(read only) (type=0xffff) 'Canon EOS 50D'
 Property 0xd407:(read only) (type=0x6) 1
 Property 0xd406:(readwrite) (type=0xffff) 'Unknown Initiator'" 
+elif [ "$1" = '--capture-preview' ]; then
+	cp -f fake_gphoto_files/capture_preview.jpg .
+	echo "Saving file as capture_preview.jpg"
+elif [ "$1" = '--capture-image-and-download' ]; then
+	echo "New file is in location /capt0000.jpg on the camera"
+	cp -f fake_gphoto_files/capt0000.jpg .
+	echo "Saving file as capt0000.jpg"
+	echo "Deleting file /capt0000.jpg on the camera"
+	echo "New file is in location /capt0000.cr2 on the camera"
+	cp -f fake_gphoto_files/capt0000.cr2 .
+	echo "Saving file as capt0000.cr2"
+	echo "Deleting file /capt0000.cr2 on the camera"
 else
 	echo "Usage: gphoto2 [-?qvalLnPTDR] [-?|--help] [--usage] [--debug] [--debug-loglevel=STRING] [--debug-logfile=FILENAME] [-q|--quiet] [--hook-script=FILENAME] [--stdout]
         [--stdout-size] [--auto-detect] [--show-exif=STRING] [--show-info=STRING] [--summary] [--manual] [--about] [--storage-info] [--shell] [-v|--version]

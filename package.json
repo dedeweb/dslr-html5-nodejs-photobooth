@@ -13,7 +13,9 @@
     "socket.io": "^1.5.1",
     "socket.io-p2p-server": "^1.2.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "jimp": "^0.2.27"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "node server/app",
