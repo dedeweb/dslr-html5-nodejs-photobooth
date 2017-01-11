@@ -1,6 +1,17 @@
 <div [ngClass]="{
 	'from-webcam': entry.module == LogModule.CameraCapture,
-	'from-front': entry.module == LogModule.FrontEnd
+	'from-front': entry.module == LogModule.FrontEnd,
+	'from-admin': entry.module == LogModule.Admin,
+	'from-server': entry.module == LogModule.Server
  }" class="log-entry">
-{{entry.message}}
+ <div class="entry-module-label">
+	<div *ngIf="entry.module == LogModule.CameraCapture">[ {{'log.module.webcam' | translate }}  ]</div>
+	<div *ngIf="entry.module == LogModule.FrontEnd">[ {{'log.module.front_end' | translate }} ]</div>
+	<div *ngIf="entry.module == LogModule.Admin">[ {{'log.module.admin' | translate }}  ]</div>
+	<div *ngIf="entry.module == LogModule.Server">[ {{'log.module.server' | translate }} ]</div>
+ </div>
+ <div class="entry-message" [ngClass] = "{
+	'text-danger': entry.logLevel == LogLevel.Error,
+	'text-warning': entry.logLevel == LogLevel.Warning
+	}">{{entry.message}}</div>
 </div>

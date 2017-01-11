@@ -8,16 +8,17 @@ var instance = null;
 process.chdir(__dirname);
 
 
-function CameraControl(){
+function CameraControl(logger){
 	if(instance !== null){
 		throw new Error("Cannot instantiate more than one CameraControl, use CameraControl.getInstance()");
 	} 
 	
-	this.initialize();
+	this.initialize(logger);
 }
 CameraControl.prototype = {
-	initialize: function(){
+	initialize: function(logger){
 		this.fakeCamera = false;
+		this.logger = logger;
 	},
 	getLiveView: function (res) {
 		if(this.fakeCamera) {
@@ -135,14 +136,14 @@ CameraControl.prototype = {
 		
 	}
 };
-CameraControl.getInstance = function(){
+CameraControl.getInstance = function(logger){
 	// summary:
 	//      Gets an instance of the singleton. It is better to use 
 	if(instance === null){
-		instance = new CameraControl();
+		instance = new CameraControl(logger);
 	}
 	return instance;
 };
 
-exports = module.exports = CameraControl.getInstance();
+exports = module.exports = CameraControl.getInstance;
 

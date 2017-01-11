@@ -6,16 +6,33 @@
 	color: #d9534f;
 }
 
-.module-front .module-label{
-	color: #5A97AA;
-}
+.module-front{
+	background: #A7E4F7;
+	.module-label{
+		color: #5A97AA;
+	}
+} 
 
-.module-webcam .module-label{
-	color: #F3B136;
-}
+.module-webcam{
+	background: #FFFE83;
+	.module-label{
+		color: #F3B136;
+	}
+} 
+
+.module-server {
+	background: #B1F1BD;
+	.module-label{
+		color: #4B8B57;
+	}
+} 
 
 .module-admin {
-}
+	background: #F2E6D6;
+	.module-label{
+		color: #BFB3A3;
+	}
+} 
 
 .log-entries {
 	position: absolute;
@@ -23,4 +40,5 @@
     top: 0;
     bottom: 0;
     margin-top: 80px;
+	width: 100%;
 }

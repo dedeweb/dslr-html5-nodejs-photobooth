@@ -1,8 +1,13 @@
-<div class="container">
+<div class="container-fluid">
 	<div class="row">
-		<div class="module-front col-xs-4">
+		<div class="module-server col-xs-3">
 			<span class="module-label">
-			Front-end : 
+			{{'log.module.server' | translate }} 
+			</span>
+		</div>
+		<div class="module-front col-xs-3">
+			<span class="module-label">
+			{{'log.module.front_end' | translate }}  : 
 			</span>
 			<span [hidden]="!logger.frontEndConnected" class="status-ok ">
 				<i class="fa fa-check-circle"></i>
@@ -11,9 +16,9 @@
 				<i class="fa fa-times-circle"></i>
 			</span>
 		</div>
-		<div class="module-webcam col-xs-4">
+		<div class="module-webcam col-xs-3">
 			<span class="module-label">
-			Webcam : 
+			{{'log.module.webcam' | translate }}  : 
 			</span>
 			<span [hidden]="!logger.webcamConnected" class="status-ok ">
 				<i class="fa fa-check-circle"></i>
@@ -22,9 +27,9 @@
 				<i class="fa fa-times-circle"></i>
 			</span>
 		</div>
-		<div class="module-admin col-xs-4">
+		<div class="module-admin col-xs-3">
 			<span class="module-label">
-			Admin : 
+			{{'log.module.admin' | translate }}  : 
 			</span>
 			<span [hidden]="!logger.adminConnected" class="status-ok ">
 				<i class="fa fa-check-circle"></i>

@@ -1,14 +1,15 @@
 var instance = null;
-function LiveCamSignaling(){
+function LiveCamSignaling(logger){
 	if(instance !== null){
 		throw new Error("Cannot instantiate more than one LiveCamSignaling, use LiveCamSignaling.getInstance()");
 	} 
 	
-	this.initialize();
+	this.initialize(logger);
 }
 LiveCamSignaling.prototype = {
-	initialize: function(){
+	initialize: function(logger){
 		this.cameraReady = false;
+		this.logger = logger;
 		
 	},
 	plugEvents: function (socket) {
@@ -17,10 +18,10 @@ LiveCamSignaling.prototype = {
 		
 		socket.on('camera-ready', function (data) {
 			if(data) {
-				console.log('camera ready.');
+				that.logger.log('camera ready.');
 				socketCamera = socket;
 			} else {
-				console.log('camera unavailble.');	
+				that.logger.log('camera unavailble.');	
 			}
 			that.cameraReady = data;
 			
@@ -32,7 +33,7 @@ LiveCamSignaling.prototype = {
 		});
 		
 		socket.on('disconnect', function () {
-			console.log('client disconnect');
+			that.logger.log('client disconnect');
 			if(socket === socketCamera) {
 				that.cameraReady = false;
 				socket.broadcast.emit('camera-ready', false);
@@ -41,25 +42,25 @@ LiveCamSignaling.prototype = {
 		});
 		
 		socket.on('camera-connect', function (data) {
-			console.log('camera is ready');
+			that.logger.log('camera is ready');
 			console.log(JSON.stringify(data));
 			
 			socket.broadcast.emit('camera-connect', data);
 		});
 		
 		socket.on('camera-client-connect', function (data) { 
-			console.log('client is ready');
-			console.log(JSON.stringify(data));
+			that.logger.log('client is ready');
+			that.logger.log(JSON.stringify(data));
 			
 			socket.broadcast.emit('camera-client-connect', data);
 		});
 		
 		socket.on('camera-ice-candidate', function (data) {
-			console.log('camera ICE : \n' + JSON.stringify(data));
+			that.logger.log('camera ICE : \n' + JSON.stringify(data));
 			socket.broadcast.emit('camera-ice-candidate', data);
 		});
 		socket.on('camera-client-ice-candidate', function (data) {
-			console.log('client ICE : \n' + JSON.stringify(data));
+			that.logger.log('client ICE : \n' + JSON.stringify(data));
 			socket.broadcast.emit('camera-client-ice-candidate', data);
 		});
 		
@@ -82,15 +83,15 @@ LiveCamSignaling.prototype = {
 		}*/
 	}
 };
-LiveCamSignaling.getInstance = function(){
+LiveCamSignaling.getInstance = function(logger){
 	// summary:
 	//      Gets an instance of the singleton. It is better to use 
 	
 	if(instance === null){
-		instance = new LiveCamSignaling();
+		instance = new LiveCamSignaling(logger);
 	}
 	return instance;
 };
 
-exports = module.exports = LiveCamSignaling.getInstance();
+exports = module.exports = LiveCamSignaling.getInstance;
 

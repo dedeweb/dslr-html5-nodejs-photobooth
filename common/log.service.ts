@@ -1,5 +1,5 @@
 import { LogMessage, LogLevel, LogModule } from './log-message';
-export  { LogModule, LogMessage } from './log-message';
+export  { LogModule, LogLevel, LogMessage } from './log-message';
 declare var io:any;
 
 export class LogService {

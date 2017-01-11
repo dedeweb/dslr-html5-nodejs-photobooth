@@ -1,14 +1,56 @@
-.from-webcam{
-	background: #FFFE83;
+.from-webcam {
+	border-top: 1px solid #F3B136;
+	border-bottom: 1px solid #F3B136;
+	.entry-module-label{
+		background: #FFFE83;
+		color: #F3B136;
+	}
 }
 
-.from-front{
-	background: #A7E4F7;
-}
+.from-front {
+	border-top: 1px solid #5A97AA;
+	border-bottom: 1px solid #5A97AA;
+	.entry-module-label{
+		color: #5A97AA;
+		background: #A7E4F7;
+	}
+} 
 
+.from-server {
+	border-top: 1px solid #4B8B57;
+		border-bottom: 1px solid #4B8B57;
+	.entry-module-label{
+		background: #B1F1BD;
+		color: #4B8B57;
+	}
+} 
+.from-admin{
+	border-top: 1px solid #BFB3A3;
+	border-bottom: 1px solid #BFB3A3;
+	.entry-module-label{
+		background: #F2E6D6;
+		color: #BFB3A3;
+	}
+} 
 .log-entry {
-	font-size: 0.8em;
-	font-family: "Courier New", Courier, monospace;
+	display: flex;
+	width: 100%;
+	overflow-x: hidden;
+	.entry-module-label{
+		font-weight: 400;
+		min-width: 150px;
+		text-align: center;
+		display: flex;
+		&>div {
+			align-self: center;
+			width: 100%;
+		}
+	}
+	.entry-message{
+		font-size: 0.8em;
+		font-family: "Courier New", Courier, monospace;
+		padding: 10px;
+	}
 }
 
 /*

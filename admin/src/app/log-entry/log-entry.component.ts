@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { LogMessage, LogModule } from 'log.service';
+import { LogMessage, LogModule, LogLevel } from 'log.service';
 @Component({
   selector: 'app-log-entry',
   templateUrl: './log-entry.component.html',
@@ -8,6 +8,7 @@ import { LogMessage, LogModule } from 'log.service';
 export class LogEntryComponent implements OnInit {
 	@Input() entry : LogMessage;
 	public LogModule = LogModule;
+	public LogLevel = LogLevel;
 
 	constructor() { }
 

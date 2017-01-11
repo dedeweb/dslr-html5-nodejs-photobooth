@@ -1,3 +1,4 @@
+var colors = require('colors/safe');
 var instance = null;
 function LogSignaling(){
 	if(instance !== null){
@@ -29,9 +30,9 @@ LogSignaling.prototype = {
 		
 		socket.on('log-message', function (data) {
 			if(data) {
-				console.log('log received : ' + data.message);
+				console.log(colors.magenta('    [remote]log received : ' + data.message ));
 			} else {
-				console.log('empty log received.');	
+				console.log('    [remote]empty log received.'.gray);	
 			}
 			
 			io.emit('log-message', data);
@@ -45,20 +46,20 @@ LogSignaling.prototype = {
 			} else {
 				that.nberOfConnection[data] = 0;
 			}
-			console.log('log connect ' + that.moduleArray[socket.id]);
+			console.log(colors.magenta('    [remote] log connect ' + that.moduleArray[socket.id]));
 			socket.broadcast.emit('log-connect', data);
 			
 			for(var i in that.moduleArray) {
 				
 				if(that.moduleArray[i] !== -1) {
-					console.log('log connect refresh ' + that.moduleArray[i]);
+					console.log(colors.magenta('    [remote] log connect refresh ' + that.moduleArray[i]));
 					socket.emit('log-connect', that.moduleArray[i] );
 				}
 			}
 		});
 		
 		socket.on('disconnect', function () {
-			console.log('log disconnect ' + that.moduleArray[socket.id]);
+			console.log(colors.magenta('    [remote] log disconnect ' + that.moduleArray[socket.id] ));
 			that.nberOfConnection[that.moduleArray[socket.id]] --;
 			socket.broadcast.emit('log-disconnect', that.moduleArray[socket.id] );
 			that.moduleArray[socket.id] = -1;

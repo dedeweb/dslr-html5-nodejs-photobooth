@@ -9,8 +9,16 @@
 	"card_header_camera" : "Camera",
 	"card_header_webcam" : "Webcam",
 	"card_header_front" : "Front-end",
-	"log" :"Log",
+	"log_header" :"Log",
 	"refresh_images" : "Refresh Images",
 	"viewfinder" : "Viewfinder ( webcam )",
-	"camera" : "Camera"
+	"camera" : "Camera", 
+	"log" : {
+		"module" : {
+			"server" : "Server",
+			"front_end" : "Front",
+			"webcam" : "Webcam",
+			"admin" : "Admin"
+		}
+	}
 }
