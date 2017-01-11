@@ -50,40 +50,44 @@ CameraControl.prototype = {
 		}
 		
 		if('' + summaryCmd.stderr ) {
-			console.log('response : ' + summaryCmd.stderr)
+			this.logger.error('get summary command response : ' + summaryCmd.stderr);
 			//res.json( {error: true, message: ''+summaryCmd.stderr});
 			res.json( {error: true, message: '' + summaryCmd.stderr});
 			
 		} 
 		else 
 		{
+			this.logger.log('get summary command response : ' + summaryCmd.stdout);
 			res.json( {error: false, message : '' + summaryCmd.stdout});
 		}
 	},
 	
-	capturePreview: function(res) {
-		var previewCommand;
-		if(this.fakeCamera) {
-			previewCommand = child.spawnSync('sh', ['fake_gphoto.sh', '--capture-preview']);
-		} else {
-			previewCommand = child.spawnSync('gphoto2', ['--capture-preview', '--force-overwrite']);	
-		}
-		
-		if('' + previewCommand.stderr ) {
-			console.log('response : ' + previewCommand.stderr)
-			res.status(500).send( '' + previewCommand.stderr);
-		} 
-		else 
-		{
-			console.log('response : ' + previewCommand.stdout);
-			 // read binary data
-			var img = fs.readFileSync('capture_preview.jpg');
-			// convert binary data to base64 encoded string
-			var imgBase64 = new Buffer(img).toString('base64');
+	capturePreview: function() {
+		var logger = this.logger, that = this;
+		return new Promise(function (resolve, reject) {
+			var previewCommand;
+			if(that.fakeCamera) {
+				previewCommand = child.spawnSync('sh', ['fake_gphoto.sh', '--capture-preview']);
+			} else {
+				previewCommand = child.spawnSync('gphoto2', ['--capture-preview', '--force-overwrite']);	
+			}
 			
-			res.status(200).send(imgBase64);
-		}
-		
+			if('' + previewCommand.stderr ) {
+				logger.error('capture preview command response : ' + previewCommand.stderr)
+				reject(previewCommand.stderr);
+				//res.status(500).send( '' + previewCommand.stderr);
+			} 
+			else 
+			{
+				logger.log('capture preview command response : ' + previewCommand.stdout);
+				 // read binary data
+				var img = fs.readFileSync('capture_preview.jpg');
+				// convert binary data to base64 encoded string
+				var imgBase64 = new Buffer(img).toString('base64');
+				resolve( 'data:image/jpeg;base64,' + imgBase64);
+				//res.status(200).send(imgBase64);
+			}
+		});		
 	},
 	
 	captureImage: function(res) {
@@ -97,36 +101,22 @@ CameraControl.prototype = {
 		captureCommand.stdout.setEncoding('utf8');
 		var jpegRegex = /Saving file as (.*)?\.jpg/g;
 		var rawRegex = /Saving file as (.*)?\.cr2/g;
-		
+		var logger = this.logger;
 		captureCommand.stdout.on('data', function (data) {
-			console.log('' + data);
+			logger.log('[capture command]' + data);
 			var match = jpegRegex.exec('' + data);
 			if(match && match.length > 1 ) {
 				var jpegFile = match[1] + '.jpg';
-				console.log('['+new Date().toString()+']resizing jpeg ' + jpegFile);
+				logger.log('['+new Date().toString()+'] resizing jpeg ' + jpegFile);
 				sharp(jpegFile).resize(1600,1200).toBuffer()
 				.then(function (data) {
-					console.log('['+new Date().toString()+']sending jpeg ' + jpegFile );
+					logger.log('['+new Date().toString()+'] sending jpeg ' + jpegFile );
 					res.status(200).send(data.toString('base64'));
 				}).catch(function(err) {
-					console.log(err);
+					logger.error(err);
 					res.status(500).send(err);
 				});
-				/*
-				jimp.read(jpegFile, function (err, file) {
-					console.log('['+new Date().toString()+']file loaded ' + jpegFile);
-					
-					file.resize(1600,1200).quality(60).getBuffer(jimp.MIME_JPEG, function (err, buffer) {
-						console.log('['+new Date().toString()+']sending jpeg ' + jpegFile );
-						res.status(200).send(buffer.toString('base64'));
-					});
-				});
-				*/
-				 // read binary data
-				//var img = fs.readFileSync(jpegFile);
-				// convert binary data to base64 encoded string
-				//var imgBase64 = new Buffer(img).toString('base64');
-				//res.status(200).send(imgBase64);
+				
 			}
 		});
 		/*

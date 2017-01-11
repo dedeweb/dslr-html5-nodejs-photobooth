@@ -27,7 +27,10 @@ io.on('connection', function (socket) {
 	socket.on('request-calibration-images', function () { 
 		socket.broadcast.emit('request-calibration-images');
 		//TODO : sending image from camera
-		
+		cameraControl.capturePreview()
+		.then(function (data) {
+			io.emit('camera-image', data);
+		});
 	});
 });
 
@@ -48,7 +51,13 @@ app.get('/api/cameraStatus', function (req, res)  {
 });
 
 app.get('/api/capturePreview', function (req, res)  {
-	cameraControl.capturePreview(res);
+	cameraControl.capturePreview()
+		.then(function (data) {
+			res.status(200).send(data);
+		})
+		.catch(function (data) {
+			res.status(500).send( '' + data);
+		});
 });
 
 app.get('/api/captureImage', function (req, res)  {

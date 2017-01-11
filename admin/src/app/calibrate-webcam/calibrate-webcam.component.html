@@ -13,7 +13,9 @@
 			</div>
 		</div>
 		<div class="right-col">
-			<div id="croppedWebcamPreview"></div>
+			<div id="croppedWebcamPreview" class="preview-image"></div>
+			<div id="cameraImage"  class="preview-image" [ngStyle]="{ 'background-image': 'url(' + cameraImgSrc + ')'}">
+			</div>
 		</div>
 	</div>
 	

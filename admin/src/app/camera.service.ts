@@ -10,6 +10,7 @@ export class CameraService {
 	private baseUrl: string = '/api';
 	private socket: any;
 	public onWebcamImageReceived: (image:any) => void;
+	public onCameraImageReceived: (image:any) => void;
 	
 	constructor(private http : Http, private logger: LogService) {
 		var that = this;
@@ -20,6 +21,12 @@ export class CameraService {
 			logger.log('webcam-image received');
 			if(that.onWebcamImageReceived) {
 				that.onWebcamImageReceived(data);
+			}
+		});
+		this.socket.on('camera-image', function (data) {
+			logger.log('camera-image received');
+			if(that.onCameraImageReceived) {
+				that.onCameraImageReceived(data);
 			}
 		});
 	}

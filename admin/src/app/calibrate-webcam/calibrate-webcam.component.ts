@@ -10,6 +10,7 @@ declare var Cropper : any;
 })
 export class CalibrateWebcamComponent implements OnInit {
 	public webcamImgSrc : string = "";
+	public cameraImgSrc : string = "";
 	private cropper: any;
 	
 	constructor(
@@ -19,6 +20,10 @@ export class CalibrateWebcamComponent implements OnInit {
 		var that = this;
 		cameraService.onWebcamImageReceived = function (image) {
 			that.webcamImgSrc = image;
+		};
+		
+		cameraService.onCameraImageReceived = function (image) {
+			that.cameraImgSrc = image;
 		};
 	}
 	

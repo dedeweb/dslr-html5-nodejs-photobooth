@@ -20,13 +20,23 @@
 		
 }
 
-#croppedWebcamPreview {
+.preview-image {
 	width: 375px;
-	height: 250px;
+    height: 250px;
+	border: 1px solid black;
+	margin: 2px;
+}
+
+#cameraImage {
+	
+    background-repeat: no-repeat;
+	background-size: contain;
+}
+
+#croppedWebcamPreview {
 	overflow: hidden;
 	left: 0;
     right: 0;
-    margin: auto;
 	position: relative;
 
 }
