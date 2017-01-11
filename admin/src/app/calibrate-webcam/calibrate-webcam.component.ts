@@ -40,6 +40,7 @@ export class CalibrateWebcamComponent implements OnInit {
 		  aspectRatio: 3 / 2,
 		  preview: '#croppedWebcamPreview',
 		  zoomable: false,
+		  viewMode: 1,
 		  crop: function(e) {
 			//console.log(e.detail.x);
 			//console.log(e.detail.y);

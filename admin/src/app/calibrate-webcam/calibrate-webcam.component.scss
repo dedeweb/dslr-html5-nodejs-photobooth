@@ -3,17 +3,22 @@
 }
 .calibrate-images-wrapper {
 	display: flex;
+	margin-top: 10px;
 	.left-col {
 		width: 100%;
-		height: 100%;
+		//height: 100%;
+		display: flex;
+		margin: 2px;
+		border: 1px solid black;
 	}
 	.right-col {
 		width: 400px;
-		padding:  0 25px;
 	}
 }
 #imageCropper {
-	height: 100%;
+	//height: 100%;
+	width: 100%;
+	
 	img {
 		max-width: 100%;
 	}
