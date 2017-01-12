@@ -31,6 +31,7 @@ testem.log
 /server/*.cr2
 /server/*.jpg
 /server/*.jepg
+/server/tamerbooth.db
 
 # e2e
 /*/e2e/*.js

@@ -1,35 +1,49 @@
+@import '../logcolors';
+
 .from-webcam {
-	border-top: 1px solid #F3B136;
-	border-bottom: 1px solid #F3B136;
+	border-top: 1px solid $color-webcam;
+	border-bottom: 1px solid $color-webcam;
 	.entry-module-label{
-		background: #FFFE83;
-		color: #F3B136;
+		background: lighten($color-webcam, 30%);
+		color: $color-webcam;
+	}
+	.entry-message{
+		background: lighten($color-webcam, 50%);
 	}
 }
 
 .from-front {
-	border-top: 1px solid #5A97AA;
-	border-bottom: 1px solid #5A97AA;
+	border-top: 1px solid $color-front;
+	border-bottom: 1px solid $color-front;
 	.entry-module-label{
-		color: #5A97AA;
-		background: #A7E4F7;
+		color: $color-front;
+		background: lighten($color-front, 30%);
+	}
+	.entry-message{
+		background: lighten($color-front, 50%);
 	}
 } 
 
 .from-server {
-	border-top: 1px solid #4B8B57;
-		border-bottom: 1px solid #4B8B57;
+	border-top: 1px solid $color-server;
+		border-bottom: 1px solid $color-server;
 	.entry-module-label{
-		background: #B1F1BD;
-		color: #4B8B57;
+		background: lighten($color-server, 30%);
+		color: $color-server;
+	}
+	.entry-message{
+		background: lighten($color-server, 50%);
 	}
 } 
 .from-admin{
-	border-top: 1px solid #BFB3A3;
-	border-bottom: 1px solid #BFB3A3;
+	border-top: 1px solid $color-admin;
+	border-bottom: 1px solid $color-admin;
 	.entry-module-label{
-		background: #F2E6D6;
-		color: #BFB3A3;
+		background: lighten($color-admin, 30%);
+		color: $color-admin;
+	}
+	.entry-message{
+		background: lighten($color-admin, 50%);
 	}
 } 
 .log-entry {
@@ -50,6 +64,7 @@
 		font-size: 0.8em;
 		font-family: "Courier New", Courier, monospace;
 		padding: 10px;
+		width: 100%;
 	}
 }
 

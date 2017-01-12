@@ -11,8 +11,12 @@
 	"card_header_front" : "Front-end",
 	"log_header" :"Log",
 	"refresh_images" : "Refresh Images",
+	"store_calibration" : "Save calibration",
 	"viewfinder" : "Viewfinder ( webcam )",
 	"camera" : "Camera", 
+	"webcam_coords_error" : "error getting calibration",
+	"webcam_coords_save_error" : "error storing calibration",
+	"webcam_coords_store_ok" : "calibration successfully stored",
 	"log" : {
 		"module" : {
 			"server" : "Server",

@@ -12,6 +12,16 @@ var logger = require('./log-client')(io);
 var cameraControl = require('./camera-control')(logger);
 var liveCamSignaling = require('./livecam-signaling')(logger);
 var logSignaling = require('./log-signaling');
+var Datastore = require('nedb');
+var db = new Datastore({filename: './tamerbooth.db'}); 
+db.loadDatabase(function(err) {
+	if(err) {
+		logger.error('Error loading db : ' + JSON.stringify(err));	
+	} else  {
+		logger.log('db loaded');
+	}	
+});
+
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -44,6 +54,37 @@ app.get('/api/authorizeModule/:module', function (req, res)  {
 });
 
 
+//API part : webcam calibration-images
+app.get('/api/webcamCrop', function (req, res) {
+	logger.log('retrieve webcam crop');
+	db.find({ key: 'crop'}, function (err, docs) {
+		if(docs && docs.length) {
+			logger.log('get webcam crop infos ' + JSON.stringify(docs[0].coords) );
+			res.status(200).send(docs[0].coords);
+		} else {
+			logger.warn('coords not found, creating new ones ! ');
+			var data = { 
+				key: 'crop', 
+				coords : null};
+			db.insert(data);
+			res.status(200).send(data.coords);
+		}
+	});
+});
+
+app.post('/api/webcamCrop', function (req, res) {
+	var coords = req.body;
+	logger.log('set crop coordinates : '+ JSON.stringify(coords) );
+	db.update( {key: 'crop'}, {key: 'crop', coords: coords}, function (err, numReplaced) {
+		if(err) {
+			logger.error('error saving db : ' + err);
+			res.status(500).send(err);
+		} else {
+			logger.log('coords saved. num replaced = ' + numReplaced);
+			res.status(200).end();
+		} 
+	});
+});
 
 //API part : camera control. 
 app.get('/api/cameraStatus', function (req, res)  {

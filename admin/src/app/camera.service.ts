@@ -39,6 +39,19 @@ export class CameraService {
 		return result;
 	};  
 	
+	public getWebcamCoords() {
+		let result = this.http
+			.get(`${this.baseUrl}/webcamCrop`);
+		return result;
+	}
+	
+	public setWebcamCoords(coords: any) {
+		let result = this.http
+			.post(`${this.baseUrl}/webcamCrop`, coords);
+		
+		return result;
+	};
+	
 	public getMode() {
 		let result = this.http
 			.get(`${this.baseUrl}/cameraMode`);

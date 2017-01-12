@@ -1,3 +1,5 @@
+@import '../logcolors';
+
 .status-ok {
 	color: #5cb85c;
 }
@@ -7,30 +9,30 @@
 }
 
 .module-front{
-	background: #A7E4F7;
+	background: lighten($color-front, 30%);
 	.module-label{
-		color: #5A97AA;
+		color: $color-front;
 	}
 } 
 
 .module-webcam{
-	background: #FFFE83;
+	background: lighten($color-webcam, 30%);
 	.module-label{
-		color: #F3B136;
+		color: $color-webcam;
 	}
 } 
 
 .module-server {
-	background: #B1F1BD;
+	background: lighten($color-server, 30%);
 	.module-label{
-		color: #4B8B57;
+		color: $color-server;
 	}
 } 
 
 .module-admin {
-	background: #F2E6D6;
+	background: lighten($color-admin, 30%); 
 	.module-label{
-		color: #BFB3A3;
+		color: $color-admin;
 	}
 } 
 
