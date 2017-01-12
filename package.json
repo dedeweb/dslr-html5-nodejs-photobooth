@@ -21,7 +21,7 @@
     "server": "node server/app",
     "camera": "concurrently --kill-others \"npm run server\" \"cd camera_capture && ng serve --proxy-config proxy.conf.json  --host 0.0.0.0\"",
     "start": "cd camera_capture && ng build",
-    "postinstall": "cd admin && npm install && cd ../camera_capture && npm install && cd ../front && npm install"
+    "postinstall": "cd admin && npm install && cd ../camera_capture && npm install && cd ../front && npm install && cd ../admin && npm install"
   },
   "repository": {
     "type": "git",

@@ -1,5 +1,5 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
-import {CameraService} from '../camera.service';
+import {CameraService} from 'camera.service';
 import { LogService } from 'log.service';
 import {TranslateService} from 'ng2-translate';
 declare var Cropper : any;
@@ -60,7 +60,7 @@ export class CalibrateWebcamComponent implements OnInit {
 	
 	public storeCoords() {
 		var that = this;
-		this.webcamCoords = this.cropper.getCropBoxData();
+		this.webcamCoords = this.cropper.getData();
 		this.logger.log('store coords : ' + JSON.stringify(this.webcamCoords));
 		this.loading = true;
 		this.errorMsg = '';
@@ -82,7 +82,6 @@ export class CalibrateWebcamComponent implements OnInit {
 	}
 	
 	public initCropper() {
-		var that = this;
 		this.logger.log('launching cropper');
 		var image = this.el.nativeElement.querySelector('#imageCropper img');
 		if(this.cropper) {
@@ -93,18 +92,8 @@ export class CalibrateWebcamComponent implements OnInit {
 		  preview: '#croppedWebcamPreview',
 		  zoomable: false,
 		  viewMode: 1,
-		  crop: function(e) {
-			//that.webcamCoords = that.cropper.getCanvasData();
-			//console.log(e.detail.x);
-			//console.log(e.detail.y);
-			//console.log(e.detail.width);
-			//console.log(e.detail.height);
-			//console.log(e.detail.rotate);
-			//console.log(e.detail.scaleX);
-			//console.log(e.detail.scaleY);
-		  }
+		  data: this.webcamCoords
 		});
-		this.cropper.setCropBoxData(this.webcamCoords);
 	}
 	
 	public onResize(event) {

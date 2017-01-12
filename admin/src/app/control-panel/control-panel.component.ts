@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {TranslateService} from 'ng2-translate';
-import {CameraService} from '../camera.service';
+import {CameraService} from 'camera.service';
 
 @Component({
   selector: 'app-control-panel',
