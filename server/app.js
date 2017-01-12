@@ -102,7 +102,13 @@ app.get('/api/capturePreview', function (req, res)  {
 });
 
 app.get('/api/captureImage', function (req, res)  {
-	cameraControl.captureImage(res);
+	cameraControl.captureImage()
+		.then(function (data) {
+			res.status(200).send(data);
+		})
+		.catch(function (data) {
+			res.status(500).send( '' + data);
+		});
 });
 
 app.get('/api/cameraMode', function (req, res)  {

@@ -5,8 +5,9 @@ import { LogService } from 'log.service';
 import {CameraService} from 'camera.service';
 
 enum captureState {
-	waitForCapture,
+	waitForInput,
 	countDown,
+	waitForImage,
 	displayPicture
 }
 
@@ -23,9 +24,10 @@ export class AppComponent {
 	private currentStream : MediaStream = null;
 	private videoElement: any;
 	private currentStep: number = -1;
-	private currentCaptureState: captureState = captureState.waitForCapture;
+	private currentCaptureState: captureState = captureState.waitForInput;
 	private requestImage: boolean = false;
 	private cropCoords: any;
+	public capturedImage:string;
   
 	constructor(translate: TranslateService,
 				private p2pStreamService : P2pStreamService,
@@ -81,10 +83,10 @@ export class AppComponent {
 				componentClass.cropCoords = data.json();
 				dispCanvasElement.height = componentClass.cropCoords.height;
 				dispCanvasElement.width  = componentClass.cropCoords.width;
-				logger.log('retrieved coords : ' + JSON.stringify(data.json()));				
+				componentClass.logger.log('retrieved coords : ' + JSON.stringify(data.json()));				
 			},
 			function error(data) {
-				logger.error('cannot get coords : ' + data);
+				componentClass.logger.error('cannot get coords : ' + data);
 			});
 
 		
@@ -136,11 +138,26 @@ export class AppComponent {
 				setTimeout(updateCountDown, 1000);
 			} else {
 				//exiting countdown
-				that.currentCaptureState = captureState.waitForCapture;
+				that.capturePicture();
 			}
 			
 		}
 		updateCountDown();
 	
+	}
+	
+	capturePicture() {
+		var that = this;
+		this.currentCaptureState = captureState.waitForImage;
+		this.cameraService.captureImage().subscribe(
+			function success(data) {
+				that.logger.log('image received');
+				that.capturedImage = data.json().src;
+				that.currentCaptureState = captureState.displayPicture;
+			},
+			function error(data) {
+				that.logger.log('error capturing picture' + data);
+			});
+		
 	}
 }

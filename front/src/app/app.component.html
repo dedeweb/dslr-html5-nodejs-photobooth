@@ -4,7 +4,7 @@
 	<canvas id="displayCanvas"></canvas>
 	<canvas id="getImgCanvas"></canvas>
 	
-	<div class="area-capture-control" *ngIf="currentCaptureState == captureState.waitForCapture">
+	<div class="area-capture-control" *ngIf="currentCaptureState == captureState.waitForInput">
 		<a class="capture-button" (click)="launchCountDown()">
 			<i class="fa fa-camera"></i>
 		</a>
@@ -24,5 +24,11 @@
 			<div class="step-4" [ngClass]="{'active': currentStep === 4 }">2</div>
 			<div class="step-5" [ngClass]="{'active': currentStep === 5 }">1</div>
 		</div>
+	</div>
+	<div class="area-wait-img" *ngIf="currentCaptureState == captureState.waitForImage">
+		TODO WAITING FOR IMG
+	</div>
+	<div class="area-display-img" *ngIf="currentCaptureState == captureState.displayPicture">
+		<div id="cameraImage" [ngStyle]="{ 'background-image': 'url(' + capturedImage + ')'}">
 	</div>
 </div>

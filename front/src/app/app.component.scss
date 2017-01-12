@@ -7,8 +7,11 @@ video {
 }
 
 #displayCanvas {
-	height: 100%;
 	width: 100%;
+	margin: auto;
+    top: 0;
+    bottom: 0;
+    position: absolute;
 }
 #getImgCanvas {
 	display: none;
@@ -91,4 +94,17 @@ video {
 	0%, 100% {transform: translateY(-5px);}
 	80% {transform: translateY(20px);} 
 	
+}
+
+.area-display-img {
+	position: absolute;
+	display: block;
+	height: 100%;
+	width: 100%;
+	#cameraImage {
+		background-repeat: no-repeat;
+		background-size: cover;
+		width: 100%;
+		height: 100%;
+	}
 }

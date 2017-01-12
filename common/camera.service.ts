@@ -65,6 +65,12 @@ export class CameraService {
 		this.logger.log('Request calibration sent');
 	};
 	
+	public captureImage() {
+		let result = this.http
+			.get(`${this.baseUrl}/captureImage`);
+		return result;
+	}
+	
 	public setMode(mode: boolean) {
 		let result = this.http
 			.post(`${this.baseUrl}/cameraMode`, {fakeCamera: mode});
