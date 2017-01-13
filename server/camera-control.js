@@ -94,41 +94,53 @@ CameraControl.prototype = {
 		var logger = this.logger, that = this;
 		return new Promise(function (resolve, reject) {
 			var captureCommand;
+			var shouldFailPromise = false;
+			var errorMessage = '';
 			if(that.fakeCamera) {
 				captureCommand = child.spawn('sh', ['fake_gphoto.sh', '--capture-image-and-download']);
 			} else {
 				captureCommand = child.spawn('gphoto2', ['--capture-image-and-download', '--force-overwrite']);	
 			}
-			if('' + captureCommand.stderr ) {
-				logger.error(JSON.stringify(captureCommand.stderr) );
-				reject(captureCommand.stderr );
-			}
-			else 
-			{
-				captureCommand.stdout.setEncoding('utf8');
-				var jpegRegex = /Saving file as (.*)?\.jpg/g;
-				var rawRegex = /Saving file as (.*)?\.cr2/g;
-				captureCommand.stdout.on('data', function (data) {
-					logger.log('[capture command]' + data);
-					var match = jpegRegex.exec('' + data);
-					if(match && match.length > 1 ) {
-						var jpegFile = match[1] + '.jpg';
-						logger.log('['+new Date().toString()+'] resizing jpeg ' + jpegFile);
-						sharp(jpegFile).resize(1600,1200).toBuffer()
-						.then(function (data) {
-							logger.log('['+new Date().toString()+'] sending jpeg ' + jpegFile );
-							resolve({ src: 'data:image/jpeg;base64,' + data.toString('base64')});
-							//res.status(200).send(data.toString('base64'));
-						}).catch(function(err) {
-							logger.error(err);
-							reject(err);
-							//res.status(500).send(err);
-						});
-						
-					}
-				});
-			}
 			
+			captureCommand.stdout.setEncoding('utf8');
+			captureCommand.stderr.setEncoding('utf8');
+			
+			captureCommand.stderr.on('data', function (data) {
+				shouldFailPromise = true;
+				logger.error( 'error : ' + data);
+				errorMessage += data;
+			});
+			
+			var jpegRegex = /Saving file as (.*)?\.jpg/g;
+			var rawRegex = /Saving file as (.*)?\.cr2/g;
+			
+			captureCommand.stdout.on('data', function (data) {
+				logger.log('[capture command]' + data);
+				var match = jpegRegex.exec('' + data);
+				if(match && match.length > 1 ) {
+					var jpegFile = match[1] + '.jpg';
+					shouldFailPromise = false;
+					logger.log('['+new Date().toString()+'] resizing jpeg ' + jpegFile);
+					sharp(jpegFile).resize(1600,1200).toBuffer()
+					.then(function (data) {
+						logger.log('['+new Date().toString()+'] sending jpeg ' + jpegFile );
+						
+						resolve({ src: 'data:image/jpeg;base64,' + data.toString('base64')});
+						//res.status(200).send(data.toString('base64'));
+					}).catch(function(err) {
+						logger.error(err);
+						reject(err);
+						//res.status(500).send(err);
+					});
+					
+				}
+			});
+			
+			captureCommand.on('close', function() { 
+				if(shouldFailPromise) {
+					reject(errorMessage);
+				}
+			});
 		});
 		/*
 		captureCommand.on('exit', function (data) {

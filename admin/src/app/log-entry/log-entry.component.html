@@ -11,7 +11,7 @@
 	<div *ngIf="entry.module == LogModule.Server">[ {{'log.module.server' | translate }} ]</div>
  </div>
  <div class="entry-message" [ngClass] = "{
-	'text-danger': entry.logLevel == LogLevel.Error,
-	'text-warning': entry.logLevel == LogLevel.Warning
+	'error-message': entry.logLevel == LogLevel.Error,
+	'warning-message': entry.logLevel == LogLevel.Warning
 	}">{{entry.message}}</div>
 </div>

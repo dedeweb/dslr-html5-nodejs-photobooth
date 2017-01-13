@@ -30,5 +30,13 @@
 	</div>
 	<div class="area-display-img" *ngIf="currentCaptureState == captureState.displayPicture">
 		<div id="cameraImage" [ngStyle]="{ 'background-image': 'url(' + capturedImage + ')'}">
+		</div>
+	</div>
+	<div class="area-display-error" *ngIf="currentCaptureState == captureState.displayError">
+		<i class="fa fa-exclamation-triangle"></i>
+		<span class="error-message">
+			{{ 'generic_error_message' | translate}}
+		</span>
+		<!--{{ 'restart' | translate}}-->
 	</div>
 </div>

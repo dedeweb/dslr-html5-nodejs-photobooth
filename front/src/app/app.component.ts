@@ -8,7 +8,8 @@ enum captureState {
 	waitForInput,
 	countDown,
 	waitForImage,
-	displayPicture
+	displayPicture,
+	displayError
 }
 
 
@@ -49,15 +50,18 @@ export class AppComponent {
 				that.currentStream = null;
 			}
 			that.logger.log('stream received. video tracks : ' + stream.getVideoTracks().length);
-			if(stream.getVideoTracks().length> 0) {
-				that.logger.log('track : ' + JSON.stringify(stream.getVideoTracks()[0]));
-			}
+			if(stream.getVideoTracks().length == 0) {
+				that.logger.error('no video track !!!');
+			} 
 			stream.onaddtrack = function () {
 				that.logger.log('track added');
 			};
 			that.currentStream = stream;
-			
-			that.videoElement.play();
+			/*that.videoElement.play().then(function () {
+				that.logger.log('video playing.');
+			}).catch(function (err) {
+				that.logger.error('error playing video ! ' + err.message);
+			});*/
 			
 		};
 		
@@ -73,10 +77,15 @@ export class AppComponent {
 		var imgCtx= imgCanvasElement.getContext('2d');
 		var componentClass = this; 
 		this.videoElement.onloadedmetadata = function() {
+			componentClass.logger.log('loaded video metadata');
 			imgCanvasElement.height = this.videoHeight;
 			imgCanvasElement.width = this.videoWidth;
 			
 		}
+		
+		this.videoElement.onloadeddata = function() {
+			componentClass.logger.log('loaded video data');
+		};
 		
 		this.cameraService.getWebcamCoords().subscribe(
 			function success(data) {
@@ -156,7 +165,8 @@ export class AppComponent {
 				that.currentCaptureState = captureState.displayPicture;
 			},
 			function error(data) {
-				that.logger.log('error capturing picture' + data);
+				that.logger.error('error capturing picture : \n' + data.text());
+				that.currentCaptureState = captureState.displayError;
 			});
 		
 	}
