@@ -19,9 +19,9 @@ enum captureState {
 	styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-	
-	public captureState = captureState;//export enum type 
-  
+
+	public captureState = captureState;//export enum type
+
 	private currentStream : MediaStream = null;
 	private videoElement: any;
 	private currentStep: number = -1;
@@ -29,13 +29,13 @@ export class AppComponent {
 	private requestImage: boolean = false;
 	private cropCoords: any;
 	public capturedImage:string;
-  
+
 	constructor(translate: TranslateService,
 				private p2pStreamService : P2pStreamService,
 				private el: ElementRef,
 				private logger: LogService,
 				private cameraService : CameraService) {
-				
+
 		// this language will be used as a fallback when a translation isn't found in the current language
 		translate.setDefaultLang('en');
 
@@ -52,7 +52,7 @@ export class AppComponent {
 			that.logger.log('stream received. video tracks : ' + stream.getVideoTracks().length);
 			if(stream.getVideoTracks().length == 0) {
 				that.logger.error('no video track !!!');
-			} 
+			}
 			stream.onaddtrack = function () {
 				that.logger.log('track added');
 			};
@@ -62,9 +62,9 @@ export class AppComponent {
 			}).catch(function (err) {
 				that.logger.error('error playing video ! ' + err.message);
 			});*/
-			
+
 		};
-		
+
 		p2pStreamService.onRequestImage =  function () {
 			that.requestImage = true;
 		};
@@ -75,40 +75,40 @@ export class AppComponent {
 		this.videoElement = this.el.nativeElement.querySelector('video');
 		var dispCtx= dispCanvasElement.getContext('2d');
 		var imgCtx= imgCanvasElement.getContext('2d');
-		var componentClass = this; 
+		var componentClass = this;
 		this.videoElement.onloadedmetadata = function() {
 			componentClass.logger.log('loaded video metadata');
 			imgCanvasElement.height = this.videoHeight;
 			imgCanvasElement.width = this.videoWidth;
-			
+
 		}
-		
+
 		this.videoElement.onloadeddata = function() {
 			componentClass.logger.log('loaded video data');
 		};
-		
+
 		this.cameraService.getWebcamCoords().subscribe(
 			function success(data) {
 				componentClass.cropCoords = data.json();
 				dispCanvasElement.height = componentClass.cropCoords.height;
 				dispCanvasElement.width  = componentClass.cropCoords.width;
-				componentClass.logger.log('retrieved coords : ' + JSON.stringify(data.json()));				
+				componentClass.logger.log('retrieved coords : ' + JSON.stringify(data.json()));
 			},
 			function error(data) {
 				componentClass.logger.error('cannot get coords : ' + data);
 			});
 
-		
+
 		this.videoElement.addEventListener('play', function () {
 				componentClass.logger.log('play');
 				var that = this;
-				
+
 				(function loop() {
 				  if (!that.paused && !that.ended) {
 					if(componentClass.cropCoords) {
 						dispCtx.drawImage(that,
 							componentClass.cropCoords.x,
-							componentClass.cropCoords.y, 
+							componentClass.cropCoords.y,
 							componentClass.cropCoords.width,
 							componentClass.cropCoords.height,
 							0, 0, dispCanvasElement.width, dispCanvasElement.height);
@@ -116,12 +116,12 @@ export class AppComponent {
 						dispCtx.drawImage(that,0, 0, that.videoWidth, that.videoHeight ,
 							0, 0, dispCanvasElement.width, dispCanvasElement.height);
 					}
-					
+
 					setTimeout(loop, 1000 / 30); // drawing at 30fps
 				  }
 				  if(componentClass.requestImage) {
 					componentClass.requestImage = false;
-					
+
 					imgCtx.drawImage(that,0, 0, that.videoWidth, that.videoHeight,
 										0, 0, imgCanvasElement.width, imgCanvasElement.height);
 					componentClass.p2pStreamService.sendCalibrationImage(imgCanvasElement.toDataURL());
@@ -132,32 +132,36 @@ export class AppComponent {
 			//this.currentCaptureState = captureState.countDown;
 			//this.launchCountDown();
 	}
-  
+
 	launchCountDown() {
 		var that = this;
 		this.currentStep = -1;
 		this.currentCaptureState = captureState.countDown;
 		var updateCountDown = function () {
-			that.currentStep = that.currentStep + 1 ;
-			that.logger.log('countdown:' + that.currentStep);
-			if(that.currentStep === 0) {
-				//first step (ready?) displayed longer
-				setTimeout(updateCountDown, 3000);
-			} else if (that.currentStep > 0 && that.currentStep < 6) {
+      that.currentStep = that.currentStep + 1;
+      that.logger.log('countdown:' + that.currentStep);
+      if (that.currentStep === 0) {
+        //first step (ready?) displayed longer
+        setTimeout(updateCountDown, 3000);
+      } else if (that.currentStep == 5) {
+        //launching before end, as it takes about 2 sec to trigger capture.
+        that.capturePicture();
+        setTimeout(updateCountDown, 1000);
+      }else if (that.currentStep > 0 && that.currentStep < 6) {
 				setTimeout(updateCountDown, 1000);
 			} else {
 				//exiting countdown
-				that.capturePicture();
+				//that.capturePicture();
+        this.currentCaptureState = captureState.waitForImage;
 			}
-			
+
 		}
 		updateCountDown();
-	
+
 	}
-	
+
 	capturePicture() {
 		var that = this;
-		this.currentCaptureState = captureState.waitForImage;
 		this.cameraService.captureImage().subscribe(
 			function success(data) {
 				that.logger.log('image received');
@@ -168,6 +172,6 @@ export class AppComponent {
 				that.logger.error('error capturing picture : \n' + data.text());
 				that.currentCaptureState = captureState.displayError;
 			});
-		
+
 	}
 }

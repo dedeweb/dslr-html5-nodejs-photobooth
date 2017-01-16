@@ -41,10 +41,15 @@ export class CalibrateWebcamComponent implements OnInit {
 		that.errorMsg  = '';
 		cameraService.getWebcamCoords().subscribe(
 			function success(data) {
-				logger.log('retrieved coords : ' + JSON.stringify(data.json()));
-				that.webcamCoords = data.json();
-				that.loading = false;
-				},
+			  if(data.text()) {
+          logger.log('retrieved coords : ' + JSON.stringify(data.json()));
+          that.webcamCoords = data.json();
+
+        } else {
+          logger.log('coords null');
+        }
+        that.loading = false;
+      },
 			function error(data) {
 				logger.error('cannot get coords : ' + data);
 				that.loading = false;

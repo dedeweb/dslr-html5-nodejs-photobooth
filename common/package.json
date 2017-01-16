@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@angular/http": "^2.4.3"
+    "@angular/core": "^2.4.3",
+    "@angular/http": "^2.4.3",
+    "rxjs": "^5.0.3"
   }
 }

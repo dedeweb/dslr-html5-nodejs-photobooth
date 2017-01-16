@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ "$1" = '--summary' ]; then
-	echo "Camera summary:                                                                
+	echo "Camera summary:
 Manufacturer: Canon Inc.
 Model: Canon EOS 50D
   Version: 3-1.0.9
@@ -29,11 +29,12 @@ store_00010001:
 Device Property Summary:
 Property 0xd402:(read only) (type=0xffff) 'Canon EOS 50D'
 Property 0xd407:(read only) (type=0x6) 1
-Property 0xd406:(readwrite) (type=0xffff) 'Unknown Initiator'" 
+Property 0xd406:(readwrite) (type=0xffff) 'Unknown Initiator'"
 elif [ "$1" = '--capture-preview' ]; then
 	cp -f fake_gphoto_files/capture_preview.jpg .
 	echo "Saving file as capture_preview.jpg"
 elif [ "$1" = '--capture-image-and-download' ]; then
+  sleep 2
 	echo "New file is in location /capt0000.jpg on the camera"
 	cp -f fake_gphoto_files/capt0000.jpg .
 	echo "Saving file as capt0000.jpg"
@@ -53,5 +54,5 @@ else
         [-L|--list-files] [-m|--mkdir=DIRNAME] [-r|--rmdir=DIRNAME] [-n|--num-files] [-p|--get-file=RANGE] [-P|--get-all-files] [-t|--get-thumbnail=RANGE]
         [-T|--get-all-thumbnails] [--get-metadata=RANGE] [--get-all-metadata] [--upload-metadata=STRING] [--get-raw-data=RANGE] [--get-all-raw-data] [--get-audio-data=RANGE]
         [--get-all-audio-data] [-d|--delete-file=RANGE] [-D|--delete-all-files] [-u|--upload-file=FILENAME] [--filename=FILENAME_PATTERN] [-f|--folder=FOLDER] [-R|--recurse]
-        [--no-recurse] [--new] [--force-overwrite] [--skip-existing]" 
+        [--no-recurse] [--new] [--force-overwrite] [--skip-existing]"
 fi
