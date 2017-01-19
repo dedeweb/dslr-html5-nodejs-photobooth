@@ -1,11 +1,14 @@
-import { LogMessage, LogLevel, LogModule } from './log-message';
-export  { LogModule, LogLevel, LogMessage } from './log-message';
+import { LogMessage, LogLevel, LogModule, LogConnectMessage } from './log-message';
+export  { LogModule, LogLevel, LogMessage, LogConnectMessage } from './log-message';
 declare var io:any;
 
 export class LogService {
 	public frontEndConnected: boolean = false;
+	public frontEndAddress: string = null;
 	public adminConnected: boolean = false;
+	public adminAddress: string = null;
 	public webcamConnected: boolean = false;
+	public webcamAddress: string = null;
 	public logEntries : LogMessage[] = [];
 	
 	private socket : any;
@@ -17,7 +20,8 @@ export class LogService {
 		
 		this.socket = io( {path: '/api/socket'});
 		
-		this.socket.emit('log-connect', curModule);
+		
+		this.socket.emit('log-connect', new LogConnectMessage(curModule, null));
 		console.log('________ logger loaded : ' + LogModule[this.curModule] + ' ________' );
 	}
 	
@@ -49,30 +53,36 @@ export class LogService {
 		if(!this.eventPlugged) {
 			var that = this;
 			
-			this.socket.on('log-connect', function(logModule: LogModule) {
-				switch(logModule) {
+			this.socket.on('log-connect', function(logMsg: LogConnectMessage) {
+				switch(logMsg.module) {
 					case LogModule.FrontEnd:
 						that.frontEndConnected = true;
+						that.frontEndAddress = logMsg.address;
 						break;
 					case LogModule.Admin:
 						that.adminConnected = true;
+						that.adminAddress = logMsg.address;
 						break;
 					case LogModule.CameraCapture:
 						that.webcamConnected = true;
+						that.webcamAddress = logMsg.address;
 						break;
 				}
 			});
 			
-			this.socket.on('log-disconnect', function(logModule: LogModule) {
-				switch(logModule) {
+			this.socket.on('log-disconnect', function(logMsg: LogConnectMessage) {
+				switch(logMsg.module) {
 					case LogModule.FrontEnd:
 						that.frontEndConnected = false;
+						that.frontEndAddress = null;
 						break;
 					case LogModule.Admin:
 						that.adminConnected = false;
+						that.adminAddress = null;
 						break;
 					case LogModule.CameraCapture:
 						that.webcamConnected = false;
+						that.webcamAddress = null;
 						break;
 				}
 			});

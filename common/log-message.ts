@@ -22,3 +22,12 @@ export class LogMessage {
 		this.message = message;
 	}
 }
+
+export class LogConnectMessage {
+	public module: LogModule;
+	public address: string;
+	constructor(module: LogModule, address: string) {
+		this.module = module;
+		this.address = address;
+	}
+}

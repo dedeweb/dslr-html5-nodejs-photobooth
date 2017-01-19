@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {TranslateService} from 'ng2-translate';
 import {CameraService} from 'camera.service';
+import { LogService } from 'log.service';
 
 @Component({
   selector: 'app-control-panel',
@@ -17,7 +18,8 @@ export class ControlPanelComponent implements OnInit {
 	
 	
 	constructor(translate: TranslateService,
-				private cameraService : CameraService) {
+				private cameraService : CameraService,
+				public logger: LogService) {
 		// this language will be used as a fallback when a translation isn't found in the current language
 		translate.setDefaultLang('en');
 

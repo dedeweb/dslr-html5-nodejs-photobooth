@@ -17,6 +17,8 @@
 	"webcam_coords_error" : "error getting calibration",
 	"webcam_coords_save_error" : "error storing calibration",
 	"webcam_coords_store_ok" : "calibration successfully stored",
+	"ip_address" : "address",
+	"not_connected" : "not connected.",
 	"log" : {
 		"module" : {
 			"server" : "Server",

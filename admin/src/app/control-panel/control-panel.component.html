@@ -1,7 +1,7 @@
 <div class="container main-container">
 	<div class="card card-camera">
 		<h4 class="card-header"> {{'card_header_camera' | translate }}</h4>
-		<div class="container">
+		<div class="container-fluid">
 			<div class="row">
 				<div class="col-xs-2 text-xs-right">
 					{{'camera_mode' | translate }} : 
@@ -37,13 +37,26 @@
 			</div>
 		</div>
 	</div>
-	<div class="card card-webcam">
-		<h4 class="card-header"> {{'card_header_webcam' | translate }}</h4>
-		<div class="container">
-		</div>
-	</div>
 	<div class="card card-front">
 		<h4 class="card-header"> {{'card_header_front' | translate }}</h4>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-2 text-xs-right">
+					{{'ip_address' | translate }} : 
+				</div>
+				<div class="col-xs-10">
+					<span *ngIf="logger.frontEndAddress">
+						<code>{{logger.frontEndAddress}}</code>
+					</span>
+					<span *ngIf="!logger.frontEndAddress" class="text-danger">
+						{{'not_connected' | translate}}
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="card card-webcam">
+		<h4 class="card-header"> {{'card_header_webcam' | translate }}</h4>
 		<div class="container">
 		</div>
 	</div>
