@@ -7,10 +7,10 @@
 					{{'camera_mode' | translate }} : 
 				</div>
 				<div class="col-xs-10">
-					<button [hidden]="useFakeCamera" (click)="SetCameraMode(true)" type="button" class="btn btn-success btn-sm">
+					<button [hidden]="useFakeCamera" (click)="setCameraMode(true)" type="button" class="btn btn-success btn-sm">
 						{{'real_camera' | translate }}
 					</button>
-					<button [hidden]="!useFakeCamera" (click)="SetCameraMode(false)" type="button" class="btn btn-danger btn-sm">
+					<button [hidden]="!useFakeCamera" (click)="setCameraMode(false)" type="button" class="btn btn-danger btn-sm">
 						{{'fake_camera' | translate }}
 					</button>
 					<i class="fa fa-refresh fa-spin" [hidden]="!cameraModeWSLoading"></i> 
@@ -27,7 +27,7 @@
 					<span [hidden]="cameraReady" class="status-nok client-status">
 						<i class="fa fa-times-circle"></i>
 					</span>
-					<a (click)="GetCameraStatus()" class="refresh-button"   > 
+					<a (click)="getCameraStatus()" class="refresh-button"   > 
 						<i class="fa fa-refresh" [ngClass]="{'fa-spin': cameraWSLoading }"></i> 
 					</a>
 				</div>
@@ -53,6 +53,47 @@
 					</span>
 				</div>
 			</div>
+			<div class="row">
+				<div class="col-xs-2 text-xs-right">
+					{{ 'android_kioskapp' | translate}} :
+				</div>
+				<div class="col-xs-2">
+					<input type="text" [(ngModel)]="kioskAppUrl" class="form-control form-control-sm" />
+				</div>
+				<div class="col-xs-8">
+					<span [hidden]="!kioskAppReady" class="status-ok client-status">
+						<i class="fa fa-check-circle"></i>
+					</span>
+					<span [hidden]="kioskAppReady" class="status-nok client-status">
+						<i class="fa fa-times-circle"></i>
+					</span>
+					<a (click)="refreshKioskApp()" class="refresh-button"   > 
+						<i class="fa fa-refresh" [ngClass]="{'fa-spin': kioskAppWSInfoLoading }"></i> 
+					</a>
+				</div>
+			</div>
+			<div class="row" [hidden]="!kioskAppReady">
+				<div class="col-xs-2">
+				</div>
+				<div class="col-xs-10">
+					{{ 'kioskapp_version' | translate}} : {{kioskAppVersion}}
+				</div>
+			</div>
+			<div class="row" [hidden]="!kioskAppReady">
+				<div class="col-xs-2">
+				</div>
+				<div class="col-xs-6">
+					<input type="text"  [(ngModel)]="kioskAppBrowseUrl" class="form-control form-control-sm" />
+				</div>
+				<div class="col-xs-4">
+					<button (click)="browseUrl()" class="btn btn-primary btn-sm">
+						{{ 'kioskapp_load_url' | translate}}
+					</button>
+				</div>
+			</div>
+			
+			
+			
 		</div>
 	</div>
 	<div class="card card-webcam">

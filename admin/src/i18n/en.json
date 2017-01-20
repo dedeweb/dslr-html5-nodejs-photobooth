@@ -19,6 +19,9 @@
 	"webcam_coords_store_ok" : "calibration successfully stored",
 	"ip_address" : "address",
 	"not_connected" : "not connected.",
+	"android_kioskapp" : "kiosk app",
+	"kioskapp_version" : "version",
+	"kioskapp_load_url" : "load url",
 	"log" : {
 		"module" : {
 			"server" : "Server",
