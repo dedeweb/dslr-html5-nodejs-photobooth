@@ -22,7 +22,8 @@ backend made using express server. Setup inspered by  https://javascriptrocks.wo
 
 	$ npm install
 	$ npm install -g angular-cli
-	$ ng build
+	$ npm install -g webpack
+	$ npm start
 	
 	
 ### dev commands : 
