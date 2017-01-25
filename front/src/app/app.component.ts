@@ -89,10 +89,18 @@ export class AppComponent {
 
 		this.cameraService.getWebcamCoords().subscribe(
 			function success(data) {
-				componentClass.cropCoords = data.json();
-				dispCanvasElement.height = componentClass.cropCoords.height;
-				dispCanvasElement.width  = componentClass.cropCoords.width;
-				componentClass.logger.log('retrieved coords : ' + JSON.stringify(data.json()));
+				if(data.text()) {
+					componentClass.cropCoords = data.json();
+					dispCanvasElement.height = componentClass.cropCoords.height;
+					dispCanvasElement.width  = componentClass.cropCoords.width;
+					componentClass.logger.log('retrieved coords : ' + JSON.stringify(data.json()));
+				} else {
+					componentClass.logger.warn('empty coords');
+					dispCanvasElement.height = 480;
+					dispCanvasElement.width = 640;
+					
+				}
+				
 			},
 			function error(data) {
 				componentClass.logger.error('cannot get coords : ' + data);

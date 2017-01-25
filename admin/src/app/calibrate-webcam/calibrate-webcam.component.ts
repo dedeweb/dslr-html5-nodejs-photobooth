@@ -42,14 +42,13 @@ export class CalibrateWebcamComponent implements OnInit {
 		cameraService.getWebcamCoords().subscribe(
 			function success(data) {
 			  if(data.text()) {
-          logger.log('retrieved coords : ' + JSON.stringify(data.json()));
-          that.webcamCoords = data.json();
-
-        } else {
-          logger.log('coords null');
-        }
-        that.loading = false;
-      },
+				  logger.log('retrieved coords : ' + JSON.stringify(data.json()));
+				  that.webcamCoords = data.json();
+				} else {
+				  logger.log('coords null');
+				}
+				that.loading = false;
+			},
 			function error(data) {
 				logger.error('cannot get coords : ' + data);
 				that.loading = false;
@@ -57,7 +56,8 @@ export class CalibrateWebcamComponent implements OnInit {
 					that.errorMsg = res + " : " +data;
 				});
 				
-			});
+			}
+		);
 	}
 	
 	ngOnInit() {

@@ -1,10 +1,12 @@
 var webpack = require('webpack');
 var path = require('path');
 var fs = require('fs');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 
 
 
+//https://github.com/webpack/webpack/issues/1206
 var nodeModules = {};
 fs.readdirSync('../node_modules')
     .filter(function(x) {
@@ -21,6 +23,10 @@ module.exports =
     // The configuration for the server-side rendering
     name: 'server',
     target: 'node',
+	node: {
+	  __dirname: false,
+	  __filename: false,
+	},
     entry: './app.js',
     output: {
         path: '../dist/',
@@ -42,5 +48,11 @@ module.exports =
             { test:  /\.json$/, loader: 'json-loader' }
             //{ test: /\.ejs$/, loader: 'ejs-loader?variable=data' }
         ]
-    }
+    },
+	plugins: [
+        new CopyWebpackPlugin([
+            { from: 'fake_gphoto.sh' },
+			{ from: 'fake_gphoto_files/*'}
+        ])
+    ]
 };

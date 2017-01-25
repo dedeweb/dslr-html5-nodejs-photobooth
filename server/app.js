@@ -6,8 +6,10 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 //var child = require('child_process');
 var app = express();
-var server = require('http').Server(app);
-var io = require('socket.io')(server, { path : '/api/socket/', origins : '*:*'});
+var httpServer = require('http').Server(app);
+var https = require('https');
+var pem = require('pem');
+var io = require('socket.io')({ path : '/api/socket/', origins : '*:*'});
 var logger = require('./log-client')(io);
 var cameraControl = require('./camera-control')(logger);
 var liveCamSignaling = require('./livecam-signaling')(logger);
@@ -28,6 +30,20 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(__dirname));
 
+//Serve angular apps
+
+app.get('/', function (req, res) {
+	res.sendFile('admin/index.html', {root: __dirname});
+});
+app.get('/admin*', function (req, res) {
+	res.sendFile('admin/index.html', {root: __dirname});
+});
+app.get('/camera*', function (req, res) {
+	res.sendFile('camera/index.html', {root: __dirname});
+});
+app.get('/front*', function (req, res) {
+	res.sendFile('front/index.html', {root: __dirname});
+});
 
 //plug websocket events
 io.on('connection', function (socket) {
@@ -122,8 +138,20 @@ app.post('/api/cameraMode', function (req, res) {
 	res.end();
 });
 
-server.listen(3000, function () {
-	logger.log('tamerbooth api listening on port 3000!');
+httpServer.listen(3000, function () {
+	logger.log('[http]tamerbooth api listening on port 3000!');
 });
+io.attach(httpServer);
+
+pem.createCertificate({days:7, selfSigned:true}, function(err, keys){
+    var httpsServer = https.createServer({key: keys.serviceKey, cert: keys.certificate}, app);
+	httpsServer.listen(3043, function () {
+		logger.log('[https]tamerbooth api listening on port 3043!');
+	});
+	io.attach(httpsServer);
+});
+
+
+
 
 module.exports = app;

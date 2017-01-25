@@ -9,10 +9,12 @@
     "colors": "^1.1.2",
     "concurrently": "^3.1.0",
     "cookie-parser": "^1.4.3",
+    "copy-webpack-plugin": "^4.0.1",
     "express": "^4.14.0",
     "fs-extra": "^2.0.0",
     "morgan": "^1.7.0",
     "nedb": "^1.8.0",
+    "pem": "^1.9.4",
     "process": "^0.11.9",
     "serve-favicon": "^2.3.0",
     "sharp": "^0.17.0",
@@ -25,8 +27,8 @@
     "server": "node server/app",
     "camera": "concurrently --kill-others \"npm run server\" \"cd camera_capture && ng serve --proxy-config proxy.conf.json  --host 0.0.0.0\"",
     "start": "npm run build && node dist/app",
-    "postinstall": "cd admin && npm install && cd ../camera_capture && npm install && cd ../front && npm install && cd ../common && npm install",
-    "build": "cd admin && npm run build && cd ../camera_capture && npm run build && cd ../front && npm run build && cd ../server && npm run build"
+    "build": "cd admin && npm run build && cd ../camera_capture && npm run build && cd ../front && npm run build && cd ../server && npm run build",
+    "install-all": "npm install && cd admin && npm install && cd ../camera_capture && npm install && cd ../front && npm install && cd ../common && npm install"
   },
   "repository": {
     "type": "git",
