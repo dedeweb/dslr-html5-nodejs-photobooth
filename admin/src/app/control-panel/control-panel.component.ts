@@ -85,6 +85,7 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
 			this.logger.log('refresh kiosk app infos');
 			let that = this;
 			this.kioskAppUrl = this.kioskAppUrl.replace('http://', '').trim();
+			this.kioskAppWSInfoLoading = true;
 			this.kioskAppService.test('http://' + this.kioskAppUrl).subscribe(
 				function success(data) {
 					that.kioskAppWSInfoLoading = false;
@@ -115,13 +116,43 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
 		});
 	}
 	
+	reloadUrl() {
+		let that=this;
+		this.logger.log('request reload');
+		this.kioskAppService.reload().subscribe(function success() {
+			that.logger.log('reload url success');
+		}, function error(){
+			that.logger.error('reload url error');
+		});
+	}
+	
+	exitFs() {
+		let that=this;
+		this.logger.log('request reload');
+		this.kioskAppService.exitFs().subscribe(function success() {
+			that.logger.log('exit fullscreen success');
+		}, function error(){
+			that.logger.error('exit fullscreen error');
+		});
+	}
+	
+	enterFs() {
+		let that=this;
+		this.logger.log('request reload');
+		this.kioskAppService.enterFs().subscribe(function success() {
+			that.logger.log('exit fullscreen success');
+		}, function error(){
+			that.logger.error('exit fullscreen error');
+		});
+	}
+	
 	ngOnInit() {
 		this.refreshCameraMode();
 		this.getCameraStatus();
 	
 	}
 	ngDoCheck() {
-		if(this.logger.frontEndAddress !== this._frontAddress) {
+		if(this.logger.frontEndAddress !== this._frontAddress && !this.kioskAppUrl) {
 			this._frontAddress = this.logger.frontEndAddress;
 			this.kioskAppUrl = this.logger.frontEndAddress ? this.logger.frontEndAddress + ':1664' : '';
 			if(this.kioskAppUrl) {

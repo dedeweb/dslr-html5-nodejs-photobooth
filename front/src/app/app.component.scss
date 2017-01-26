@@ -113,17 +113,26 @@ video {
 }
 
 .area-display-error {
-	color: #CD2828;
-    position: absolute;
-    text-align: center;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-	.fa {
-		display: block;
-		font-size: 6em;
-	}
-	.error-message {
-		font-size: 2em;
+	position: absolute;
+	display: block;
+	height: 100%;
+	width: 100%;
+	background: rgba(0,0,0,0.7);
+	.error-panel {
+		color: #CD2828;
+		text-shadow: 0 0 1px #000000;
+		position: absolute;
+		text-align: center;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%,-50%);
+		.fa {
+			display: block;
+			font-size: 6em;
+		}
+		.error-message {
+			font-size: 2em;
+		}
 	}
 }
+

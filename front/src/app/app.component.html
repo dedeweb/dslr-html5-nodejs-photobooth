@@ -33,10 +33,12 @@
 		</div>
 	</div>
 	<div class="area-display-error" *ngIf="currentCaptureState == captureState.displayError">
-		<i class="fa fa-exclamation-triangle"></i>
-		<span class="error-message">
-			{{ 'generic_error_message' | translate}}
-		</span>
-		<!--{{ 'restart' | translate}}-->
+		<div class="error-panel">
+			<i class="fa fa-exclamation-triangle"></i>
+			<span class="error-message">
+				{{ 'generic_error_message' | translate}}
+			</span>
+			<!--{{ 'restart' | translate}}-->
+		</div>
 	</div>
 </div>

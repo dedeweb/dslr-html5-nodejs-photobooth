@@ -23,6 +23,7 @@ export class LogService {
 		
 		this.socket.emit('log-connect', new LogConnectMessage(curModule, null));
 		console.log('________ logger loaded : ' + LogModule[this.curModule] + ' ________' );
+		this.log( LogModule[this.curModule] + ' connected' );
 	}
 	
 	public debug(message: string) {

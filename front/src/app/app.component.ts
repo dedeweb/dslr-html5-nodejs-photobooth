@@ -3,7 +3,6 @@ import {TranslateService} from 'ng2-translate';
 import {P2pStreamService} from './p2p-stream.service';
 import { LogService } from 'log.service';
 import {CameraService} from 'camera.service';
-
 enum captureState {
 	waitForInput,
 	countDown,
@@ -29,6 +28,7 @@ export class AppComponent {
 	private requestImage: boolean = false;
 	private cropCoords: any;
 	public capturedImage:string;
+	private localMediaDevices = [];
 
 	constructor(translate: TranslateService,
 				private p2pStreamService : P2pStreamService,
@@ -69,13 +69,55 @@ export class AppComponent {
 			that.requestImage = true;
 		};
 	}
+	
+	enumerateLocalStream() {
+		var that = this;
+		return new Promise(function(resolve, reject) {
+			navigator.mediaDevices.enumerateDevices().then(function (deviceInfos) {
+				for(let device of deviceInfos) {
+					if(device.kind == 'videoinput') {
+						that.localMediaDevices.push(device);
+					}
+				}
+				resolve();
+			}).catch(function (error) {
+				that.logger.error('navigator.getUserMedia error: ' + JSON.stringify(error));
+				reject();
+			});
+		});
+	}
+	
+	playLocalStream(index:number) {
+		var that = this;
+		if(!this.currentStream && this.localMediaDevices && index < this.localMediaDevices.length) {
+			//should play local device
+			this.logger.log('start local stream');
+				navigator.mediaDevices.getUserMedia({
+				audio: false,
+				video: {
+					deviceId: that.localMediaDevices[index].deviceId
+				}
+			}).then(function (stream) {
+				that.logger.log('local stream received');
+				that.currentStream = stream;
+			});
+		} else {
+			this.logger.warn('cannot play local device');
+		}
+	}
+	
 	ngOnInit(){
+		var componentClass = this;
+		this.enumerateLocalStream().then(function () {
+			componentClass.playLocalStream(0);
+		});
+	
 		var dispCanvasElement = this.el.nativeElement.querySelector('#displayCanvas');
 		var imgCanvasElement = this.el.nativeElement.querySelector('#getImgCanvas');
 		this.videoElement = this.el.nativeElement.querySelector('video');
 		var dispCtx= dispCanvasElement.getContext('2d');
 		var imgCtx= imgCanvasElement.getContext('2d');
-		var componentClass = this;
+		
 		this.videoElement.onloadedmetadata = function() {
 			componentClass.logger.log('loaded video metadata');
 			imgCanvasElement.height = this.videoHeight;
@@ -98,7 +140,6 @@ export class AppComponent {
 					componentClass.logger.warn('empty coords');
 					dispCanvasElement.height = 480;
 					dispCanvasElement.width = 640;
-					
 				}
 				
 			},
@@ -146,26 +187,24 @@ export class AppComponent {
 		this.currentStep = -1;
 		this.currentCaptureState = captureState.countDown;
 		var updateCountDown = function () {
-      that.currentStep = that.currentStep + 1;
-      that.logger.log('countdown:' + that.currentStep);
-      if (that.currentStep === 0) {
-        //first step (ready?) displayed longer
-        setTimeout(updateCountDown, 3000);
-      } else if (that.currentStep == 5) {
-        //launching before end, as it takes about 2 sec to trigger capture.
-        that.capturePicture();
-        setTimeout(updateCountDown, 1000);
-      }else if (that.currentStep > 0 && that.currentStep < 6) {
+			that.currentStep = that.currentStep + 1;
+			that.logger.log('countdown:' + that.currentStep);
+			if (that.currentStep === 0) {
+				//first step (ready?) displayed longer
+				setTimeout(updateCountDown, 3000);
+			} else if (that.currentStep == 5) {
+				//launching before end, as it takes about 2 sec to trigger capture.
+				that.capturePicture();
+				setTimeout(updateCountDown, 1000);
+			}else if (that.currentStep > 0 && that.currentStep < 6) {
 				setTimeout(updateCountDown, 1000);
 			} else {
 				//exiting countdown
 				//that.capturePicture();
-        this.currentCaptureState = captureState.waitForImage;
+				this.currentCaptureState = captureState.waitForImage;
 			}
-
 		}
 		updateCountDown();
-
 	}
 
 	capturePicture() {

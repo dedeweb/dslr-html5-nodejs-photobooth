@@ -22,6 +22,9 @@
 	"android_kioskapp" : "kiosk app",
 	"kioskapp_version" : "version",
 	"kioskapp_load_url" : "load url",
+	"kioskapp_reload" : "reload page",
+	"kioskapp_exit_fs" : "exit fullscreen",
+	"kioskapp_enter_fs" : "go fullscreen",
 	"log" : {
 		"module" : {
 			"server" : "Server",

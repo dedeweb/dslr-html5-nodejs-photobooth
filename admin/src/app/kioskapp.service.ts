@@ -30,5 +30,29 @@ export class KioskAppService {
 			
 		return result;
 	}
+	
+	public reload() {
+		let that = this;
+		let result = this.http
+			.post(`${this._url}/reload`, {});
+			
+		return result;
+	}
+	
+	public exitFs() {
+		let that = this;
+		let result = this.http
+			.post(`${this._url}/exit`, {});
+			
+		return result;
+	}
+	
+	public enterFs() {
+		let that = this;
+		let result = this.http
+			.post(`${this._url}/fullscreen`, {});
+			
+		return result;
+	}
 
 }
