@@ -140,9 +140,9 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
 		let that=this;
 		this.logger.log('request reload');
 		this.kioskAppService.enterFs().subscribe(function success() {
-			that.logger.log('exit fullscreen success');
+			that.logger.log('enter fullscreen success');
 		}, function error(){
-			that.logger.error('exit fullscreen error');
+			that.logger.error('enter fullscreen error');
 		});
 	}
 	
