@@ -4,20 +4,23 @@ import { LogService } from 'log.service';
 
 @Injectable()
 export class KioskAppService {
+	private _proxyUrl: string = '/api/httpproxy';
 	private _url: string = null;
 	private _validKiosk: boolean = false;
 
 	constructor(private http : Http, private logger: LogService) { }
-	
+	//note: proxying requests to avoit security errors due to https
 	public test(url:string) {
 		let that = this;
 		let result = this.http
-			.get(`${url}/version`)
+			.post(this._proxyUrl, { url : `${url}/version`, verb : 'GET' })
 			.do(function success(data) {
 				if(data.json().app === 'kioskApp') {
 					that._url = url;
 				}
-			}, function error(data){});
+			}, function error(data){
+				that.logger.error('error in kioskapp ws: ' + JSON.stringify(data));
+			});
 			
 		return result;
 			
@@ -26,7 +29,7 @@ export class KioskAppService {
 	public browse(url: string) {
 		let that = this;
 		let result = this.http
-			.post(`${this._url}/loadUrl`, {url: url});
+			.post(this._proxyUrl, { url : `${this._url}/loadUrl`, verb : 'POST', data: {url: url}});
 			
 		return result;
 	}
@@ -34,7 +37,7 @@ export class KioskAppService {
 	public reload() {
 		let that = this;
 		let result = this.http
-			.post(`${this._url}/reload`, {});
+			.post(this._proxyUrl, { url : `${this._url}/reload`, verb : 'POST' });
 			
 		return result;
 	}
@@ -42,7 +45,7 @@ export class KioskAppService {
 	public exitFs() {
 		let that = this;
 		let result = this.http
-			.post(`${this._url}/exit`, {});
+			.post(this._proxyUrl, { url : `${this._url}/exit`, verb : 'POST' });
 			
 		return result;
 	}
@@ -50,7 +53,7 @@ export class KioskAppService {
 	public enterFs() {
 		let that = this;
 		let result = this.http
-			.post(`${this._url}/fullscreen`, {});
+			.post(this._proxyUrl, { url : `${this._url}/fullscreen`, verb : 'POST' });
 			
 		return result;
 	}

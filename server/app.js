@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var request = require('request');
 //var child = require('child_process');
 var app = express();
 var httpServer = require('http').Server(app);
@@ -29,6 +30,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(__dirname));
+
+
 
 //Serve angular apps
 
@@ -58,6 +61,27 @@ io.on('connection', function (socket) {
 			io.emit('camera-image', data);
 		});
 	});
+});
+
+//API part : https to http proxy
+app.post('/api/httpproxy', function (req, res) {
+	
+	var url = req.body.url;
+	var verb = req.body.verb;
+	var data = req.body.data;
+	logger.log('proxy request. \n url: ' + url  + '\n verb: ' + verb + '\n data: ' + JSON.stringify(data));
+	var req2;
+	if(verb == 'POST') {
+		req2 = request.post({uri: url, json: data});
+	} else {
+		req2 = request(url);
+	}
+	req
+	.on('error', function(err){res.status(500).send(err);})
+	.pipe(req2)
+	.on('error', function(err){res.status(500).send(err);})
+	.pipe(res)
+	.on('error', function(err){res.status(500).send(err);});
 });
 
 //API part : authorize. 
