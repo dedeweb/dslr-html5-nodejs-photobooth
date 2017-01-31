@@ -25,11 +25,15 @@
 .main-container {
 	margin-top: 25px;
 }
-.card .container, .card .container-fluid {
-	margin-top: 15px;
-	margin-bottom: 15px;
-	.row {
-		margin-top: 5px;
-		margin-bottom: 5px;
+.card {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	.container, .card .container-fluid {
+		margin-top: 15px;
+		margin-bottom: 15px;
+		.row {
+			margin-top: 5px;
+			margin-bottom: 5px;
+		}
 	}
-}
+} 

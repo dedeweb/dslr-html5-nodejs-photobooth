@@ -1,115 +1,116 @@
 <div class="container main-container">
 	<div class="card card-camera">
 		<h4 class="card-header"> {{'card_header_camera' | translate }}</h4>
-		<div class="container-fluid">
-			<div class="row">
-				<div class="col-xs-2 text-xs-right">
-					{{'camera_mode' | translate }} : 
+		<div class="card-block">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-2 text-right">
+						{{'camera_mode' | translate }} : 
+					</div>
+					<div class="col-10">
+						<button [hidden]="useFakeCamera" (click)="setCameraMode(true)" type="button" class="btn btn-success btn-sm">
+							{{'real_camera' | translate }}
+						</button>
+						<button [hidden]="!useFakeCamera" (click)="setCameraMode(false)" type="button" class="btn btn-danger btn-sm">
+							{{'fake_camera' | translate }}
+						</button>
+						<i class="fa fa-refresh fa-spin" [hidden]="!cameraModeWSLoading"></i> 
+					</div>
 				</div>
-				<div class="col-xs-10">
-					<button [hidden]="useFakeCamera" (click)="setCameraMode(true)" type="button" class="btn btn-success btn-sm">
-						{{'real_camera' | translate }}
-					</button>
-					<button [hidden]="!useFakeCamera" (click)="setCameraMode(false)" type="button" class="btn btn-danger btn-sm">
-						{{'fake_camera' | translate }}
-					</button>
-					<i class="fa fa-refresh fa-spin" [hidden]="!cameraModeWSLoading"></i> 
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-xs-2 text-xs-right">
-					{{'camera_status' | translate }} : 
-				</div>
-				<div class="col-xs-1">
-					<span [hidden]="!cameraReady" class="status-ok client-status">
-						<i class="fa fa-check-circle"></i>
-					</span>
-					<span [hidden]="cameraReady" class="status-nok client-status">
-						<i class="fa fa-times-circle"></i>
-					</span>
-					<a (click)="getCameraStatus()" class="refresh-button"   > 
-						<i class="fa fa-refresh" [ngClass]="{'fa-spin': cameraWSLoading }"></i> 
-					</a>
-				</div>
-				<div class="col-xs-9">
-					<div class="camera-message alert" [ngClass]="{'alert-success': cameraReady  , 'alert-danger': !cameraReady }" >{{cameraMessage}}</div>
+				<div class="row">
+					<div class="col-2 text-right">
+						{{'camera_status' | translate }} : 
+					</div>
+					<div class="col-1">
+						<span [hidden]="!cameraReady" class="status-ok client-status">
+							<i class="fa fa-check-circle"></i>
+						</span>
+						<span [hidden]="cameraReady" class="status-nok client-status">
+							<i class="fa fa-times-circle"></i>
+						</span>
+						<a (click)="getCameraStatus()" class="refresh-button"   > 
+							<i class="fa fa-refresh" [ngClass]="{'fa-spin': cameraWSLoading }"></i> 
+						</a>
+					</div>
+					<div class="col-9">
+						<div class="camera-message alert" [ngClass]="{'alert-success': cameraReady  , 'alert-danger': !cameraReady }" >{{cameraMessage}}</div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 	<div class="card card-front">
 		<h4 class="card-header"> {{'card_header_front' | translate }}</h4>
-		<div class="container-fluid">
-			<div class="row">
-				<div class="col-xs-2 text-xs-right">
-					{{'ip_address' | translate }} : 
+		<div class="card-block">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-2 text-right">
+						{{'ip_address' | translate }} : 
+					</div>
+					<div class="col-10">
+						<span *ngIf="logger.frontEndAddress">
+							<code>{{logger.frontEndAddress}}</code>
+						</span>
+						<span *ngIf="!logger.frontEndAddress" class="text-danger">
+							{{'not_connected' | translate}}
+						</span>
+					</div>
 				</div>
-				<div class="col-xs-10">
-					<span *ngIf="logger.frontEndAddress">
-						<code>{{logger.frontEndAddress}}</code>
-					</span>
-					<span *ngIf="!logger.frontEndAddress" class="text-danger">
-						{{'not_connected' | translate}}
-					</span>
+				<div class="row">
+					<div class="col-2 text-right">
+						{{ 'android_kioskapp' | translate}} :
+					</div>
+					<div class="col-2">
+						<input type="text" [(ngModel)]="kioskAppUrl" class="form-control form-control-sm" />
+					</div>
+					<div class="col-8">
+						<span [hidden]="!kioskAppReady" class="status-ok client-status">
+							<i class="fa fa-check-circle"></i>
+						</span>
+						<span [hidden]="kioskAppReady" class="status-nok client-status">
+							<i class="fa fa-times-circle"></i>
+						</span>
+						<a (click)="refreshKioskApp()" class="refresh-button"   > 
+							<i class="fa fa-refresh" [ngClass]="{'fa-spin': kioskAppWSInfoLoading }"></i> 
+						</a>
+					</div>
+				</div>
+				<div class="row" [hidden]="!kioskAppReady">
+					<div class="col-2">
+					</div>
+					<div class="col-10">
+						{{ 'kioskapp_version' | translate}} : {{kioskAppVersion}}
+					</div>
+				</div>
+				<div class="row" [hidden]="!kioskAppReady">
+					<div class="col-2">
+					</div>
+					<div class="col-6">
+						<input type="text"  [(ngModel)]="kioskAppBrowseUrl" class="form-control form-control-sm" />
+					</div>
+					<div class="col-4">
+						<button (click)="browseUrl()" class="btn btn-primary btn-sm">
+							{{ 'kioskapp_load_url' | translate}}
+						</button>
+					</div>
+				</div>
+				<div class="row" [hidden]="!kioskAppReady">
+					<div class="col-2">
+					</div>
+					<div class="col-10">
+						<button (click)="reloadUrl()" class="btn btn-primary btn-sm">
+							{{ 'kioskapp_reload' | translate}}
+						</button>
+						<button (click)="exitFs()" class="btn btn-primary btn-sm">
+							{{ 'kioskapp_exit_fs' | translate}}
+						</button>
+						<button (click)="enterFs()" class="btn btn-primary btn-sm">
+							{{ 'kioskapp_enter_fs' | translate}}
+						</button>
+						
+					</div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-xs-2 text-xs-right">
-					{{ 'android_kioskapp' | translate}} :
-				</div>
-				<div class="col-xs-2">
-					<input type="text" [(ngModel)]="kioskAppUrl" class="form-control form-control-sm" />
-				</div>
-				<div class="col-xs-8">
-					<span [hidden]="!kioskAppReady" class="status-ok client-status">
-						<i class="fa fa-check-circle"></i>
-					</span>
-					<span [hidden]="kioskAppReady" class="status-nok client-status">
-						<i class="fa fa-times-circle"></i>
-					</span>
-					<a (click)="refreshKioskApp()" class="refresh-button"   > 
-						<i class="fa fa-refresh" [ngClass]="{'fa-spin': kioskAppWSInfoLoading }"></i> 
-					</a>
-				</div>
-			</div>
-			<div class="row" [hidden]="!kioskAppReady">
-				<div class="col-xs-2">
-				</div>
-				<div class="col-xs-10">
-					{{ 'kioskapp_version' | translate}} : {{kioskAppVersion}}
-				</div>
-			</div>
-			<div class="row" [hidden]="!kioskAppReady">
-				<div class="col-xs-2">
-				</div>
-				<div class="col-xs-6">
-					<input type="text"  [(ngModel)]="kioskAppBrowseUrl" class="form-control form-control-sm" />
-				</div>
-				<div class="col-xs-4">
-					<button (click)="browseUrl()" class="btn btn-primary btn-sm">
-						{{ 'kioskapp_load_url' | translate}}
-					</button>
-				</div>
-			</div>
-			<div class="row" [hidden]="!kioskAppReady">
-				<div class="col-xs-2">
-				</div>
-				<div class="col-xs-10">
-					<button (click)="reloadUrl()" class="btn btn-primary btn-sm">
-						{{ 'kioskapp_reload' | translate}}
-					</button>
-					<button (click)="exitFs()" class="btn btn-primary btn-sm">
-						{{ 'kioskapp_exit_fs' | translate}}
-					</button>
-					<button (click)="enterFs()" class="btn btn-primary btn-sm">
-						{{ 'kioskapp_enter_fs' | translate}}
-					</button>
-					
-				</div>
-			</div>
-			
-			
-			
 		</div>
 	</div>
 	<div class="card card-webcam">

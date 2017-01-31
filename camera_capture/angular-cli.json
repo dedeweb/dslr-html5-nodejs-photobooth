@@ -26,7 +26,7 @@
 		"../node_modules/tether/dist/js/tether.js",
 		"../node_modules/bootstrap/dist/js/bootstrap.js",
 		"../node_modules/underscore/underscore.js",
-		"../node_modules/socket.io-client/socket.io.js"
+		"../node_modules/socket.io-client/dist/socket.io.js"
       ],
       "environments": {
         "source": "environments/environment.ts",

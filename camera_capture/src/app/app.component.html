@@ -1,11 +1,11 @@
-<nav class="navbar navbar-full navbar-dark bg-inverse">
+<nav class="navbar navbar-toggleable-md  navbar-inverse bg-inverse">
   <span class="navbar-brand">{{'camera_capture_title' | translate}}</span>
 </nav>
 
 <div class="container">
 	<div class="select">
 		<div class="row">
-			<div class="col-md-6">
+			<div class="col-6">
 				<label for="videoSource"> {{'video_source' | translate}}: </label>
 				<select name="videoSource" [(ngModel)]="currentMedia" (ngModelChange)="startStream()">
 					<option value="">{{'select_device' | translate}}</option>
@@ -14,7 +14,7 @@
 					</option>
 				</select>
 			</div>
-			<div class="col-md-6">
+			<div class="col-6">
 				<label for="videoQuality"> {{'video_quality' | translate}}: </label>
 				<select name="videoQuality" [(ngModel)]="currentQuality" (ngModelChange)="startStream()">
 					<option *ngFor="let quality of videoQuality" [value]="quality.val">  
@@ -24,30 +24,23 @@
 			</div>
 		</div>
 		<div class="row"> 
-			<div class="col-md-12">
+			<div class="col-12">
 			<span>{{'client_status' | translate}} : </span>
 			<span [hidden]="!clientConnected" class="client-connected client-status"></span>
 			<span [hidden]="clientConnected" class="client-disconnected client-status"></span>
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-6">
-				<h5 class="text-xs-center">{{'source_image' | translate}} :</h5>
+			<div class="col-12">
+				<h5 class="text-center">{{'image' | translate}} :</h5>
 			</div>
-			<div class="col-md-6 text-center">
-				<h5 class="text-xs-center">{{'broadcast_image' | translate}} :</h5>
-			</div>
+			
 		</div>
 		<div class="row">
-			<div class="col-md-6">
+			<div class="col-12">
 				<video autoplay [srcObject]="currentStream"></video>
 			</div>
-			<div class="col-md-6">
-				<canvas></canvas>
-			</div>
 		</div>
-	    
-		
 	</div>
 	<!-- <video autoplay [srcObject]="remoteStream"></video> -->
 </div>

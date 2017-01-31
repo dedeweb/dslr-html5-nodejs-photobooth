@@ -3,12 +3,12 @@
 }
 video {
 	display: block;
-	width: 100%;
+	left: 0;
+    right: 0;
+    margin: auto;
 }
 
-canvas {
-	width: 100%;
-}
+
 .client-status {
 
 	display: inline-block;

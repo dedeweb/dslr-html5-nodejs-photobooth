@@ -17,7 +17,6 @@ export class AppComponent {
 	private mediaDevices = [];
 	private currentStream : MediaStream = null;
 	private videoElement : HTMLVideoElement;
-	private canvasElement: any;//HTMLCanvasElement;
 	private remoteStream : MediaStream = null;
 	private clientConnected: boolean = false;
 	
@@ -48,27 +47,7 @@ export class AppComponent {
 	
 	ngOnInit(){
 		this.videoElement = this.el.nativeElement.querySelector('video');
-		var canvasElement = this.canvasElement = this.el.nativeElement.querySelector('canvas');
 		this.refreshDevices();
-		var ctx= this.canvasElement.getContext('2d');
-		
-		this.videoElement.onloadedmetadata = function() {
-			canvasElement.height = this.videoHeight -100;
-			canvasElement.width = this.videoWidth -100;
-		}
-		var that= this;
-		this.videoElement.addEventListener('play', function () {
-			that.logger.debug('play');
-			var videoElt = this;
-			
-			(function loop() {
-			  if (!videoElt.paused && !videoElt.ended) {
-				ctx.drawImage(videoElt,50, 50, videoElt.videoWidth -100, videoElt.videoHeight -100,
-									0, 0, canvasElement.width, canvasElement.height);
-				setTimeout(loop, 1000 / 30); // drawing at 30fps
-			  }
-			})();
-		},false);
 	}
 	
 	refreshDevices () {
@@ -137,9 +116,5 @@ export class AppComponent {
 		else {
 			this.p2pStreamService.cameraReady(false, null);
 		}
-	}
-	broadcastStream (event) {
-		//this.remoteStream = this.canvasElement.captureStream(25.0);		
-		//this.p2pStreamService.streamVideo();
 	}
 }
