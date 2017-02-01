@@ -13,5 +13,5 @@
  <div class="entry-message" [ngClass] = "{
 	'error-message': entry.logLevel == LogLevel.Error,
 	'warning-message': entry.logLevel == LogLevel.Warning
-	}">{{entry.message}}</div>
+	}"><span class="log-date"><code>{{entry.time | date: 'HH:mm:ss'}}</code></span>{{entry.message}}</div>
 </div>

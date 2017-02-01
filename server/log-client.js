@@ -18,24 +18,28 @@ LogClient.prototype = {
 	debug: function (msg) {
 		this.logData.logLevel = 1;
 		this.logData.message = msg;
+		this.logData.time = new Date().getTime();
 		this.io.emit('log-message', this.logData);
 		console.log( '[debug] ' + msg);
 	},
 	log: function (msg) {
 		this.logData.logLevel = 2;
 		this.logData.message = msg;
+		this.logData.time = new Date().getTime();
 		this.io.emit('log-message', this.logData);
 		console.log( '[log] ' + msg);
 	},
 	warn: function (msg) {
 		this.logData.logLevel = 3;
 		this.logData.message = msg;
+		this.logData.time = new Date().getTime();
 		this.io.emit('log-message', this.logData);
 		console.log( '[warn] ' + msg);
 	},
 	error: function (msg) {
 		this.logData.logLevel = 4;
 		this.logData.message = msg;
+		this.logData.time = new Date().getTime();
 		this.io.emit('log-message', this.logData);
 		console.log( '[error] ' + msg);
 	}

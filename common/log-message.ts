@@ -16,10 +16,12 @@ export class LogMessage {
     public module: LogModule;
 	public logLevel: LogLevel;
 	public message: string;
+	public time: number;
 	constructor(module: LogModule,logLevel: LogLevel, message: string ) {
 		this.module = module;
 		this.logLevel = logLevel;
 		this.message = message;
+		this.time = new Date().getTime();
 	}
 }
 
