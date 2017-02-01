@@ -3,6 +3,7 @@ import {TranslateService} from 'ng2-translate';
 import {CameraService} from 'camera.service';
 import { LogService } from 'log.service';
 import { KioskAppService } from '../kioskapp.service';
+import { P2pStreamService } from '../p2p-stream.service';
 import 'rxjs/Rx';
 
 @Component({
@@ -23,11 +24,13 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
 	kioskAppReady: boolean = false;
 	kioskAppVersion:string = '';
 	kioskAppBrowseUrl: string = '';
+	currentLocalDeviceId: number;
 	
 	constructor(translate: TranslateService,
 				private cameraService : CameraService,
 				public logger: LogService,
-				private kioskAppService : KioskAppService) {
+				private kioskAppService : KioskAppService,
+				private p2pStreamService : P2pStreamService) {
 		// this language will be used as a fallback when a translation isn't found in the current language
 		translate.setDefaultLang('en');
 
@@ -35,6 +38,9 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
 		let browserLang = translate.getBrowserLang();
 		translate.use('en');
 		//translate.use(browserLang.match(/en|fr/) ? browserLang : 'en');
+		let that = this;
+		
+		
 	}
 	
 	getCameraStatus() {
@@ -56,6 +62,7 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
 				//data.json().message;
 			});
 	}
+	
 	refreshCameraMode() {
 		var that = this;
 		this.cameraModeWSLoading = true;

@@ -13,6 +13,8 @@ import { LogService, LogModule } from 'log.service';
 import { LogEntryComponent } from './log-entry/log-entry.component';
 import { ScrollGlueDirective } from './scroll-glue.directive';
 import { KioskAppService } from './kioskapp.service';
+import { P2pStreamService } from './p2p-stream.service';
+
 
 
 
@@ -49,7 +51,8 @@ const appRoutes: Routes = [
 		let logService =  new LogService(LogModule.Admin);
 		logService.plugLogEvents();
 		return logService;
-	} }
+	} },
+	P2pStreamService
   ],
   bootstrap: [AppComponent]
 })

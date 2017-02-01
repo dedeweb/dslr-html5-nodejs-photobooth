@@ -29,6 +29,8 @@ export class AppComponent {
 	private cropCoords: any;
 	public capturedImage:string;
 	private localMediaDevices = [];
+	private remoteStream: boolean = false;
+	private localDeviceId: string;
 
 	constructor(translate: TranslateService,
 				private p2pStreamService : P2pStreamService,
@@ -62,11 +64,23 @@ export class AppComponent {
 			}).catch(function (err) {
 				that.logger.error('error playing video ! ' + err.message);
 			});*/
+			that.remoteStream = true;
 
 		};
 
 		p2pStreamService.onRequestImage =  function () {
 			that.requestImage = true;
+		};
+		
+		p2pStreamService.onDisconnect = function () {
+			that.currentStream = null;
+			that.playLocalStream();
+		};
+		
+		p2pStreamService.onRequestLocalPlay = function(deviceId) {
+			that.localDeviceId = deviceId;
+			that.currentStream = null;
+			that.playLocalStream();
 		};
 	}
 	
@@ -79,6 +93,11 @@ export class AppComponent {
 						that.localMediaDevices.push(device);
 					}
 				}
+				if(that.localMediaDevices.length > 0 ) {
+					that.localDeviceId = that.localMediaDevices[0].deviceId
+					that.p2pStreamService.announceLocalDeviceEnumerate(that.localMediaDevices);
+				}
+				
 				resolve();
 			}).catch(function (error) {
 				that.logger.error('navigator.getUserMedia error: ' + JSON.stringify(error));
@@ -87,19 +106,20 @@ export class AppComponent {
 		});
 	}
 	
-	playLocalStream(index:number) {
+	playLocalStream() {
 		var that = this;
-		if(!this.currentStream && this.localMediaDevices && index < this.localMediaDevices.length) {
+		if(!this.currentStream && that.localDeviceId) {
 			//should play local device
 			this.logger.log('start local stream');
 				navigator.mediaDevices.getUserMedia({
 				audio: false,
 				video: {
-					deviceId: that.localMediaDevices[index].deviceId
+					deviceId: that.localDeviceId
 				}
 			}).then(function (stream) {
 				that.logger.log('local stream received');
 				that.currentStream = stream;
+				that.remoteStream = false;
 			});
 		} else {
 			this.logger.warn('cannot play local device');
@@ -109,7 +129,7 @@ export class AppComponent {
 	ngOnInit(){
 		var componentClass = this;
 		this.enumerateLocalStream().then(function () {
-			componentClass.playLocalStream(0);
+			componentClass.playLocalStream();
 		});
 	
 		var dispCanvasElement = this.el.nativeElement.querySelector('#displayCanvas');
@@ -150,6 +170,7 @@ export class AppComponent {
 
 		this.videoElement.addEventListener('play', function () {
 				componentClass.logger.log('play');
+				componentClass.p2pStreamService.announceStreamPlaying(componentClass.remoteStream);
 				var that = this;
 
 				(function loop() {
@@ -177,6 +198,16 @@ export class AppComponent {
 				  }
 				})();
 			},false);
+			
+		this.videoElement.addEventListener('pause', function () {
+			componentClass.logger.log('pause');
+		}, false);
+		this.videoElement.addEventListener('waiting', function () {
+			componentClass.logger.log('waiting');
+		}, false);
+		this.videoElement.addEventListener('emptied', function () {
+			componentClass.logger.log('emptied');
+		}, false);
 			//this.currentStep = 1;
 			//this.currentCaptureState = captureState.countDown;
 			//this.launchCountDown();

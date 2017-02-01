@@ -130,6 +130,43 @@
 						</span>
 					</div>
 				</div>
+				<div class="row">
+					<div class="col-2 text-right">
+						{{'camera.mode' | translate }} : 
+					</div>
+					<div class="col-10">
+						<span *ngIf="p2pStreamService.cameraMode == -1" class="text-danger">
+							{{'camera.unknown_mode' | translate}}
+						</span>
+						<span *ngIf="p2pStreamService.cameraMode == 0">
+							<code>{{'camera.local_mode' | translate}}</code>
+						</span>
+						<span *ngIf="p2pStreamService.cameraMode == 1">
+							<code>{{'camera.remote_mode' | translate}}</code>
+						</span>
+						
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-2 text-right">
+					<label for="videoSource"> {{'camera.source' | translate}} : </label>
+					</div>
+					<div class="col-10">
+						<div *ngIf="p2pStreamService.devices.length > 0">
+							<select name="videoSource" [(ngModel)]="currentLocalDeviceId" >
+								<option *ngFor="let mediaDevice of p2pStreamService.devices; let i = index" [value]="mediaDevice.deviceId" >  
+								{{mediaDevice.label ? mediaDevice.label : ('camera ' + (i + 1)) }}
+								</option>
+							</select>
+							<button [hidden]="!currentLocalDeviceId" (click)="p2pStreamService.playLocalDevice(currentLocalDeviceId)" class="btn btn-primary btn-sm">
+								{{ 'camera.play' | translate}}
+							</button>
+						</div>
+						<div *ngIf="p2pStreamService.devices.length == 0" class="text-danger">
+							{{'camera.source_unavailable' | translate}}
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

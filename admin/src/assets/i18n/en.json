@@ -25,6 +25,15 @@
 	"kioskapp_reload" : "reload page",
 	"kioskapp_exit_fs" : "exit fullscreen",
 	"kioskapp_enter_fs" : "go fullscreen",
+	"camera" : {
+		"mode" : "camera mode",
+		"unknown_mode" : "unknown",
+		"local_mode" : "local mode",
+		"remote_mode" : "remote mode",
+		"source_unavailable" : "unavailable",
+		"play" : "play",
+		"source" : "local source"
+	},
 	"log" : {
 		"module" : {
 			"server" : "Server",

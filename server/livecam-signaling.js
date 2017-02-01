@@ -71,6 +71,18 @@ LiveCamSignaling.prototype = {
 			socket.emit('camera-ready', true);
 		}
 		
+		socket.on('front-playing', function (data) { 
+			socket.broadcast.emit('front-playing', data);
+		});
+		
+		socket.on('front-local-enumerate', function (data) { 
+			socket.broadcast.emit('front-local-enumerate', data);
+		});
+		
+		socket.on('front-select-local-device', function (data) { 
+			socket.broadcast.emit('front-select-local-device', data);
+		});
+		
 		/*
 		if(that.cameraOffer) {
 			//if cameraOffer already set, send it on connection to client;

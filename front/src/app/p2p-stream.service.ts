@@ -13,6 +13,9 @@ export class P2pStreamService {
 	private socket : any;
 	public onAddStream : (stream : MediaStream) => void;
 	public onRequestImage: () => void;
+	public onDisconnect: () => void;
+	public onRequestLocalPlay: (deviceId: string) => void;
+	
 	
 	constructor(private logger: LogService) { 
 		this.initPeerConnection();
@@ -56,6 +59,9 @@ export class P2pStreamService {
 		};
 		this.pc.oniceconnectionstatechange = function(event) {
 			that.logger.log('ICE connectionstate changed :  ' + that.pc.iceConnectionState);
+			if(that.pc.iceConnectionState === 'disconnected' && that.onDisconnect) {
+				that.onDisconnect();
+			}
 		};
 		
 		this.pc.ondatachannel = function (ev) {
@@ -84,6 +90,9 @@ export class P2pStreamService {
 				that.socket.emit('request-camera-stream');
 			} else {
 				console.log('camera not ready, disconnecting.');
+				if(that.onDisconnect) {
+					that.onDisconnect();
+				}
 				that.initPeerConnection();
 			}
 		});
@@ -122,11 +131,25 @@ export class P2pStreamService {
 			}
 		});
 		
+		this.socket.on('front-select-local-device', function (deviceId) {
+			if(that.onRequestLocalPlay) {
+				that.onRequestLocalPlay(deviceId);
+			}
+		});
+		
 	}
 	
 	public sendCalibrationImage(image: any) {
 		this.logger.log('sending webcam image for calibration.');
 		this.socket.emit('webcam-image', image);
+	}
+	
+	public announceStreamPlaying(remote:boolean) {
+		this.socket.emit('front-playing', remote);
+	}
+	
+	public announceLocalDeviceEnumerate(devices: any) {
+		this.socket.emit('front-local-enumerate', devices);
 	}
 	
 
