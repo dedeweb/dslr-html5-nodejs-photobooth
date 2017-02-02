@@ -16,13 +16,13 @@ var cameraControl = require('./camera-control')(logger);
 var liveCamSignaling = require('./livecam-signaling')(logger);
 var logSignaling = require('./log-signaling');
 var Datastore = require('nedb');
-var db = new Datastore({filename: './tamerbooth.db'}); 
+var db = new Datastore({filename: './tamerbooth.db'});
 db.loadDatabase(function(err) {
 	if(err) {
-		logger.error('Error loading db : ' + JSON.stringify(err));	
+		logger.error('Error loading db : ' + JSON.stringify(err));
 	} else  {
 		logger.log('db loaded');
-	}	
+	}
 });
 
 app.use(morgan('dev'));
@@ -53,7 +53,7 @@ io.on('connection', function (socket) {
 	logger.log('user connected');
 	liveCamSignaling.plugEvents(socket);
 	logSignaling.plugEvents(socket, io);
-	socket.on('request-calibration-images', function () { 
+	socket.on('request-calibration-images', function () {
 		socket.broadcast.emit('request-calibration-images');
 		//TODO : sending image from camera
 		cameraControl.capturePreview()
@@ -65,7 +65,7 @@ io.on('connection', function (socket) {
 
 //API part : https to http proxy
 app.post('/api/httpproxy', function (req, res) {
-	
+
 	var url = req.body.url;
 	var verb = req.body.verb;
 	var data = req.body.data;
@@ -74,17 +74,15 @@ app.post('/api/httpproxy', function (req, res) {
 	if(verb == 'POST') {
 		req2 = request.post({uri: url, json: data});
 	} else {
-		req2 = request(url);
+		req2 = request.get(url);
 	}
-	req
-	.on('error', function(err){res.status(500).send(err);})
-	.pipe(req2)
+  req2
 	.on('error', function(err){res.status(500).send(err);})
 	.pipe(res)
 	.on('error', function(err){res.status(500).send(err);});
 });
 
-//API part : authorize. 
+//API part : authorize.
 app.get('/api/authorizeModule/:module', function (req, res)  {
 	if(logSignaling.isAlreadyConnected(req.params.module)) {
 		res.status(403).send('Module already launched. Please close the other window and refresh page.');
@@ -103,8 +101,8 @@ app.get('/api/webcamCrop', function (req, res) {
 			res.status(200).send(docs[0].coords);
 		} else {
 			logger.warn('coords not found, creating new ones ! ');
-			var data = { 
-				key: 'crop', 
+			var data = {
+				key: 'crop',
 				coords : null};
 			db.insert(data);
 			res.status(200).send(data.coords);
@@ -122,11 +120,11 @@ app.post('/api/webcamCrop', function (req, res) {
 		} else {
 			logger.log('coords saved. num replaced = ' + numReplaced);
 			res.status(200).end();
-		} 
+		}
 	});
 });
 
-//API part : camera control. 
+//API part : camera control.
 app.get('/api/cameraStatus', function (req, res)  {
 	cameraControl.getStatus(res);
 });

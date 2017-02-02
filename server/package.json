@@ -5,13 +5,15 @@
   "main": "app.js",
   "scripts": {
     "test": "npm start",
-	"start" : "node app",
-	"build" : "webpack"
+    "start": "node app",
+    "build": "webpack"
   },
   "keywords": [
     "server",
     "tamerbooth"
   ],
   "author": "Denis Messié",
-  "license": "GPL-3.0"
+  "license": "GPL-3.0",
+  "dependencies": {
+  }
 }
