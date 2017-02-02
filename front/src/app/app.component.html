@@ -1,7 +1,10 @@
 <video autoplay [srcObject]="currentStream"></video>
 
 <div class="capture-area">
-	<canvas id="displayCanvas"></canvas>
+	<canvas id="displayCanvas" [ngClass]="{ 
+	'blurred': 
+	currentCaptureState == captureState.displayError || 
+	currentCaptureState == captureState.waitForImage}"></canvas>
 	<canvas id="getImgCanvas"></canvas>
 	
 	<div class="area-capture-control" *ngIf="currentCaptureState == captureState.waitForInput">
@@ -26,7 +29,7 @@
 		</div>
 	</div>
 	<div class="area-wait-img" *ngIf="currentCaptureState == captureState.waitForImage">
-		TODO WAITING FOR IMG
+		<div class="spinner"></div>
 	</div>
 	<div class="area-display-img" *ngIf="currentCaptureState == captureState.displayPicture">
 		<!--<div id="cameraImage" [ngStyle]="{ 'background-image': 'url(' + capturedImage + ')'}">

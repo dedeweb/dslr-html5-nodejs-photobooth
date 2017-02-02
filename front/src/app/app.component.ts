@@ -231,8 +231,8 @@ export class AppComponent {
 				setTimeout(updateCountDown, 1000);
 			} else {
 				//exiting countdown
-				//that.capturePicture();
-				this.currentCaptureState = captureState.waitForImage;
+				that.currentCaptureState = captureState.waitForImage;
+				that.capturePicture();
 			}
 		}
 		updateCountDown();
