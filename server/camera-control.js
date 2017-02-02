@@ -128,7 +128,7 @@ CameraControl.prototype = {
             }
             else
             {
-              sharp(data).resize(1600,1200).toBuffer()
+              sharp(data).resize(1600,1200).max().toBuffer()
                 .then(function (data) {
                   logger.log('['+new Date().toString()+'] sending jpeg ' + jpegFile );
 

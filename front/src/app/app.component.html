@@ -29,8 +29,9 @@
 		TODO WAITING FOR IMG
 	</div>
 	<div class="area-display-img" *ngIf="currentCaptureState == captureState.displayPicture">
-		<div id="cameraImage" [ngStyle]="{ 'background-image': 'url(' + capturedImage + ')'}">
-		</div>
+		<!--<div id="cameraImage" [ngStyle]="{ 'background-image': 'url(' + capturedImage + ')'}">
+		</div>-->
+		<img id="cameraImage" [src]="capturedImage" />
 	</div>
 	<div class="area-display-error" *ngIf="currentCaptureState == captureState.displayError">
 		<div class="error-panel">
