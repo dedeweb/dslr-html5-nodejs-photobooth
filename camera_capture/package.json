@@ -9,7 +9,7 @@
     "test": "ng test",
     "pree2e": "webdriver-manager update",
     "e2e": "protractor",
-	"build" : "ng build --prod --bh /camera/"
+    "build": "ng build --prod --bh /camera/"
   },
   "private": true,
   "dependencies": {
@@ -30,6 +30,7 @@
     "tether": "^1.3.7",
     "ts-helpers": "^1.1.1",
     "underscore": "^1.8.3",
+    "webrtc-adapter": "^3.1.2",
     "zone.js": "^0.6.23"
   },
   "devDependencies": {

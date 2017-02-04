@@ -71,19 +71,19 @@ export class AppComponent {
 		p2pStreamService.onRequestImage =  function () {
 			that.requestImage = true;
 		};
-		
+
 		p2pStreamService.onDisconnect = function () {
 			that.currentStream = null;
 			that.playLocalStream();
 		};
-		
+
 		p2pStreamService.onRequestLocalPlay = function(deviceId) {
 			that.localDeviceId = deviceId;
 			that.currentStream = null;
 			that.playLocalStream();
 		};
 	}
-	
+
 	enumerateLocalStream() {
 		var that = this;
 		return new Promise(function(resolve, reject) {
@@ -97,7 +97,7 @@ export class AppComponent {
 					that.localDeviceId = that.localMediaDevices[0].deviceId
 					that.p2pStreamService.announceLocalDeviceEnumerate(that.localMediaDevices);
 				}
-				
+
 				resolve();
 			}).catch(function (error) {
 				that.logger.error('navigator.getUserMedia error: ' + JSON.stringify(error));
@@ -105,7 +105,7 @@ export class AppComponent {
 			});
 		});
 	}
-	
+
 	playLocalStream() {
 		var that = this;
 		if(!this.currentStream && that.localDeviceId) {
@@ -114,7 +114,10 @@ export class AppComponent {
 				navigator.mediaDevices.getUserMedia({
 				audio: false,
 				video: {
-					deviceId: that.localDeviceId
+					deviceId: that.localDeviceId,
+          width: 320,
+          height: 240,
+          frameRate: 10
 				}
 			}).then(function (stream) {
 				that.logger.log('local stream received');
@@ -125,19 +128,19 @@ export class AppComponent {
 			this.logger.warn('cannot play local device');
 		}
 	}
-	
+
 	ngOnInit(){
 		var componentClass = this;
 		this.enumerateLocalStream().then(function () {
 			componentClass.playLocalStream();
 		});
-	
+
 		var dispCanvasElement = this.el.nativeElement.querySelector('#displayCanvas');
 		var imgCanvasElement = this.el.nativeElement.querySelector('#getImgCanvas');
 		this.videoElement = this.el.nativeElement.querySelector('video');
 		var dispCtx= dispCanvasElement.getContext('2d');
 		var imgCtx= imgCanvasElement.getContext('2d');
-		
+
 		this.videoElement.onloadedmetadata = function() {
 			componentClass.logger.log('loaded video metadata');
 			imgCanvasElement.height = this.videoHeight;
@@ -161,7 +164,7 @@ export class AppComponent {
 					dispCanvasElement.height = 480;
 					dispCanvasElement.width = 640;
 				}
-				
+
 			},
 			function error(data) {
 				componentClass.logger.error('cannot get coords : ' + data);
@@ -175,30 +178,30 @@ export class AppComponent {
 
 				(function loop() {
 				  if (!that.paused && !that.ended) {
-					if(componentClass.cropCoords) {
-						dispCtx.drawImage(that,
-							componentClass.cropCoords.x,
-							componentClass.cropCoords.y,
-							componentClass.cropCoords.width,
-							componentClass.cropCoords.height,
-							0, 0, dispCanvasElement.width, dispCanvasElement.height);
-					} else {
-						dispCtx.drawImage(that,0, 0, that.videoWidth, that.videoHeight ,
-							0, 0, dispCanvasElement.width, dispCanvasElement.height);
-					}
+            if(componentClass.cropCoords) {
+              dispCtx.drawImage(that,
+                componentClass.cropCoords.x,
+                componentClass.cropCoords.y,
+                componentClass.cropCoords.width,
+                componentClass.cropCoords.height,
+                0, 0, dispCanvasElement.width, dispCanvasElement.height);
+            } else {
+              dispCtx.drawImage(that,0, 0, that.videoWidth, that.videoHeight ,
+                0, 0, dispCanvasElement.width, dispCanvasElement.height);
+            }
 
-					setTimeout(loop, 1000 / 30); // drawing at 30fps
+            setTimeout(loop, 1000 / 10); // drawing at 10fps
 				  }
 				  if(componentClass.requestImage) {
-					componentClass.requestImage = false;
+            componentClass.requestImage = false;
 
-					imgCtx.drawImage(that,0, 0, that.videoWidth, that.videoHeight,
-										0, 0, imgCanvasElement.width, imgCanvasElement.height);
-					componentClass.p2pStreamService.sendCalibrationImage(imgCanvasElement.toDataURL());
+            imgCtx.drawImage(that,0, 0, that.videoWidth, that.videoHeight,
+                      0, 0, imgCanvasElement.width, imgCanvasElement.height);
+            componentClass.p2pStreamService.sendCalibrationImage(imgCanvasElement.toDataURL());
 				  }
 				})();
 			},false);
-			
+
 		this.videoElement.addEventListener('pause', function () {
 			componentClass.logger.log('pause');
 		}, false);

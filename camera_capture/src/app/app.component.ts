@@ -19,15 +19,15 @@ export class AppComponent {
 	private videoElement : HTMLVideoElement;
 	private remoteStream : MediaStream = null;
 	private clientConnected: boolean = false;
-	
-	private videoQuality : any[] = [ 
+
+	private videoQuality : any[] = [
 		{ val: 1, label: "QVGA (320x240)" },
 		{ val: 2, label: "VGA (640x480)" },
 		{ val: 3, label: "XGA (1024x768)" 	},
 		{ val: 4, label: "UXGA (1600x1200)" }
 	];
-	
-	constructor(translate: TranslateService, 
+
+	constructor(translate: TranslateService,
 				private el: ElementRef,
 				private p2pStreamService : P2pStreamService,
 				private logger: LogService) {
@@ -42,27 +42,27 @@ export class AppComponent {
 		p2pStreamService.onClientStatusChange = function (connected: boolean) {
 			that.clientConnected = connected;
 		};
-		
+
 	}
-	
+
 	ngOnInit(){
 		this.videoElement = this.el.nativeElement.querySelector('video');
 		this.refreshDevices();
 	}
-	
+
 	refreshDevices () {
 		var that = this;
 		navigator.mediaDevices.enumerateDevices().then(function (deviceInfos) {
-			
+
 			that.mediaDevices = _.where(deviceInfos, { kind: 'videoinput'});
-			
+
 		}).catch(function (error) {
 			that.logger.error('navigator.getUserMedia error: ' + JSON.stringify(error));
 		});
 	}
-	
+
 	private getQualityWidth() : number {
-	
+
 		switch(this.currentQuality) {
 			case '1':
 				return 320;
@@ -76,9 +76,9 @@ export class AppComponent {
 				return 640;
 		}
 	}
-	
+
 	private getQualityHeight() : number {
-	
+
 		switch(this.currentQuality) {
 			case '1':
 				return 240;
@@ -92,10 +92,10 @@ export class AppComponent {
 				return 480;
 		}
 	}
-	
+
 	startStream() {
 		if(this.currentMedia) {
-			
+
 			this.logger.log('start stream : '  + this.currentMedia);
 			var that = this;
 			navigator.mediaDevices.getUserMedia({
@@ -106,13 +106,13 @@ export class AppComponent {
 					height: this.getQualityHeight()
 				}
 			}).then(function (stream) {
-				
+
 				that.currentStream = stream;
 				// Refresh button list in case labels have become available
 				that.refreshDevices();
 				that.p2pStreamService.cameraReady(true, stream);
 			});
-		} 
+		}
 		else {
 			this.p2pStreamService.cameraReady(false, null);
 		}
