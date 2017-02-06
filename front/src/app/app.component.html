@@ -4,6 +4,7 @@
 	<canvas id="displayCanvas" [ngClass]="{ 
 	'blurred': 
 	currentCaptureState == captureState.displayError || 
+	currentCaptureState == captureState.displayPicture ||
 	currentCaptureState == captureState.waitForImage}"></canvas>
 	<canvas id="getImgCanvas"></canvas>
 	
@@ -31,10 +32,18 @@
 	<div class="area-wait-img" *ngIf="currentCaptureState == captureState.waitForImage">
 		<div class="spinner"></div>
 	</div>
-	<div class="area-display-img" *ngIf="currentCaptureState == captureState.displayPicture">
+	<div class="area-display-img" 
+		[ngClass]="{'animate' : 'currentCaptureState == captureState.displayPicture'}" 
+		*ngIf="currentCaptureState == captureState.displayPicture">
 		<!--<div id="cameraImage" [ngStyle]="{ 'background-image': 'url(' + capturedImage + ')'}">
 		</div>-->
 		<img id="cameraImage" [src]="capturedImage" />
+		<div class="capture-actions">
+			<button class="booth-button" type="button" (click)="reloadPage()">
+				<i class="fa fa-repeat" aria-hidden="true"></i>
+				{{ 'restart' | translate}}
+			</button>
+		</div>
 	</div>
 	<div class="area-display-error" *ngIf="currentCaptureState == captureState.displayError">
 		<div class="error-panel">
@@ -42,7 +51,11 @@
 			<span class="error-message">
 				{{ 'generic_error_message' | translate}}
 			</span>
-			<!--{{ 'restart' | translate}}-->
+			<br/>
+			<button class="booth-button restart-button" type="button" (click)="reloadPage()">
+				<i class="fa fa-repeat" aria-hidden="true"></i>
+				{{ 'retry' | translate}}
+			</button>
 		</div>
 	</div>
 </div>

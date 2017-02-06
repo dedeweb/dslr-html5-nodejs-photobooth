@@ -255,4 +255,8 @@ export class AppComponent {
 			});
 
 	}
+	
+	reloadPage() {
+		location.reload();
+	}
 }

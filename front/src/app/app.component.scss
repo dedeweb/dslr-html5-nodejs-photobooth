@@ -1,5 +1,4 @@
-$capture-button-size: 80;
-$color-spinner: #ffffff;
+$capture-button-size: 150;
 body {
 	overflow: hidden;
 }
@@ -8,7 +7,7 @@ video {
 }
 
 .blurred {
-	filter: blur(5px);
+	filter: blur(10px);
 }
 #displayCanvas {
 	width: 100%;
@@ -25,22 +24,38 @@ video {
 
 .bottom-message {
     cursor: pointer;
-	position: fixed;
+    position: fixed;
     bottom: 0;
-    right: 25px;
-    text-shadow: 0 0 5px #000000;
+    text-shadow: 0 0 20px #000000;
     color: white;
-    font-size: 35px;
+    font-size: 55px;
+    width: 100%;
+    text-align: right;
+    padding-right: 30px;
+    background: linear-gradient(to top, rgba(0,0,0,0.5), rgba(0,0,0,0));
+
 }
 .arrow-tip {
 	position: fixed;
-	bottom: 75px;
-	right: (  $capture-button-size / 2 ) +px;
-	animation: shake 2s infinite;
-	font-size: ($capture-button-size / 2 ) + px;
-	text-shadow: 0 0 5px #000000;
+    /* bottom: 75px; */
+    right: 60px;
+    top: 65%;
+    animation: shake 2s infinite;
+    font-size: 80px;
+    text-shadow: 0 0 10px #000000;
     color: white;
+}
 
+.booth-button{
+	background-image: -webkit-linear-gradient(93deg, #bbbbbb, #fff);
+    color: #585858;
+    font-size: 35px;
+    font-family: inherit;
+    padding: 10px 27px;
+    border-radius: 10px;
+    box-shadow: 0 7px 5px #191919;
+    border: 1px solid black;
+    margin: 15px;
 }
 
 .countdown {
@@ -109,57 +124,12 @@ video {
     position: absolute;
 }
 
-.spinner {
-    width: 100px;
-    height: 100px;
-    display: block;
-    position: absolute;
-	top:0;
-	bottom:0;
-	left:0;
-	right:0;
-	margin:auto;
-	
-	border-radius: 50%;
-    border: solid 8px $color-spinner;
-    /*border-right: solid 6px $color-spinner;
-    border-bottom: solid 6px $color-spinner;
-    border-left: solid 6px $color-spinner;*/
-	
-	&:before{
-		border-radius: 4px;
-		content: " ";
-		width: 8px;
-		height: 35px;
-		display: inline-block;
-		box-sizing: border-box;
-		background-color: #ffffff;
-		position: absolute;
-		top: 6px;
-		left: 38px;
-		transform-origin: center bottom;
-		animation: spinner-animate-before 1s linear infinite
-	}
-}
-
-@keyframes spinner-animate-before {
-    0% {
-        transform: rotate(-45deg)
-    }
-    100% {
-        transform: rotate(315deg)
-    }
-}
-
-
-
-
-
 .area-display-img {
 	position: absolute;
 	display: block;
 	height: 100%;
 	width: 100%;
+	background: rgba(0, 0, 0, 0.6);
 	#cameraImage {
 		/*background-size: contain;
 		background-repeat: no-repeat;
@@ -172,6 +142,54 @@ video {
 		bottom: 0;
 		margin: auto;
 		position: absolute;
+	}
+	.capture-actions {
+		width: 30%;
+		height: 100%;
+		position: absolute;
+		right: -50%;
+		margin-left: -24px;
+		text-align: center;
+	}
+	&.animate {
+		#cameraImage {
+			animation-name: display-image-anim;
+			animation-duration: 2s;
+			animation-delay: 3s;
+			animation-fill-mode: forwards;
+		}
+		.capture-actions {
+			animation-name: capture-actions-anim;
+			animation-duration: 2s;
+			animation-delay: 3s;
+			animation-fill-mode: forwards;
+		}
+	}
+}
+
+@keyframes display-image-anim {
+	0% {
+		width: 100%;
+		left: 0;
+		box-shadow: 0 0 0px #333333;
+	}
+
+	100% {
+		width: 65%;
+		left: 20px;
+		top: 20px;
+		bottom: auto;
+		box-shadow: 0 0 10px #333333;
+	}
+
+}
+
+@keyframes capture-actions-anim {
+	0% {
+		right: -50%;
+	}
+	100% {
+		right: 20px;
 	}
 }
 
@@ -189,9 +207,12 @@ video {
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%,-50%);
-		.fa {
+		&>.fa {
 			display: block;
 			font-size: 6em;
+		}
+		&>.restart-button {
+			//display: block;
 		}
 		.error-message {
 			font-size: 2em;

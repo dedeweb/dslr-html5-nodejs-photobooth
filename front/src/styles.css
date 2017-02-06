@@ -2,5 +2,53 @@
 
 body {
 	overflow:hidden;
+	/*background: #000000;*/
+	user-select: none; 
+}
+
+.app-root-wrapper {
+	height: 100%;
+    width: 100%;
+    position: absolute;
 	background: #000000;
+}
+
+
+.spinner {
+    width: 100px;
+    height: 100px;
+    display: block;
+    position: absolute;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+	margin:auto;
+	
+	border-radius: 50%;
+    border: solid 8px #ffffff;
+}
+
+.spinner:before{
+	border-radius: 4px;
+	content: " ";
+	width: 8px;
+	height: 35px;
+	display: inline-block;
+	box-sizing: border-box;
+	background-color: #ffffff;
+	position: absolute;
+	top: 6px;
+	left: 38px;
+	transform-origin: center bottom;
+	animation: spinner-animate-before 1s linear infinite
+}
+
+@keyframes spinner-animate-before {
+    0% {
+        transform: rotate(-45deg)
+    }
+    100% {
+        transform: rotate(315deg)
+    }
 }

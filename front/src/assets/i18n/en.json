@@ -2,5 +2,6 @@
 	"picture_button_help" : "Press the button to take a picture",
 	"countdown_ready" : "ready ?",
 	"generic_error_message" : "An error occured, please contact your administrator.",
-	"restart" : "retry"
+	"retry" : "retry",
+	"restart" : "restart"
 }
