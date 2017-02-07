@@ -12,7 +12,7 @@ $countdown-color : #ffffff;
 .countdown-value {
 	width: 100%;
     text-align: center;
-    font-size: 30px;
+    font-size: 32px;
     font-weight: bold;
 }
 
@@ -45,7 +45,7 @@ $countdown-color : #ffffff;
 				border-radius: 250px 0 0 250px / 125px 0 0 125px; // Fallback for devices without border radius percentage support
 				border-radius: 100% 0 0 100% / 50% 0 0 50%;
 				z-index: 200;
-				border-right: none;
+				border-right: none ;
 			}
 			
 			.countdown-filler {
@@ -61,7 +61,7 @@ $countdown-color : #ffffff;
 		.countdown-bg { 
 			height: $size;
 			width: $size;
-			border: $thickness + 1 solid darken($color, 50%) ;
+			border: $thickness solid darken($color, 50%) ;
 			border-radius: 50%;
 			position: relative;
 			top:-$size;
@@ -69,21 +69,42 @@ $countdown-color : #ffffff;
 		}
 	}
 	
-	#{$item}.animate .countdown-fg {
-		
-		animation: 
-			mask $duration + s steps(1,end) infinite,
-			morepos $duration + s steps(1,end) infinite;
-		
-		.countdown-spinner {
-			animation: rota $duration + s linear infinite;
+	#{$item}.animate {
+		.countdown-bg { 
+			animation: inverse-bg $duration * 2 + s steps(1,end) infinite;
 		}
-		
-		.countdown-filler {
-			animation: opa $duration + s steps(1,end) infinite;
-		}	
-	}
+		.countdown-fg {
+			
+			animation: 
+				mask $duration + s steps(1,end) infinite,
+				morepos $duration + s steps(1,end) infinite;
+			
+			.countdown-spinner {
+				animation: rota $duration + s linear infinite, inverse-countdown-spinner $duration * 2 + s steps(1,end) infinite;
+			}
+			
+			.countdown-filler {
+				border-left: none!important;
+				animation: opa $duration + s steps(1,end) infinite, inverse-countdown-filler $duration * 2 + s steps(1,end) infinite;
+			}	
+		}
+	} 
 
+	@keyframes inverse-countdown-spinner {
+		0%, 100% { border: $thickness solid $color;border-right: none ;}
+		50% { border: $thickness solid darken($color, 50%); border-right: none ;}
+	}
+	
+	@keyframes inverse-countdown-filler {
+		0%, 100% { border: $thickness solid $color;border-left: none ;}
+		50% { border: $thickness solid darken($color, 50%); border-left: none ;}
+	}
+	
+	@keyframes inverse-bg {
+		0%, 100% {  border: $thickness solid darken($color, 50%) ; }
+		50% { border: $thickness solid $color ; }
+	}
+	
 	@keyframes rota {
 		0% { transform: rotate(0deg); }
 		100% { transform: rotate(360deg); }
@@ -108,4 +129,4 @@ $countdown-color : #ffffff;
 	} 
 }
 
-@include timer('.countdown-circle', 2, 60px, transparent, 5px, $countdown-color);
+@include timer('.countdown-circle', 2, 60px, transparent, 4px, $countdown-color);
