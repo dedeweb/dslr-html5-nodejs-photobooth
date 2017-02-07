@@ -37,11 +37,16 @@
 		*ngIf="currentCaptureState == captureState.displayPicture">
 		<!--<div id="cameraImage" [ngStyle]="{ 'background-image': 'url(' + capturedImage + ')'}">
 		</div>-->
+		<countdown class="countdown-print" duration="20" startAfter="3" (onComplete)="restart()" ></countdown>
 		<img id="cameraImage" [src]="capturedImage" />
 		<div class="capture-actions">
-			<button class="booth-button" type="button" (click)="reloadPage()">
+			<button class="booth-button" type="button" (click)="restart()">
 				<i class="fa fa-repeat" aria-hidden="true"></i>
 				{{ 'restart' | translate}}
+			</button>
+			<button class="booth-button" type="button" (click)="restart()">
+				<i class="fa fa-print" aria-hidden="true"></i>
+				{{ 'print' | translate}}
 			</button>
 		</div>
 	</div>

@@ -31,6 +31,7 @@ export class AppComponent {
 	private localMediaDevices = [];
 	private remoteStream: boolean = false;
 	private localDeviceId: string;
+	private restartCount: number = 0;
 
 	constructor(translate: TranslateService,
 				private p2pStreamService : P2pStreamService,
@@ -229,9 +230,9 @@ export class AppComponent {
 			} else if (that.currentStep == 5) {
 				//launching before end, as it takes about 2 sec to trigger capture.
 				that.capturePicture();
-				setTimeout(updateCountDown, 1000);
+				setTimeout(updateCountDown, 1500);
 			}else if (that.currentStep > 0 && that.currentStep < 6) {
-				setTimeout(updateCountDown, 1000);
+				setTimeout(updateCountDown, 1500);
 			} else {
 				//exiting countdown
 				that.currentCaptureState = captureState.waitForImage;
@@ -258,5 +259,15 @@ export class AppComponent {
 	
 	reloadPage() {
 		location.reload();
+	}
+	
+	restart() {
+		this.restartCount ++;
+		this.currentCaptureState =  captureState.waitForInput;
+		if(this.restartCount > 5) {
+			//reload entire page each 5  restart, for stability
+			this.reloadPage();
+		}
+		
 	}
 }

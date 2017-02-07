@@ -1,0 +1,111 @@
+$countdown-color : #ffffff;
+.countdown-wrapper {
+	color: $countdown-color ;
+}
+.countdown-circle {
+	position: relative;
+	//margin: 40px auto;
+	margin: 5px;
+	
+}
+
+.countdown-value {
+	width: 100%;
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+@mixin timer($item, $duration, $size, $bgColor, $thickness, $color) {
+    //#{$item}, #{$item} * { @include box-sizing(border-box); }
+	#{$item} .countdown-fg, #{$item} .countdown-fg * {
+		box-sizing: border-box;
+	}
+	#{$item} {
+		.countdown-fg { 
+			width: $size / 2;
+			height: $size;
+			left: $size / 2;
+			
+			background: transparent;
+			overflow: hidden;	
+			position: relative;
+			
+			.countdown-pie {
+				width: $size/2;
+				height: 100%;
+				transform-origin: 100% 50%;
+				position: absolute;
+				right: $size/2;
+				background: $bgColor;
+				border: $thickness solid $color;
+			}
+			
+			.countdown-spinner {
+				border-radius: 250px 0 0 250px / 125px 0 0 125px; // Fallback for devices without border radius percentage support
+				border-radius: 100% 0 0 100% / 50% 0 0 50%;
+				z-index: 200;
+				border-right: none;
+			}
+			
+			.countdown-filler {
+				border-radius: 250px 0 0 250px / 125px 0 0 125px; // Fallback for devices without border radius percentage support
+				border-radius: 0 100% 100% 0 / 0 50% 50% 0; 
+				right: 0;
+				//opacity: 0;
+				visibility: hidden;
+				z-index: 100;
+				border-left: none;
+			}
+		}
+		.countdown-bg { 
+			height: $size;
+			width: $size;
+			border: $thickness + 1 solid darken($color, 50%) ;
+			border-radius: 50%;
+			position: relative;
+			top:-$size;
+			left:0;
+		}
+	}
+	
+	#{$item}.animate .countdown-fg {
+		
+		animation: 
+			mask $duration + s steps(1,end) infinite,
+			morepos $duration + s steps(1,end) infinite;
+		
+		.countdown-spinner {
+			animation: rota $duration + s linear infinite;
+		}
+		
+		.countdown-filler {
+			animation: opa $duration + s steps(1,end) infinite;
+		}	
+	}
+
+	@keyframes rota {
+		0% { transform: rotate(0deg); }
+		100% { transform: rotate(360deg); }
+	}
+
+	@keyframes pos {
+		50%, 100% { right: 0; }
+	}
+
+	@keyframes morepos {
+		50%, 100% { left: 0; }
+	}
+
+	@keyframes opa {
+		50%, 100% { visibility: visible; }
+	}
+
+	@keyframes mask {
+		50%, 100% {
+			width: $size; 
+		}
+	} 
+}
+
+@include timer('.countdown-circle', 2, 60px, transparent, 5px, $countdown-color);

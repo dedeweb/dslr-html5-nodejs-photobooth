@@ -53,7 +53,7 @@ video {
     font-family: inherit;
     padding: 10px 27px;
     border-radius: 10px;
-    box-shadow: 0 7px 5px #191919;
+    box-shadow: 0 5px 5px #191919;
     border: 1px solid black;
     margin: 15px;
 }
@@ -143,13 +143,23 @@ video {
 		margin: auto;
 		position: absolute;
 	}
+	
+	.countdown-print {
+		top: 20px;
+		right: -50%;
+		position: absolute;
+	}
 	.capture-actions {
 		width: 30%;
 		height: 100%;
 		position: absolute;
 		right: -50%;
+		margin-top: 100px;
 		margin-left: -24px;
 		text-align: center;
+		.booth-button{
+		    width: 75%;
+		}
 	}
 	&.animate {
 		#cameraImage {
@@ -158,7 +168,7 @@ video {
 			animation-delay: 3s;
 			animation-fill-mode: forwards;
 		}
-		.capture-actions {
+		.capture-actions, .countdown-print {
 			animation-name: capture-actions-anim;
 			animation-duration: 2s;
 			animation-delay: 3s;

@@ -3,5 +3,6 @@
 	"countdown_ready" : "ready ?",
 	"generic_error_message" : "An error occured, please contact your administrator.",
 	"retry" : "retry",
-	"restart" : "restart"
+	"restart" : "restart",
+	"print": "print"
 }

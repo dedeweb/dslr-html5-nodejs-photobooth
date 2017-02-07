@@ -6,11 +6,13 @@ import {TranslateModule, TranslateLoader, TranslateStaticLoader} from 'ng2-trans
 import {P2pStreamService} from './p2p-stream.service';
 import { AppComponent } from './app.component';
 import { LogService, LogModule } from 'log.service';
-import {CameraService} from 'camera.service';
+import { CameraService } from 'camera.service';
+import { CountdownComponent } from './countdown/countdown.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    CountdownComponent
   ],
   imports: [
     BrowserModule,
