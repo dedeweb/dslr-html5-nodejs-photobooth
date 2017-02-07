@@ -23,8 +23,8 @@ $countdown-color : #ffffff;
 	}
 	#{$item} {
 		.countdown-fg { 
-			width: $size / 2;
-			height: $size;
+			width: $size / 2 ;
+			height: $size ;
 			left: $size / 2;
 			
 			background: transparent;
@@ -39,23 +39,18 @@ $countdown-color : #ffffff;
 				right: $size/2;
 				background: $bgColor;
 				border: $thickness solid $color;
+				border-right: none ;
+				border-radius: 100% 0 0 100% / 50% 0 0 50%;
 			}
 			
 			.countdown-spinner {
-				border-radius: 250px 0 0 250px / 125px 0 0 125px; // Fallback for devices without border radius percentage support
-				border-radius: 100% 0 0 100% / 50% 0 0 50%;
 				z-index: 200;
-				border-right: none ;
 			}
 			
 			.countdown-filler {
-				border-radius: 250px 0 0 250px / 125px 0 0 125px; // Fallback for devices without border radius percentage support
-				border-radius: 0 100% 100% 0 / 0 50% 50% 0; 
-				right: 0;
-				//opacity: 0;
 				visibility: hidden;
 				z-index: 100;
-				border-left: none;
+				transform: rotate(180deg);
 			}
 		}
 		.countdown-bg { 
@@ -70,40 +65,21 @@ $countdown-color : #ffffff;
 	}
 	
 	#{$item}.animate {
-		.countdown-bg { 
-			animation: inverse-bg $duration * 2 + s steps(1,end) infinite;
-		}
 		.countdown-fg {
 			
-			animation: 
-				mask $duration + s steps(1,end) infinite,
-				morepos $duration + s steps(1,end) infinite;
+			animation: mask $duration + s steps(1,end) infinite;
 			
 			.countdown-spinner {
-				animation: rota $duration + s linear infinite, inverse-countdown-spinner $duration * 2 + s steps(1,end) infinite;
+				animation: rota $duration + s linear infinite;
 			}
 			
 			.countdown-filler {
-				border-left: none!important;
-				animation: opa $duration + s steps(1,end) infinite, inverse-countdown-filler $duration * 2 + s steps(1,end) infinite;
+				animation: opa $duration + s steps(1,end) infinite;
 			}	
 		}
 	} 
 
-	@keyframes inverse-countdown-spinner {
-		0%, 100% { border: $thickness solid $color;border-right: none ;}
-		50% { border: $thickness solid darken($color, 50%); border-right: none ;}
-	}
 	
-	@keyframes inverse-countdown-filler {
-		0%, 100% { border: $thickness solid $color;border-left: none ;}
-		50% { border: $thickness solid darken($color, 50%); border-left: none ;}
-	}
-	
-	@keyframes inverse-bg {
-		0%, 100% {  border: $thickness solid darken($color, 50%) ; }
-		50% { border: $thickness solid $color ; }
-	}
 	
 	@keyframes rota {
 		0% { transform: rotate(0deg); }
@@ -112,11 +88,7 @@ $countdown-color : #ffffff;
 
 	@keyframes pos {
 		50%, 100% { right: 0; }
-	}
-
-	@keyframes morepos {
-		50%, 100% { left: 0; }
-	}
+	}	
 
 	@keyframes opa {
 		50%, 100% { visibility: visible; }
@@ -125,6 +97,7 @@ $countdown-color : #ffffff;
 	@keyframes mask {
 		50%, 100% {
 			width: $size; 
+			left: 0;
 		}
 	} 
 }
