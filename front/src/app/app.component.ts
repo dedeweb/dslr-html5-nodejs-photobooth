@@ -242,7 +242,9 @@ export class AppComponent {
 				setTimeout(updateCountDown, 1500);
 			} else {
 				//exiting countdown
-				that.currentCaptureState = captureState.waitForImage;
+				if(that.currentCaptureState != captureState.displayError) {
+					that.currentCaptureState = captureState.waitForImage;
+				}
 				//that.capturePicture();
 			}
 		}
