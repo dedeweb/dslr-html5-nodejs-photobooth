@@ -44,9 +44,24 @@
 				<i class="fa fa-repeat" aria-hidden="true"></i>
 				{{ 'restart' | translate}}
 			</button>
-			<button class="booth-button" type="button" (click)="restart()">
+			<button class="booth-button" type="button" (click)="displayPrintChoice()">
 				<i class="fa fa-print" aria-hidden="true"></i>
 				{{ 'print' | translate}}
+			</button>
+		</div>
+	</div>
+	<div class="area-print-choice" *ngIf="currentCaptureState == captureState.printChoice">
+		<div class="image-area">
+			<img id="cameraImagePrint" [src]="capturedImage" />
+		</div>
+		<div class="control-area">
+			<countdown class="countdown-print-choice" duration="10" theme="dark" (onComplete)="restart()" ></countdown>
+			<h1>{{ 'numberOfCopies' | translate}} : </h1>
+			<button *ngFor="let i of arrayCopies" class="booth-button nber-copies-btn" type="button" (click)="printPicture(i)">{{i}}</button>
+			<br/>
+			<button class="booth-button cancel-button" type="button" (click)="restart()">
+				<i class="fa fa-ban"></i>
+				{{ 'cancel' | translate}}
 			</button>
 		</div>
 	</div>

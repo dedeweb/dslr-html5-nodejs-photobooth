@@ -1,7 +1,6 @@
 $countdown-color : #ffffff;
-.countdown-wrapper {
-	color: $countdown-color ;
-}
+$countdown-color-dark : #757575;
+
 .countdown-circle {
 	position: relative;
 	//margin: 40px auto;
@@ -22,6 +21,7 @@ $countdown-color : #ffffff;
 		box-sizing: border-box;
 	}
 	#{$item} {
+		color: $color;
 		.countdown-fg { 
 			width: $size / 2 ;
 			height: $size ;
@@ -37,7 +37,7 @@ $countdown-color : #ffffff;
 				transform-origin: 100% 50%;
 				position: absolute;
 				right: $size/2;
-				background: $bgColor;
+				background: transparent;
 				border: $thickness solid $color;
 				border-right: none ;
 				border-radius: 100% 0 0 100% / 50% 0 0 50%;
@@ -56,7 +56,7 @@ $countdown-color : #ffffff;
 		.countdown-bg { 
 			height: $size;
 			width: $size;
-			border: $thickness solid darken($color, 50%) ;
+			border: $thickness solid  $bgColor;
 			border-radius: 50%;
 			position: relative;
 			top:-$size;
@@ -102,4 +102,5 @@ $countdown-color : #ffffff;
 	} 
 }
 
-@include timer('.countdown-circle', 2, 60px, transparent, 4px, $countdown-color);
+@include timer('.countdown-circle.light', 2, 60px, darken($countdown-color, 50%), 4px, $countdown-color);
+@include timer('.countdown-circle.dark', 2, 60px, lighten($countdown-color-dark, 30%), 4px, $countdown-color-dark);

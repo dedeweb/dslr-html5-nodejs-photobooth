@@ -1,5 +1,5 @@
 <div class="countdown-wrapper">
-	<div class="countdown-circle" [ngClass]="{'animate' : animate}">
+	<div class="countdown-circle" [ngClass]="{'animate' : animate, 'dark' : theme == 'dark', 'light' : theme != 'dark'}">
 		<div class="countdown-fg">
 			<div class="countdown-pie countdown-spinner"></div>
 			<div class="countdown-pie countdown-filler"></div>

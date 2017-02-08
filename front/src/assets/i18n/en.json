@@ -4,5 +4,7 @@
 	"generic_error_message" : "An error occured, please contact your administrator.",
 	"retry" : "retry",
 	"restart" : "restart",
-	"print": "print"
+	"print": "print",
+	"numberOfCopies" : "Number of copies to print",
+	"cancel" : "cancel"
 }

@@ -9,6 +9,7 @@ export class CountdownComponent implements OnInit {
 
 	@Input() duration: number;
 	@Input() startAfter: number;
+	@Input() theme: string;
 	@Output() onComplete: EventEmitter<any> = new EventEmitter();
 	
 	private currentStep: number;

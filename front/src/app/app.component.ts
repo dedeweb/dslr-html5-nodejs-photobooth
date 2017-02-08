@@ -8,7 +8,8 @@ enum captureState {
 	countDown,
 	waitForImage,
 	displayPicture,
-	displayError
+	displayError,
+	printChoice
 }
 
 
@@ -32,6 +33,10 @@ export class AppComponent {
 	private remoteStream: boolean = false;
 	private localDeviceId: string;
 	private restartCount: number = 0;
+	private maxNbrOfCopies: number = 5;
+	private Array: any;
+	private arrayCopies: any;
+	
 
 	constructor(translate: TranslateService,
 				private p2pStreamService : P2pStreamService,
@@ -46,6 +51,8 @@ export class AppComponent {
 		let browserLang = translate.getBrowserLang();
 		translate.use('en');
 		//translate.use(browserLang.match(/en|fr/) ? browserLang : 'en');
+		this.arrayCopies =  Array(this.maxNbrOfCopies).fill(0).map(function (x, i) { return i + 1; })
+		
 		var that = this;
 		p2pStreamService.onAddStream = function(stream) {
 			if(that.currentStream && that.currentStream.getVideoTracks().length > 0 ) {
@@ -236,7 +243,7 @@ export class AppComponent {
 			} else {
 				//exiting countdown
 				that.currentCaptureState = captureState.waitForImage;
-				that.capturePicture();
+				//that.capturePicture();
 			}
 		}
 		updateCountDown();
@@ -269,5 +276,13 @@ export class AppComponent {
 			this.reloadPage();
 		}
 		
+	}
+	
+	displayPrintChoice () {
+		this.currentCaptureState = captureState.printChoice;
+	}
+	
+	printPicture(nber:number) {
+		this.logger.log('request print of ' + nber + ' copies');
 	}
 }
