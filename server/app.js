@@ -12,9 +12,6 @@ var https = require('https');
 var pem = require('pem');
 var io = require('socket.io')({ path : '/api/socket/', origins : '*:*'});
 var logger = require('./log-client')(io);
-var cameraControl = require('./camera-control')(logger);
-var liveCamSignaling = require('./livecam-signaling')(logger);
-var logSignaling = require('./log-signaling');
 var Datastore = require('nedb');
 var db = new Datastore({filename: './tamerbooth.db'});
 db.loadDatabase(function(err) {
@@ -24,6 +21,11 @@ db.loadDatabase(function(err) {
 		logger.log('db loaded');
 	}
 });
+
+var cameraControl = require('./camera-control')(logger, db);
+var liveCamSignaling = require('./livecam-signaling')(logger);
+var logSignaling = require('./log-signaling');
+
 
 app.use(morgan('dev'));
 app.use(bodyParser.json());
@@ -126,7 +128,12 @@ app.post('/api/webcamCrop', function (req, res) {
 
 //API part : camera control.
 app.get('/api/cameraStatus', function (req, res)  {
-	cameraControl.getStatus(res);
+	cameraControl.getStatus()
+		.then(function (msg) {
+			res.json( {error: false, message : '' + msg});
+		}).catch(function (msg) {
+			res.json( {error: true, message: '' + msg});
+		});
 });
 
 app.get('/api/capturePreview', function (req, res)  {

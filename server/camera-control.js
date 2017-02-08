@@ -8,58 +8,56 @@ var instance = null;
 process.chdir(__dirname);
 
 
-function CameraControl(logger){
+function CameraControl(logger, db){
 	if(instance !== null){
 		throw new Error("Cannot instantiate more than one CameraControl, use CameraControl.getInstance()");
 	}
 
-	this.initialize(logger);
+	this.initialize(logger, db);
 }
 CameraControl.prototype = {
-	initialize: function(logger){
+	initialize: function(logger, db){
 		this.fakeCamera = false;
 		this.logger = logger;
+		this.db = db;
 	},
-	getLiveView: function (res) {
-		if(this.fakeCamera) {
-			this.liveStreamCmd = child.spawn('sh', ['src_back/fakestream.sh']);
-		} else {
-			this.liveStreamCmd = child.spawn('sh', ['src_back/stream.sh']);
-		}
-		this.liveStreamCmd.stdout.pipe(res);
-		this.liveStreamCmd.stderr.pipe(res);
-	},
+
 	setFakeCamera : function (flag) {
 		this.fakeCamera = flag;
 	},
 	getCameraMode: function () {
 		return this.fakeCamera;
 	},
-	getPicture: function (res) {
-		child.spawn('gphoto2', ['--capture-image-and-download', '--filename photo-%Y%m%d-%H%M%S.jpg']);
-	},
 
 	getStatus: function (res) {
+		var that = this;
+		
+		return new Promise(function (resolve, reject) {
+			var summaryCmd;
+		
+			if(that.fakeCamera) {
+				//summaryCmd = child.spawnSync('server/fake_gphoto.sh', ['--summary']);
+				summaryCmd = child.spawnSync('sh', ['fake_gphoto.sh', '--summary']);
+			} else {
+				summaryCmd = child.spawnSync('gphoto2', ['--summary']);
+			}
 
-		var summaryCmd;
-		if(this.fakeCamera) {
-			//summaryCmd = child.spawnSync('server/fake_gphoto.sh', ['--summary']);
-			summaryCmd = child.spawnSync('sh', ['fake_gphoto.sh', '--summary']);
-		} else {
-			summaryCmd = child.spawnSync('gphoto2', ['--summary']);
-		}
+			if('' + summaryCmd.stderr ) {
+				that.logger.error('get summary command response : ' + summaryCmd.stderr);
+				//res.json( {error: true, message: ''+summaryCmd.stderr});
+				reject(summaryCmd.stderr);
+				//res.json( {error: true, message: '' + summaryCmd.stderr});
 
-		if('' + summaryCmd.stderr ) {
-			this.logger.error('get summary command response : ' + summaryCmd.stderr);
-			//res.json( {error: true, message: ''+summaryCmd.stderr});
-			res.json( {error: true, message: '' + summaryCmd.stderr});
-
-		}
-		else
-		{
-			this.logger.log('get summary command response : ' + summaryCmd.stdout);
-			res.json( {error: false, message : '' + summaryCmd.stdout});
-		}
+			}
+			else
+			{
+				that.logger.log('get summary command response : ' + summaryCmd.stdout);
+				resolve(summaryCmd.stdout);
+				//res.json( {error: false, message : '' + summaryCmd.stdout});
+			}
+			
+		});
+		
 	},
 
 	capturePreview: function() {
@@ -111,8 +109,8 @@ CameraControl.prototype = {
 				errorMessage += data;
 			});
 
-			var jpegRegex = /Saving file as (.*)?\.jpg/g;
-			var rawRegex = /Saving file as (.*)?\.cr2/g;
+			var jpegRegex = /Deleting file \/(.*)?\.jpg on the camera/g;
+			var rawRegex = /Deleting file \/(.*)?\.cr2 on the camera/g;
 
 			captureCommand.stdout.on('data', function (data) {
 				logger.log('[capture command]' + data);
@@ -123,26 +121,24 @@ CameraControl.prototype = {
 					logger.log('['+new Date().toString()+'] resizing jpeg ' + jpegFile);
 					fs.readFile(jpegFile, function (err, data) {
 
-					  if(err) {
-					    logger.error('error reading file !' + err);
-            }
-            else
-            {
-              sharp(data).resize(1600,1200).max().toBuffer()
-                .then(function (data) {
-                  logger.log('['+new Date().toString()+'] sending jpeg ' + jpegFile );
+						if(err) {
+							logger.error('error reading file !' + err);
+						}
+						else
+						{
+							sharp(data).resize(1600,1200).max().toBuffer()
+							.then(function (data) {
+								logger.log('['+new Date().toString()+'] sending jpeg ' + jpegFile );
 
-                  resolve({ src: 'data:image/jpeg;base64,' + data.toString('base64')});
-                  //res.status(200).send(data.toString('base64'));
-                }).catch(function(err) {
-                logger.error(err);
-                reject(err);
-                //res.status(500).send(err);
-              });
-            }
-          });
-
-
+								resolve({ src: 'data:image/jpeg;base64,' + data.toString('base64')});
+								//res.status(200).send(data.toString('base64'));
+							}).catch(function(err) {
+								logger.error(err);
+								reject(err);
+								//res.status(500).send(err);
+							});
+						}
+					});
 				}
 			});
 
@@ -159,11 +155,11 @@ CameraControl.prototype = {
 
 	}
 };
-CameraControl.getInstance = function(logger){
+CameraControl.getInstance = function(logger, db){
 	// summary:
 	//      Gets an instance of the singleton. It is better to use
 	if(instance === null){
-		instance = new CameraControl(logger);
+		instance = new CameraControl(logger, db);
 	}
 	return instance;
 };
