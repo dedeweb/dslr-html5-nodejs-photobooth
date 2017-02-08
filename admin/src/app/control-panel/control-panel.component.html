@@ -36,6 +36,20 @@
 						<div class="camera-message alert" [ngClass]="{'alert-success': cameraReady  , 'alert-danger': !cameraReady }" >{{cameraMessage}}</div>
 					</div>
 				</div>
+				<div class="row">
+					<div class="col-2 text-right">
+						{{'raw_directory' | translate }} : 
+					</div>
+					<div class="col-6">
+						<input type="text" [(ngModel)]="rawDir" class="form-control form-control-sm" />
+					</div>
+					<div class="col-4">
+						<button (click)="refreshRawDir()" class="btn btn-primary btn-sm">
+							{{ 'change' | translate}}
+						</button>
+						<i class="fa fa-refresh fa-spin" [hidden]="!rawDirLoading"></i> 
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

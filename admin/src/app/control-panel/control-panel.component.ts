@@ -25,6 +25,8 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
 	kioskAppVersion:string = '';
 	kioskAppBrowseUrl: string = '';
 	currentLocalDeviceId: number;
+	rawDir: string = '';
+	rawDirLoading: boolean = false;
 	
 	constructor(translate: TranslateService,
 				private cameraService : CameraService,
@@ -74,6 +76,19 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
 			function error(data) {
 				that.cameraModeWSLoading = false;
 				//TODO: log error
+			});
+	}
+	
+	refreshRawDir() {
+		var that = this;
+		this.rawDirLoading = true;
+		this.cameraService.getRawDir().subscribe(
+			function success(data) {
+				that.rawDir = data.json().dir;
+				that.rawDirLoading = false;
+				},
+			function error(data) {
+				that.rawDirLoading = false;
 			});
 	}
 	
@@ -156,6 +171,7 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
 	ngOnInit() {
 		this.refreshCameraMode();
 		this.getCameraStatus();
+		this.refreshRawDir();
 	
 	}
 	ngDoCheck() {

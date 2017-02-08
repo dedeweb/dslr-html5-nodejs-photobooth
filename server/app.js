@@ -167,6 +167,26 @@ app.post('/api/cameraMode', function (req, res) {
 	res.end();
 });
 
+app.get('/api/rawDir', function (req, res) {
+	cameraControl.getRawDirectory()
+		.then(function (dir) {
+			res.status(200).send({dir: dir});
+		});
+	
+});
+
+app.post('/api/rawDir', function (req, res) {
+	var dir = req.body.dir;
+	cameraControl.setRawDirectory(dir)
+		.then(function () {
+			res.status(200).end();
+		})
+		.catch(function (err) {
+			res.status(500).send(err);
+		});
+});
+
+
 httpServer.listen(3000, function () {
 	logger.log('[http]tamerbooth api listening on port 3000!');
 });

@@ -77,6 +77,15 @@ export class CameraService {
 		
 		return result;
 	};
+	
+	public getRawDir() {
+		let result = this.http
+			.get(`${this.baseUrl}/rawDir`);
+			
+		
+		return result;
+	};
+	
 	/*
 	private getHeaders(){
 		let headers = new Headers();

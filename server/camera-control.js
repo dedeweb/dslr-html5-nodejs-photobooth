@@ -22,6 +22,41 @@ CameraControl.prototype = {
 		this.db = db;
 	},
 
+	getRawDirectory : function () {
+		var that = this;
+		return new Promise(function (resolve, reject) {
+			that.db.find({ key: 'rawDir'}, function (err, docs) {
+				if(docs && docs.length) {
+					that.logger.log('get raw dir infos ' + JSON.stringify(docs[0].dir) );
+					resolve(docs[0].dir);
+				} else {
+					that.logger.warn('raw dir found, creating default one ! ');
+					var data = {
+						key: 'rawDir',
+						dir : 'raw'};
+					that.db.insert(data);
+					resolve(data.dir);
+				}
+			});
+		});
+	},
+	
+	setRawDirectory: function (dir) {
+		var that = this;
+		return new Promise(function (resolve, reject) {
+			that.logger.log('set raw dir : ' + dir );
+			that.db.update( {key: 'rawDir'}, {key: 'rawDir', dir: dir}, function (err, numReplaced) {
+				if(err) {
+					that.logger.error('error saving db : ' + err);
+					reject(err);
+				} else {
+					that.logger.log('dir saved. num replaced = ' + numReplaced);
+					resolve();
+				}
+			});
+		});
+	},
+	
 	setFakeCamera : function (flag) {
 		this.fakeCamera = flag;
 	},
