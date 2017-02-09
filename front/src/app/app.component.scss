@@ -58,40 +58,6 @@ video {
     margin: 15px;
 }
 
-.countdown {
-	&>div.active {
-
-		opacity: 1;
-	}
-
-	&>div:not(.active) {
-		opacity: 0;
-		transform: scale(1.5);
-		transition: all ease 1s;
-
-	}
-
-	&>div {
-		position: fixed;
-		margin: auto;
-		left: 0;
-		right: 0;
-		top: 0;
-		bottom: 0;
-		/* color: #000000; */
-		font-size: 250px;
-		color: #ffffff;
-		text-shadow: 0 0 5px #000000;
-		height: 300px;
-		line-height: 250px;
-		width: 100%;
-		text-align: center;
-
-		transition: opacity ease 1s;
-	}
-
-}
-
 .capture-button {
     position: fixed;
     top: 50%;

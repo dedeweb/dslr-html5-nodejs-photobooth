@@ -24,7 +24,6 @@ export class AppComponent {
 
 	private currentStream : MediaStream = null;
 	private videoElement: any;
-	private currentStep: number = -1;
 	private currentCaptureState: captureState = captureState.waitForInput;
 	private requestImage: boolean = false;
 	private cropCoords: any;
@@ -219,37 +218,18 @@ export class AppComponent {
 		this.videoElement.addEventListener('emptied', function () {
 			componentClass.logger.log('emptied');
 		}, false);
-			//this.currentStep = 1;
-			//this.currentCaptureState = captureState.countDown;
-			//this.launchCountDown();
 	}
 
 	launchCountDown() {
-		var that = this;
-		this.currentStep = -1;
 		this.currentCaptureState = captureState.countDown;
-		var updateCountDown = function () {
-			that.currentStep = that.currentStep + 1;
-			that.logger.log('countdown:' + that.currentStep);
-			if (that.currentStep === 0) {
-				//first step (ready?) displayed longer
-				setTimeout(updateCountDown, 3000);
-			} else if (that.currentStep == 5) {
-				//launching before end, as it takes about 2 sec to trigger capture.
-				that.capturePicture();
-				setTimeout(updateCountDown, 1500);
-			}else if (that.currentStep > 0 && that.currentStep < 6) {
-				setTimeout(updateCountDown, 1500);
-			} else {
-				//exiting countdown
-				if(that.currentCaptureState != captureState.displayError) {
-					that.currentCaptureState = captureState.waitForImage;
-				}
-				//that.capturePicture();
-			}
-		}
-		updateCountDown();
 	}
+	
+	waitCapture() {
+		if(this.currentCaptureState != captureState.displayError) {
+			this.currentCaptureState = captureState.waitForImage;
+		}
+	}
+	
 
 	capturePicture() {
 		var that = this;

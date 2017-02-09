@@ -8,11 +8,13 @@ import { AppComponent } from './app.component';
 import { LogService, LogModule } from 'log.service';
 import { CameraService } from 'camera.service';
 import { CountdownComponent } from './countdown/countdown.component';
+import { PhotoCountdownComponent } from './photo-countdown/photo-countdown.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CountdownComponent
+    CountdownComponent,
+    PhotoCountdownComponent
   ],
   imports: [
     BrowserModule,
