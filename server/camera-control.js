@@ -1,6 +1,6 @@
 var child = require('child_process');
 var process = require('process');
-var fs = require('fs');
+var fs = require('fs-extra');
 var sharp = require('sharp');
 var instance = null;
 
@@ -45,15 +45,25 @@ CameraControl.prototype = {
 		var that = this;
 		return new Promise(function (resolve, reject) {
 			that.logger.log('set raw dir : ' + dir );
-			that.db.update( {key: 'rawDir'}, {key: 'rawDir', dir: dir}, function (err, numReplaced) {
+			//testing existence and rights
+			fs.access(dir, fs.R_OK | fs.W_OK | fs.X_OK, function (err) {
 				if(err) {
-					that.logger.error('error saving db : ' + err);
-					reject(err);
+					that.logger.error('cannot read/write directory ' + dir);
+					reject('cannot read/write directory');
 				} else {
-					that.logger.log('dir saved. num replaced = ' + numReplaced);
-					resolve();
+					that.db.update( {key: 'rawDir'}, {key: 'rawDir', dir: dir}, function (err, numReplaced) {
+						if(err) {
+							that.logger.error('error saving db : ' + err);
+							reject(err);
+						} else {
+							that.logger.log('dir saved. num replaced = ' + numReplaced);
+							resolve();
+						}
+					});
 				}
+				
 			});
+			
 		});
 	},
 	
@@ -147,35 +157,45 @@ CameraControl.prototype = {
 			var jpegRegex = /Deleting file \/(.*)?\.jpg on the camera/g;
 			var rawRegex = /Deleting file \/(.*)?\.cr2 on the camera/g;
 
-			captureCommand.stdout.on('data', function (data) {
-				logger.log('[capture command]' + data);
-				var match = jpegRegex.exec('' + data);
-				if(match && match.length > 1 ) {
-					var jpegFile = match[1] + '.jpg';
-					shouldFailPromise = false;
-					logger.log('['+new Date().toString()+'] resizing jpeg ' + jpegFile);
-					fs.readFile(jpegFile, function (err, data) {
+			that.getRawDirectory().then(function(dir) {
+				captureCommand.stdout.on('data', function (data) {
+					logger.log('[capture command]' + data);
+					var matchJpeg = jpegRegex.exec('' + data);
+					if(matchJpeg && matchJpeg.length > 1 ) {
+						var jpegFile = matchJpeg[1] + '.jpg';
+						shouldFailPromise = false;
+						logger.log('['+new Date().toString()+'] resizing jpeg ' + jpegFile);
+						fs.readFile(jpegFile, function (err, data) {
 
-						if(err) {
-							logger.error('error reading file !' + err);
-						}
-						else
-						{
-							sharp(data).resize(1600,1200).max().toBuffer()
-							.then(function (data) {
-								logger.log('['+new Date().toString()+'] sending jpeg ' + jpegFile );
+							if(err) {
+								logger.error('error reading file !' + err);
+							}	
+							else
+							{
+								sharp(data).resize(1600,1200).max().toBuffer()
+								.then(function (data) {
+									logger.log('['+new Date().toString()+'] sending jpeg ' + jpegFile );
 
-								resolve({ src: 'data:image/jpeg;base64,' + data.toString('base64')});
-								//res.status(200).send(data.toString('base64'));
-							}).catch(function(err) {
-								logger.error(err);
-								reject(err);
-								//res.status(500).send(err);
-							});
-						}
-					});
-				}
+									resolve({ src: 'data:image/jpeg;base64,' + data.toString('base64')});
+									//res.status(200).send(data.toString('base64'));
+								}).catch(function(err) {
+									logger.error(err);
+									reject(err);
+									//res.status(500).send(err);
+								});
+							}
+						});
+					}
+					
+					var matchRaw = rawRegex.exec('' + data);
+					if(matchRaw && matchRaw.length > 1 ) {
+						var rawFile = matchRaw[1] + '.raw';
+					}
+					
+					
+				});	
 			});
+			
 
 			captureCommand.on('close', function() {
 				if(shouldFailPromise) {

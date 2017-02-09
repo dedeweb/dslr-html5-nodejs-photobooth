@@ -182,7 +182,8 @@ app.post('/api/rawDir', function (req, res) {
 			res.status(200).end();
 		})
 		.catch(function (err) {
-			res.status(500).send(err);
+			logger.log('error: ' + err);
+			res.status(500).send('' + err);
 		});
 });
 

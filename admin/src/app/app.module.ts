@@ -14,6 +14,8 @@ import { LogEntryComponent } from './log-entry/log-entry.component';
 import { ScrollGlueDirective } from './scroll-glue.directive';
 import { KioskAppService } from './kioskapp.service';
 import { P2pStreamService } from './p2p-stream.service';
+import { ToasterModule } from 'angular2-toaster';
+
 
 
 
@@ -42,7 +44,8 @@ const appRoutes: Routes = [
             useFactory: (http: Http) => new TranslateStaticLoader(http, 'assets/i18n', '.json'),
             deps: [Http]
         }),
-    RouterModule.forRoot(appRoutes)
+    RouterModule.forRoot(appRoutes),
+	ToasterModule
   ],
   providers: [
 	CameraService,

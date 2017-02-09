@@ -21,6 +21,7 @@
 		"../node_modules/bootstrap/dist/css/bootstrap.css",
 		"../node_modules/font-awesome/css/font-awesome.css",
 		"../node_modules/cropperjs/dist/cropper.css",
+		"../node_modules/angular2-toaster/toaster.css",
         "styles.css"
       ],
       "scripts": [

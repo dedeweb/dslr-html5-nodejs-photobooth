@@ -4,6 +4,7 @@ import {CameraService} from 'camera.service';
 import { LogService } from 'log.service';
 import { KioskAppService } from '../kioskapp.service';
 import { P2pStreamService } from '../p2p-stream.service';
+import { ToasterService } from 'angular2-toaster';
 import 'rxjs/Rx';
 
 @Component({
@@ -32,17 +33,15 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
 				private cameraService : CameraService,
 				public logger: LogService,
 				private kioskAppService : KioskAppService,
-				private p2pStreamService : P2pStreamService) {
+				private p2pStreamService : P2pStreamService,
+				private toasterService: ToasterService) {
 		// this language will be used as a fallback when a translation isn't found in the current language
 		translate.setDefaultLang('en');
 
 		 // the lang to use, if the lang isn't available, it will use the current loader to get them
 		let browserLang = translate.getBrowserLang();
 		translate.use('en');
-		//translate.use(browserLang.match(/en|fr/) ? browserLang : 'en');
-		let that = this;
-		
-		
+		//translate.use(browserLang.match(/en|fr/) ? browserLang : 'en');		
 	}
 	
 	getCameraStatus() {
@@ -89,6 +88,22 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
 				},
 			function error(data) {
 				that.rawDirLoading = false;
+				that.toasterService.pop('error', 'Error getting raw dir', '' + data);
+			});
+	}
+	
+	updateRawDir() {
+		var that = this;
+		this.rawDirLoading = true;
+		this.cameraService.setRawDir(this.rawDir).subscribe(function success() {
+				that.toasterService.pop('success', 'Raw dir', 'updated successfully');
+				that.rawDirLoading = false;
+				that.refreshRawDir();
+				},
+			function error(data) {
+				that.rawDirLoading = false;
+				that.toasterService.pop('error', 'Error setting raw dir', '' + data.text());
+				that.refreshRawDir();
 			});
 	}
 	
@@ -116,12 +131,14 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
 						that.kioskAppVersion = data.json().version;
 					} else {
 						that.logger.warn('kiosk url wrong response : ' + JSON.stringify(data));
+						that.toasterService.pop('warning', 'kiosk url wrong response', JSON.stringify(data));
 						that.kioskAppReady = false;
 					}
 				},
 				function error(data) {
 					that.kioskAppWSInfoLoading = false;
 					that.kioskAppReady = false;
+					that.toasterService.pop('error', 'error getting kioskApp', JSON.stringify(data));
 					that.logger.error('error getting kioskApp' + JSON.stringify(data) );
 				}
 			);
@@ -135,6 +152,7 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
 			that.logger.log('browse success');
 		}, function error(){
 			that.logger.error('browse error');
+			that.toasterService.pop('error', 'kiosk app', 'browse error');
 		});
 	}
 	
@@ -145,6 +163,7 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
 			that.logger.log('reload url success');
 		}, function error(){
 			that.logger.error('reload url error');
+			that.toasterService.pop('error', 'kiosk app', 'reload error');
 		});
 	}
 	
@@ -155,6 +174,7 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
 			that.logger.log('exit fullscreen success');
 		}, function error(){
 			that.logger.error('exit fullscreen error');
+			that.toasterService.pop('error', 'kiosk app', 'exit fullscreen error');
 		});
 	}
 	
@@ -165,6 +185,7 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
 			that.logger.log('enter fullscreen success');
 		}, function error(){
 			that.logger.error('enter fullscreen error');
+			that.toasterService.pop('error', 'kiosk app', 'enter fullscreen error');
 		});
 	}
 	

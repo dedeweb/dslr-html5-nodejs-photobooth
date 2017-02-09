@@ -86,6 +86,13 @@ export class CameraService {
 		return result;
 	};
 	
+	public setRawDir(dir:string) {
+		let result = this.http
+			.post(`${this.baseUrl}/rawDir`, {dir: dir});
+		
+		return result;
+	};
+	
 	/*
 	private getHeaders(){
 		let headers = new Headers();
