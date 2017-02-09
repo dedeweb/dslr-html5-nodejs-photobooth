@@ -32,9 +32,7 @@ export class AppComponent {
 	private remoteStream: boolean = false;
 	private localDeviceId: string;
 	private restartCount: number = 0;
-	private maxNbrOfCopies: number = 5;
-	private Array: any;
-	private arrayCopies: any;
+	
 	
 
 	constructor(translate: TranslateService,
@@ -50,7 +48,6 @@ export class AppComponent {
 		let browserLang = translate.getBrowserLang();
 		translate.use('en');
 		//translate.use(browserLang.match(/en|fr/) ? browserLang : 'en');
-		this.arrayCopies =  Array(this.maxNbrOfCopies).fill(0).map(function (x, i) { return i + 1; })
 		
 		var that = this;
 		p2pStreamService.onAddStream = function(stream) {

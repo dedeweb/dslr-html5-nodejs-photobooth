@@ -10,13 +10,15 @@ import { CameraService } from 'camera.service';
 import { CountdownComponent } from './countdown/countdown.component';
 import { PhotoCountdownComponent } from './photo-countdown/photo-countdown.component';
 import { PhotoDisplayComponent } from './photo-display/photo-display.component';
+import { PrintChoiceComponent } from './print-choice/print-choice.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CountdownComponent,
     PhotoCountdownComponent,
-    PhotoDisplayComponent
+    PhotoDisplayComponent,
+    PrintChoiceComponent
   ],
   imports: [
     BrowserModule,

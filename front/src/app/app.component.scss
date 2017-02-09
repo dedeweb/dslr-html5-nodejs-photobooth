@@ -80,53 +80,6 @@ video {
     position: absolute;
 }
 
-
-.area-print-choice {
-	background: #ffffff;
-	position: absolute;
-	height: 100%;
-	width: 100%;
-	text-align: center;
-	
-	.image-area {
-		width: 50%;
-		height: 100%;
-		position: absolute;
-		top: 0;
-		left: 0;
-		padding: 25px;
-		img {
-			width: 100%;
-			height: auto;
-			box-shadow: 5px 5px 20px #8b8b8b;
-			border: 1px solid black;
-		}
-	}
-	
-	.control-area {
-		width: 50%;
-		height: 100%;
-		top:0;
-		right:0;
-		position: absolute;
-		padding: 100px 25px 25px 25px;
-		.countdown-print-choice {
-			right: 20px;
-			top: 20px;
-			position: absolute;
-		}
-		.nber-copies-btn {
-			margin-left: 20px;
-			margin-right: 20px;
-		}
-		.cancel-button {
-			position: absolute;
-			bottom: 25px;
-			right:25px;
-		}
-	}
-}
-
 .area-display-error {
 	position: absolute;
 	display: block;

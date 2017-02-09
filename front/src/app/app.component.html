@@ -28,20 +28,8 @@
 	<div *ngIf="currentCaptureState == captureState.displayPicture">
 		<photo-display [imgSrc]="capturedImage" (onRestart)="restart()" (onPrint)="displayPrintChoice()" ></photo-display>
 	</div>
-	<div class="area-print-choice" *ngIf="currentCaptureState == captureState.printChoice">
-		<div class="image-area">
-			<img id="cameraImagePrint" [src]="capturedImage" />
-		</div>
-		<div class="control-area">
-			<countdown class="countdown-print-choice" duration="10" theme="dark" (onComplete)="restart()" ></countdown>
-			<h1>{{ 'numberOfCopies' | translate}} : </h1>
-			<button *ngFor="let i of arrayCopies" class="booth-button nber-copies-btn" type="button" (click)="printPicture(i)">{{i}}</button>
-			<br/>
-			<button class="booth-button cancel-button" type="button" (click)="restart()">
-				<i class="fa fa-ban"></i>
-				{{ 'cancel' | translate}}
-			</button>
-		</div>
+	<div *ngIf="currentCaptureState == captureState.printChoice">
+		<print-choice [imgSrc]="capturedImage" (onCancel)="restart()" (onPrintChoice)="printPicture($event)" ></print-choice>
 	</div>
 	<div class="area-display-error" *ngIf="currentCaptureState == captureState.displayError">
 		<div class="error-panel">
