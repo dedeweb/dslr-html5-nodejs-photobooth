@@ -19,29 +19,14 @@
 			{{ 'picture_button_help' | translate}}
 		</div>
 	</div>
-	<div class="area-countdown" *ngIf="currentCaptureState == captureState.countDown">
+	<div *ngIf="currentCaptureState == captureState.countDown">
 		<photo-countdown (onTriggerCapture)="capturePicture()" (onFinish)="waitCapture()"></photo-countdown>
 	</div>
 	<div class="area-wait-img" *ngIf="currentCaptureState == captureState.waitForImage">
 		<div class="spinner"></div>
 	</div>
-	<div class="area-display-img" 
-		[ngClass]="{'animate' : 'currentCaptureState == captureState.displayPicture'}" 
-		*ngIf="currentCaptureState == captureState.displayPicture">
-		<!--<div id="cameraImage" [ngStyle]="{ 'background-image': 'url(' + capturedImage + ')'}">
-		</div>-->
-		<countdown class="countdown-print" duration="20" startAfter="3" (onComplete)="restart()" ></countdown>
-		<img id="cameraImage" [src]="capturedImage" />
-		<div class="capture-actions">
-			<button class="booth-button" type="button" (click)="restart()">
-				<i class="fa fa-repeat" aria-hidden="true"></i>
-				{{ 'restart' | translate}}
-			</button>
-			<button class="booth-button" type="button" (click)="displayPrintChoice()">
-				<i class="fa fa-print" aria-hidden="true"></i>
-				{{ 'print' | translate}}
-			</button>
-		</div>
+	<div *ngIf="currentCaptureState == captureState.displayPicture">
+		<photo-display [imgSrc]="capturedImage" (onRestart)="restart()" (onPrint)="displayPrintChoice()" ></photo-display>
 	</div>
 	<div class="area-print-choice" *ngIf="currentCaptureState == captureState.printChoice">
 		<div class="image-area">

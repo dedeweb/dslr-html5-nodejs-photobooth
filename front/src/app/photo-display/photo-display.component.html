@@ -1,0 +1,14 @@
+<div class="area-display-img animate">
+	<countdown class="countdown-print" duration="20" startAfter="3" (onComplete)="restart()" ></countdown>
+	<img id="cameraImage" [src]="imgSrc" />
+	<div class="capture-actions">
+		<button class="booth-button" type="button" (click)="restart()">
+			<i class="fa fa-repeat" aria-hidden="true"></i>
+			{{ 'restart' | translate}}
+		</button>
+		<button class="booth-button" type="button" (click)="print()">
+			<i class="fa fa-print" aria-hidden="true"></i>
+			{{ 'print' | translate}}
+		</button>
+	</div>
+</div>

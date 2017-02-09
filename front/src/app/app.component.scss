@@ -1,3 +1,5 @@
+@import './app.common';
+
 $capture-button-size: 150;
 body {
 	overflow: hidden;
@@ -46,18 +48,6 @@ video {
     color: white;
 }
 
-.booth-button{
-	background-image: -webkit-linear-gradient(93deg, #bbbbbb, #fff);
-    color: #585858;
-    font-size: 35px;
-    font-family: inherit;
-    padding: 10px 27px;
-    border-radius: 10px;
-    box-shadow: 0 5px 5px #191919;
-    border: 1px solid black;
-    margin: 15px;
-}
-
 .capture-button {
     position: fixed;
     top: 50%;
@@ -90,84 +80,6 @@ video {
     position: absolute;
 }
 
-.area-display-img {
-	position: absolute;
-	display: block;
-	height: 100%;
-	width: 100%;
-	background: rgba(0, 0, 0, 0.6);
-	#cameraImage {
-		/*background-size: contain;
-		background-repeat: no-repeat;
-		background-position: center;
-		width: 100%;
-		height: 100%;*/
-		width: 100%;
-		height: auto;
-		top: 0;
-		bottom: 0;
-		margin: auto;
-		position: absolute;
-	}
-	
-	.countdown-print {
-		top: 20px;
-		right: -50%;
-		position: absolute;
-	}
-	.capture-actions {
-		width: 30%;
-		height: 100%;
-		position: absolute;
-		right: -50%;
-		margin-top: 100px;
-		margin-left: -24px;
-		text-align: center;
-		.booth-button{
-		    width: 75%;
-		}
-	}
-	&.animate {
-		#cameraImage {
-			animation-name: display-image-anim;
-			animation-duration: 2s;
-			animation-delay: 3s;
-			animation-fill-mode: forwards;
-		}
-		.capture-actions, .countdown-print {
-			animation-name: capture-actions-anim;
-			animation-duration: 2s;
-			animation-delay: 3s;
-			animation-fill-mode: forwards;
-		}
-	}
-}
-
-@keyframes display-image-anim {
-	0% {
-		width: 100%;
-		left: 0;
-		box-shadow: 0 0 0px #333333;
-	}
-
-	100% {
-		width: 65%;
-		left: 20px;
-		top: 20px;
-		bottom: auto;
-		box-shadow: 0 0 10px #333333;
-	}
-
-}
-
-@keyframes capture-actions-anim {
-	0% {
-		right: -50%;
-	}
-	100% {
-		right: 20px;
-	}
-}
 
 .area-print-choice {
 	background: #ffffff;
