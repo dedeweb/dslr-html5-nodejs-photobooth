@@ -1,12 +1,9 @@
-<video autoplay [srcObject]="currentStream"></video>
-
 <div class="capture-area">
-	<canvas id="displayCanvas" [ngClass]="{ 
-	'blurred': 
-	currentCaptureState == captureState.displayError || 
-	currentCaptureState == captureState.displayPicture ||
-	currentCaptureState == captureState.waitForImage}"></canvas>
-	<canvas id="getImgCanvas"></canvas>
+	<background-video 
+	[blurred]="currentCaptureState == captureState.displayError || 
+				currentCaptureState == captureState.displayPicture ||
+				currentCaptureState == captureState.waitForImage" >
+	</background-video>
 	
 	<div class="area-capture-control" *ngIf="currentCaptureState == captureState.waitForInput">
 		<a class="capture-button" (click)="launchCountDown()">

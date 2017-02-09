@@ -11,6 +11,7 @@ import { CountdownComponent } from './countdown/countdown.component';
 import { PhotoCountdownComponent } from './photo-countdown/photo-countdown.component';
 import { PhotoDisplayComponent } from './photo-display/photo-display.component';
 import { PrintChoiceComponent } from './print-choice/print-choice.component';
+import { BackgroundVideoComponent } from './background-video/background-video.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { PrintChoiceComponent } from './print-choice/print-choice.component';
     CountdownComponent,
     PhotoCountdownComponent,
     PhotoDisplayComponent,
-    PrintChoiceComponent
+    PrintChoiceComponent,
+    BackgroundVideoComponent
   ],
   imports: [
     BrowserModule,
