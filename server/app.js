@@ -167,17 +167,17 @@ app.post('/api/cameraMode', function (req, res) {
 	res.end();
 });
 
-app.get('/api/rawDir', function (req, res) {
-	cameraControl.getRawDirectory()
+app.get('/api/outputDir', function (req, res) {
+	cameraControl.getOutputDirectory()
 		.then(function (dir) {
 			res.status(200).send({dir: dir});
 		});
 	
 });
 
-app.post('/api/rawDir', function (req, res) {
+app.post('/api/outputDir', function (req, res) {
 	var dir = req.body.dir;
-	cameraControl.setRawDirectory(dir)
+	cameraControl.setOutputDirectory(dir)
 		.then(function () {
 			res.status(200).end();
 		})

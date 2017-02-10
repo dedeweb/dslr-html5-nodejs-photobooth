@@ -38,16 +38,16 @@
 				</div>
 				<div class="row">
 					<div class="col-2 text-right">
-						{{'raw_directory' | translate }} : 
+						{{'output_directory' | translate }} : 
 					</div>
 					<div class="col-6">
-						<input type="text" [(ngModel)]="rawDir" class="form-control form-control-sm" />
+						<input type="text" [(ngModel)]="outputDir" class="form-control form-control-sm" />
 					</div>
 					<div class="col-4">
-						<button (click)="updateRawDir()" class="btn btn-primary btn-sm">
+						<button (click)="updateOutputDir()" class="btn btn-primary btn-sm">
 							{{ 'change' | translate}}
 						</button>
-						<i class="fa fa-refresh fa-spin" [hidden]="!rawDirLoading"></i> 
+						<i class="fa fa-refresh fa-spin" [hidden]="!outputDirLoading"></i> 
 					</div>
 				</div>
 			</div>

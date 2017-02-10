@@ -26,8 +26,8 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
 	kioskAppVersion:string = '';
 	kioskAppBrowseUrl: string = '';
 	currentLocalDeviceId: number;
-	rawDir: string = '';
-	rawDirLoading: boolean = false;
+	outputDir: string = '';
+	outputDirLoading: boolean = false;
 	
 	constructor(translate: TranslateService,
 				private cameraService : CameraService,
@@ -78,32 +78,32 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
 			});
 	}
 	
-	refreshRawDir() {
+	refreshOutputDir() {
 		var that = this;
-		this.rawDirLoading = true;
-		this.cameraService.getRawDir().subscribe(
+		this.outputDirLoading = true;
+		this.cameraService.getOutputDir().subscribe(
 			function success(data) {
-				that.rawDir = data.json().dir;
-				that.rawDirLoading = false;
+				that.outputDir = data.json().dir;
+				that.outputDirLoading = false;
 				},
 			function error(data) {
-				that.rawDirLoading = false;
-				that.toasterService.pop('error', 'Error getting raw dir', '' + data);
+				that.outputDirLoading = false;
+				that.toasterService.pop('error', 'Error getting output dir', '' + data);
 			});
 	}
 	
-	updateRawDir() {
+	updateOutputDir() {
 		var that = this;
-		this.rawDirLoading = true;
-		this.cameraService.setRawDir(this.rawDir).subscribe(function success() {
-				that.toasterService.pop('success', 'Raw dir', 'updated successfully');
-				that.rawDirLoading = false;
-				that.refreshRawDir();
+		this.outputDirLoading = true;
+		this.cameraService.setOutputDir(this.outputDir).subscribe(function success() {
+				that.toasterService.pop('success', 'Output dir', 'updated successfully');
+				that.outputDirLoading = false;
+				that.refreshOutputDir();
 				},
 			function error(data) {
-				that.rawDirLoading = false;
-				that.toasterService.pop('error', 'Error setting raw dir', '' + data.text());
-				that.refreshRawDir();
+				that.outputDirLoading = false;
+				that.toasterService.pop('error', 'Error setting output dir', '' + data.text());
+				that.refreshOutputDir();
 			});
 	}
 	
@@ -192,7 +192,7 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
 	ngOnInit() {
 		this.refreshCameraMode();
 		this.getCameraStatus();
-		this.refreshRawDir();
+		this.refreshOutputDir();
 	
 	}
 	ngDoCheck() {

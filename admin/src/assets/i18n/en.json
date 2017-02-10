@@ -1,7 +1,7 @@
 {
 	"admin_title" : "Tamerbooth admin",
 	"camera_status" : "Camera status",
-	"raw_directory" : "Raw directory",
+	"output_directory" : "Output dir.",
 	"change" : "change",
 	"control_panel" : "Control panel",
 	"webcam_calibration" : "Webcam calibration",

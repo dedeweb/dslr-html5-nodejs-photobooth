@@ -17,23 +17,28 @@ function CameraControl(logger, db){
 }
 CameraControl.prototype = {
 	initialize: function(logger, db){
+		var that = this;
 		this.fakeCamera = false;
 		this.logger = logger;
 		this.db = db;
+		this.outputDir = '';
+		this.getOutputDirectory().then(function (dir) {
+			that.oututDir = dir;
+		});
 	},
 
-	getRawDirectory : function () {
+	getOutputDirectory : function () {
 		var that = this;
 		return new Promise(function (resolve, reject) {
-			that.db.find({ key: 'rawDir'}, function (err, docs) {
+			that.db.find({ key: 'outputDir'}, function (err, docs) {
 				if(docs && docs.length) {
-					that.logger.log('get raw dir infos ' + JSON.stringify(docs[0].dir) );
+					that.logger.log('get output dir infos ' + JSON.stringify(docs[0].dir) );
 					resolve(docs[0].dir);
 				} else {
-					that.logger.warn('raw dir found, creating default one ! ');
+					that.logger.warn('output dir found, creating default one ! ');
 					var data = {
-						key: 'rawDir',
-						dir : 'raw'};
+						key: 'outputDir',
+						dir : './output'};
 					that.db.insert(data);
 					resolve(data.dir);
 				}
@@ -41,7 +46,7 @@ CameraControl.prototype = {
 		});
 	},
 	
-	setRawDirectory: function (dir) {
+	setOutputDirectory: function (dir) {
 		var that = this;
 		return new Promise(function (resolve, reject) {
 			that.logger.log('set raw dir : ' + dir );
@@ -51,7 +56,7 @@ CameraControl.prototype = {
 					that.logger.error('cannot read/write directory ' + dir);
 					reject('cannot read/write directory');
 				} else {
-					that.db.update( {key: 'rawDir'}, {key: 'rawDir', dir: dir}, function (err, numReplaced) {
+					that.db.update( {key: 'outputDir'}, {key: 'outputDir', dir: dir}, function (err, numReplaced) {
 						if(err) {
 							that.logger.error('error saving db : ' + err);
 							reject(err);
@@ -157,44 +162,44 @@ CameraControl.prototype = {
 			var jpegRegex = /Deleting file \/(.*)?\.jpg on the camera/g;
 			var rawRegex = /Deleting file \/(.*)?\.cr2 on the camera/g;
 
-			that.getRawDirectory().then(function(dir) {
-				captureCommand.stdout.on('data', function (data) {
-					logger.log('[capture command]' + data);
-					var matchJpeg = jpegRegex.exec('' + data);
-					if(matchJpeg && matchJpeg.length > 1 ) {
-						var jpegFile = matchJpeg[1] + '.jpg';
-						shouldFailPromise = false;
-						logger.log('['+new Date().toString()+'] resizing jpeg ' + jpegFile);
-						fs.readFile(jpegFile, function (err, data) {
+			
+			captureCommand.stdout.on('data', function (data) {
+				logger.log('[capture command]' + data);
+				var matchJpeg = jpegRegex.exec('' + data);
+				if(matchJpeg && matchJpeg.length > 1 ) {
+					var jpegFile = matchJpeg[1] + '.jpg';
+					shouldFailPromise = false;
+					logger.log('['+new Date().toString()+'] resizing jpeg ' + jpegFile);
+					fs.readFile(jpegFile, function (err, data) {
 
-							if(err) {
-								logger.error('error reading file !' + err);
-							}	
-							else
-							{
-								sharp(data).resize(1600,1200).max().toBuffer()
-								.then(function (data) {
-									logger.log('['+new Date().toString()+'] sending jpeg ' + jpegFile );
+						if(err) {
+							logger.error('error reading file !' + err);
+						}	
+						else
+						{
+							sharp(data).resize(1600,1200).max().toBuffer()
+							.then(function (data) {
+								logger.log('['+new Date().toString()+'] sending jpeg ' + jpegFile );
 
-									resolve({ src: 'data:image/jpeg;base64,' + data.toString('base64')});
-									//res.status(200).send(data.toString('base64'));
-								}).catch(function(err) {
-									logger.error(err);
-									reject(err);
-									//res.status(500).send(err);
-								});
-							}
-						});
-					}
-					
-					var matchRaw = rawRegex.exec('' + data);
-					if(matchRaw && matchRaw.length > 1 ) {
-						var rawFile = matchRaw[1] + '.raw';
-					}
-					
-					
-				});	
-			});
+								resolve({ src: 'data:image/jpeg;base64,' + data.toString('base64')});
+								//res.status(200).send(data.toString('base64'));
+							}).catch(function(err) {
+								logger.error(err);
+								reject(err);
+								//res.status(500).send(err);
+							});
+						}
+					});
+				}
+				
+				var matchRaw = rawRegex.exec('' + data);
+				if(matchRaw && matchRaw.length > 1 ) {
+					var rawFile = matchRaw[1] + '.raw';
+				}
+				
+				
+			});	
+			
 			
 
 			captureCommand.on('close', function() {

@@ -78,17 +78,17 @@ export class CameraService {
 		return result;
 	};
 	
-	public getRawDir() {
+	public getOutputDir() {
 		let result = this.http
-			.get(`${this.baseUrl}/rawDir`);
+			.get(`${this.baseUrl}/outputDir`);
 			
 		
 		return result;
 	};
 	
-	public setRawDir(dir:string) {
+	public setOutputDir(dir:string) {
 		let result = this.http
-			.post(`${this.baseUrl}/rawDir`, {dir: dir});
+			.post(`${this.baseUrl}/outputDir`, {dir: dir});
 		
 		return result;
 	};
