@@ -149,6 +149,19 @@ app.get('/api/capturePreview', function (req, res)  {
 app.get('/api/captureImage', function (req, res)  {
 	cameraControl.captureImage()
 		.then(function (data) {
+			logger.log('return 200');
+			res.status(200).send(data);
+		})
+		.catch(function (data) {
+			res.status(500).send( '' + data);
+		});
+});
+
+app.get('/api/printPreview/:imgId', function (req, res)  {
+	var imgId = req.params.imgId;
+	cameraControl.getPrintPreview(imgId)
+		.then(function (data) {
+			logger.log('return 200');
 			res.status(200).send(data);
 		})
 		.catch(function (data) {

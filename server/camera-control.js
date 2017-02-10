@@ -2,6 +2,8 @@ var child = require('child_process');
 var process = require('process');
 var fs = require('fs-extra');
 var sharp = require('sharp');
+var path = require('path');
+var moment = require('moment');
 var instance = null;
 
 //Go to script directory
@@ -23,7 +25,7 @@ CameraControl.prototype = {
 		this.db = db;
 		this.outputDir = '';
 		this.getOutputDirectory().then(function (dir) {
-			that.oututDir = dir;
+			that.outputDir = dir;
 		});
 	},
 
@@ -62,6 +64,7 @@ CameraControl.prototype = {
 							reject(err);
 						} else {
 							that.logger.log('dir saved. num replaced = ' + numReplaced);
+							that.oututDir = dir;
 							resolve();
 						}
 					});
@@ -162,50 +165,45 @@ CameraControl.prototype = {
 			var jpegRegex = /Deleting file \/(.*)?\.jpg on the camera/g;
 			var rawRegex = /Deleting file \/(.*)?\.cr2 on the camera/g;
 
+			var uniqueFileName = moment().format('YYYYMMDD_HHmmss');
 			
+			var jpegPromise = null, rawPromise = null;
 			captureCommand.stdout.on('data', function (data) {
 				logger.log('[capture command]' + data);
 				var matchJpeg = jpegRegex.exec('' + data);
 				if(matchJpeg && matchJpeg.length > 1 ) {
 					var jpegFile = matchJpeg[1] + '.jpg';
 					shouldFailPromise = false;
-					logger.log('['+new Date().toString()+'] resizing jpeg ' + jpegFile);
-					fs.readFile(jpegFile, function (err, data) {
-
-						if(err) {
-							logger.error('error reading file !' + err);
-						}	
-						else
-						{
-							sharp(data).resize(1600,1200).max().toBuffer()
-							.then(function (data) {
-								logger.log('['+new Date().toString()+'] sending jpeg ' + jpegFile );
-
-								resolve({ src: 'data:image/jpeg;base64,' + data.toString('base64')});
-								//res.status(200).send(data.toString('base64'));
-							}).catch(function(err) {
-								logger.error(err);
-								reject(err);
-								//res.status(500).send(err);
-							});
-						}
-					});
+					jpegPromise = that._processJpeg(jpegFile, uniqueFileName);
 				}
 				
 				var matchRaw = rawRegex.exec('' + data);
 				if(matchRaw && matchRaw.length > 1 ) {
-					var rawFile = matchRaw[1] + '.raw';
-				}
-				
-				
+					var rawFile = matchRaw[1] + '.cr2';
+					rawPromise = that._processRaw(rawFile, uniqueFileName);
+				}				
 			});	
 			
 			
 
 			captureCommand.on('close', function() {
-				if(shouldFailPromise) {
+				if(shouldFailPromise || !jpegPromise || !rawPromise ) {
 					reject(errorMessage);
+				} else {
+					//chaining jpeg and raw promises. 
+					jpegPromise
+						.then(function (data) {
+							resolve(data);
+							return rawPromise;
+						})
+						.then(function (data) {
+							logger.log('raw processed');
+						})
+						.catch(function (err) {
+							reject(err);
+						});
 				}
+				
 			});
 		});
 		/*
@@ -213,8 +211,97 @@ CameraControl.prototype = {
 			res.status(200).send('' + captureCommand.stdout);
 		});*/
 
+	},
+	
+	getPrintPreview: function (imageId) {
+		var file = path.join(this.outputDir, imageId + '.jpg'), that = this;
+		return new Promise(function (resolve, reject) {
+			sharp(file)
+			.resize(1024,768).max().toBuffer()
+			.then(function (imgResized) {
+				sharp(imgResized).metadata().then(function (imgResizedMetadata) {
+					sharp('./overlay.png').resize(imgResizedMetadata.width,imgResizedMetadata.height).max().toBuffer().then(function (overlay) {
+						sharp(imgResized)
+						.overlayWith(overlay)
+						.toBuffer().then(function (imgOverlayed) {
+							resolve('data:image/jpeg;base64,' + imgOverlayed.toString('base64'));							
+						}).catch(function (err) {
+							logger.error(err);
+							reject(err);
+						});
+					}).catch(function (err) {
+						logger.error(err);
+						reject(err);
+					});
+				});
+			});
+		});
+	},
+	
+	_processJpeg: function (jpegFile, uniqueFileName) {
+		var logger = this.logger, that = this;
+		return new Promise(function (resolve, reject) {
+			logger.log('['+new Date().toString()+'] resizing jpeg ' + jpegFile);
+			fs.readFile(jpegFile, function (err, data) {
+
+				if(err) {
+					logger.error('error reading file !' + err);
+				}	
+				else
+				{
+					sharp(data).resize(1600,1200).max().toBuffer()
+					.then(function (imgResized) {
+						logger.log('['+new Date().toString()+'] sending jpeg ' + jpegFile );
+						resolve({ 
+							src: 'data:image/jpeg;base64,' + imgResized.toString('base64'),
+							id: uniqueFileName});
+							
+						
+						
+						
+						
+						//res.status(200).send(data.toString('base64'));
+						
+						var output = path.join(that.outputDir, uniqueFileName + '.jpg');
+						fs.move(jpegFile, output, function (err) {
+							if(err) {
+								logger.error('cannot move file ' + jpegFile + ' to ' + output );
+							} else {
+								logger.log('jpeg copied to ' + output );
+							}
+						 
+						});
+					}).catch(function(err) {
+						logger.error(err);
+						reject(err);
+						//res.status(500).send(err);
+					});
+					
+				}
+			});
+		});
+	},
+	
+	_processRaw: function (rawFile, uniqueFileName) {
+		var logger = this.logger, that = this;
+		return new Promise(function (resolve, reject) {
+			//copy raw file to output dir. 
+			var output = path.join(that.outputDir, uniqueFileName + '.cr2');
+			fs.move(rawFile, output, function (err) {
+				if(err) {
+					logger.error('cannot move file ' + rawFile + ' to ' + output );
+					reject('cannot move raw file ' + rawFile + ' to ' + output);
+				} else {
+					logger.log('raw copied to ' + output );
+					resolve();
+				}
+			 
+			})
+		});
 	}
 };
+
+
 CameraControl.getInstance = function(logger, db){
 	// summary:
 	//      Gets an instance of the singleton. It is better to use

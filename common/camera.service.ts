@@ -71,6 +71,12 @@ export class CameraService {
 		return result;
 	}
 	
+	public getPrintPreview(imgId:string) {
+		let result = this.http
+			.get(`${this.baseUrl}/printPreview/${imgId}`);
+		return result;
+	}
+	
 	public setMode(mode: boolean) {
 		let result = this.http
 			.post(`${this.baseUrl}/cameraMode`, {fakeCamera: mode});

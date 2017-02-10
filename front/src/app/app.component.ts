@@ -22,7 +22,10 @@ export class AppComponent {
 	public captureState = captureState;//export enum type
 	private currentCaptureState: captureState = captureState.waitForInput;
 	
-	public capturedImage:string;
+	private capturedImage:string;
+	private capturedPrintableImage:string;
+	private imageId:string;
+	
 	private restartCount: number = 0;
 	
 	constructor(translate: TranslateService,
@@ -59,7 +62,10 @@ export class AppComponent {
 		this.cameraService.captureImage().subscribe(
 			function success(data) {
 				that.logger.log('image received');
-				that.capturedImage = data.json().src;
+				let jsonData = data.json();
+				that.capturedImage = jsonData.src;
+				that.capturedPrintableImage = jsonData.src;
+				that.imageId = jsonData.id;
 				that.currentCaptureState = captureState.displayPicture;
 			},
 			function error(data) {
@@ -83,7 +89,17 @@ export class AppComponent {
 	}
 	
 	displayPrintChoice () {
+		var that = this;
 		this.currentCaptureState = captureState.printChoice;
+		
+		this.cameraService.getPrintPreview(this.imageId).subscribe(
+			function success(data) {
+				that.logger.log('print preview received');
+				that.capturedPrintableImage = data.text();
+			},
+			function error(data) {
+				that.logger.error('error getting print preview: \n' + data.text());
+			});
 	}
 	
 	printPicture(nber:number) {

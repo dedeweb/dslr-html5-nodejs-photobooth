@@ -26,7 +26,7 @@
 		<photo-display [imgSrc]="capturedImage" (onRestart)="restart()" (onPrint)="displayPrintChoice()" ></photo-display>
 	</div>
 	<div *ngIf="currentCaptureState == captureState.printChoice">
-		<print-choice [imgSrc]="capturedImage" (onCancel)="restart()" (onPrintChoice)="printPicture($event)" ></print-choice>
+		<print-choice [imgSrc]="capturedPrintableImage" (onCancel)="restart()" (onPrintChoice)="printPicture($event)" ></print-choice>
 	</div>
 	<div class="area-display-error" *ngIf="currentCaptureState == captureState.displayError">
 		<div class="error-panel">

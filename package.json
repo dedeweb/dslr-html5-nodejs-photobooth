@@ -12,6 +12,7 @@
     "copy-webpack-plugin": "^4.0.1",
     "express": "^4.14.0",
     "fs-extra": "^2.0.0",
+    "moment": "^2.17.1",
     "morgan": "^1.7.0",
     "nedb": "^1.8.0",
     "pem": "^1.9.4",
