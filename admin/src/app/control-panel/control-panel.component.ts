@@ -28,6 +28,12 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
 	currentLocalDeviceId: number;
 	outputDir: string = '';
 	outputDirLoading: boolean = false;
+	printerInfosLoading: boolean = false;
+	printerInfos:string = '';
+	printerInfosErr:string = null;
+	canPrint:boolean = false;
+	numberOfPrint:number = 0;
+	numberOfPrintLoading: boolean = false;
 	
 	constructor(translate: TranslateService,
 				private cameraService : CameraService,
@@ -92,6 +98,48 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
 			});
 	}
 	
+	refreshPrinterInfos() {
+		var that = this;
+		this.printerInfosLoading = true;
+		this.cameraService.getPrinterInfos().subscribe(
+			function success(data) {
+				that.printerInfos = data.text();
+				that.printerInfosErr  = null;
+				that.printerInfosLoading = false;
+				},
+			function error(data) {
+				that.printerInfosLoading = false;
+				that.printerInfosErr = data.text();
+				
+			});
+	}
+	
+	refreshNumberOfPrint() {
+		var that = this;
+		this.numberOfPrintLoading = true;
+		this.cameraService.printCapacity().subscribe(
+			function success(data) {
+				that.numberOfPrint = parseInt(data.text());
+				that.numberOfPrintLoading = false;
+			},
+			function error(data) {
+				that.toasterService.pop('error', 'Error getting print capacity', '' + data.text());
+				that.numberOfPrintLoading = false;
+			});
+	}
+	
+	saveNumberOfPrint() {
+		var that = this;
+		this.numberOfPrintLoading = true;
+		this.cameraService.setPrintCapacity(this.numberOfPrint).subscribe(
+		function success() {
+			that.toasterService.pop('success', 'print', 'print capacity set to ' + that.numberOfPrint);
+			that.refreshNumberOfPrint();
+		}, function error(data) {
+			that.toasterService.pop('error', 'print', 'error setting print capacity' + data.text());
+		});
+	}
+	
 	updateOutputDir() {
 		var that = this;
 		this.outputDirLoading = true;
@@ -115,6 +163,32 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
 				that.refreshCameraMode();
 				that.getCameraStatus();
 				});
+	}
+	
+	setCanPrint(canPrint:boolean) {
+		var that = this;
+		this.cameraService.setCanPrint(canPrint).subscribe(
+			function success() {
+				if(canPrint) {
+					that.toasterService.pop('success', 'print', 'print enabled');
+				} else {
+					that.toasterService.pop('success', 'print', 'print disabled');
+				}
+				
+				that.refeshCanPrint();
+			});
+	}
+	
+	refeshCanPrint() {
+		var  that = this;
+		this.cameraService.canPrint().subscribe(
+			function success(data) {
+				that.canPrint = (data.text() === "true");
+			}, 
+			function error() {
+				that.canPrint = false;
+			});
+		
 	}
 	
 	refreshKioskApp() {
@@ -193,6 +267,9 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
 		this.refreshCameraMode();
 		this.getCameraStatus();
 		this.refreshOutputDir();
+		this.refreshPrinterInfos();
+		this.refeshCanPrint();
+		this.refreshNumberOfPrint();
 	
 	}
 	ngDoCheck() {

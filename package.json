@@ -16,6 +16,7 @@
     "morgan": "^1.7.0",
     "nedb": "^1.8.0",
     "pem": "^1.9.4",
+    "printer": "^0.2.2",
     "process": "^0.11.9",
     "request": "^2.79.0",
     "serve-favicon": "^2.3.0",

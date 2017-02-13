@@ -99,6 +99,41 @@ export class CameraService {
 		return result;
 	};
 	
+	public getPrinterInfos() {
+		let result = this.http
+			.get(`${this.baseUrl}/printerInfos`);
+		
+		return result;
+	};
+	
+	public setCanPrint(canPrint:boolean) {
+		let result = this.http
+			.post(`${this.baseUrl}/canPrint`, canPrint);
+		
+		return result;
+	};
+	
+	public canPrint() {
+		let result = this.http
+			.get(`${this.baseUrl}/canPrint`);
+		
+		return result;
+	};
+	
+	public printCapacity() {
+		let result = this.http
+			.get(`${this.baseUrl}/printCapacity`);
+		
+		return result;
+	};
+	public setPrintCapacity(capacity:number) {
+		let result = this.http
+			.post(`${this.baseUrl}/printCapacity`, capacity);
+		
+		return result;
+	};
+	
+	
 	/*
 	private getHeaders(){
 		let headers = new Headers();

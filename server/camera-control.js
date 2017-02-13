@@ -4,6 +4,7 @@ var fs = require('fs-extra');
 var sharp = require('sharp');
 var path = require('path');
 var moment = require('moment');
+var printer = require('printer/lib');
 var instance = null;
 
 //Go to script directory
@@ -24,26 +25,74 @@ CameraControl.prototype = {
 		this.logger = logger;
 		this.db = db;
 		this.outputDir = '';
+		this.canPrint = true;
+		this.printerCount = 100;
 		this.getOutputDirectory().then(function (dir) {
 			that.outputDir = dir;
 		});
 	},
 
+	_retrieveDbValue(key, defaultValue) {
+		var that = this;
+		return new Promise(function (resolve, reject) {
+			var resolveDefaultValue = function () {
+				that.logger.warn('key ' + key + ' not found , creating default one (' +defaultValue+')! ');
+				that._storeDbValue(key, defaultValue);
+				resolve(defaultValue);
+			};
+			that.db.find({ key: key}, function (err, docs) {
+				if(docs && docs.length) {
+					that.logger.log('get ' + key +  ' : ' + JSON.stringify(docs[0].data) );
+					if(typeof docs[0].data !== 'undefined') {
+						resolve(docs[0].data);	
+					} else if(defaultValue){
+						resolveDefaultValue();
+					} else {
+						reject();
+					}
+				} else {
+					that.logger.warn('key ' + key + ' not found in db');
+					if(defaultValue){
+						resolveDefaultValue();
+					} else {
+						reject();
+					}
+					
+				}
+			});
+		});
+	},
+	_storeDbValue(key, value) {
+		var that = this;
+		return new Promise(function (resolve, reject) {
+			that.db.update( {key: key}, {key: key, data: value}, function (err, numReplaced) {
+				if(err) {
+					that.logger.error('error saving db : ' + err);
+					reject(err);
+				} else {
+					if(numReplaced === 0) {
+						that.logger.log('data ' + key + ' not found, inserting new data ' + value );
+						that.db.insert({key: key, data: value}, function (err) {
+							if(err) {
+								that.logger.error('error inserting in db :(');
+							} else {
+								resolve();		
+							}
+						});
+					} else {
+						that.logger.log('data ' + key + ' saved with value ' + value +'. Num replaced = ' + numReplaced);
+						resolve();	
+					}
+				}
+			});
+		});
+	},
+	
 	getOutputDirectory : function () {
 		var that = this;
 		return new Promise(function (resolve, reject) {
-			that.db.find({ key: 'outputDir'}, function (err, docs) {
-				if(docs && docs.length) {
-					that.logger.log('get output dir infos ' + JSON.stringify(docs[0].dir) );
-					resolve(docs[0].dir);
-				} else {
-					that.logger.warn('output dir found, creating default one ! ');
-					var data = {
-						key: 'outputDir',
-						dir : './output'};
-					that.db.insert(data);
-					resolve(data.dir);
-				}
+			that._retrieveDbValue('outputDir',  './output').then(function(data) {
+				resolve(data);
 			});
 		});
 	},
@@ -58,15 +107,11 @@ CameraControl.prototype = {
 					that.logger.error('cannot read/write directory ' + dir);
 					reject('cannot read/write directory');
 				} else {
-					that.db.update( {key: 'outputDir'}, {key: 'outputDir', dir: dir}, function (err, numReplaced) {
-						if(err) {
-							that.logger.error('error saving db : ' + err);
-							reject(err);
-						} else {
-							that.logger.log('dir saved. num replaced = ' + numReplaced);
-							that.oututDir = dir;
-							resolve();
-						}
+					that._storeDbValue('outputDir', dir).then(function() {
+						that.outputDir = dir;
+						resolve();
+					}).catch(function (err) {
+						reject(err);
 					});
 				}
 				
@@ -219,20 +264,30 @@ CameraControl.prototype = {
 			sharp(file)
 			.resize(1024,768).max().toBuffer()
 			.then(function (imgResized) {
-				sharp(imgResized).metadata().then(function (imgResizedMetadata) {
-					sharp('./overlay.png').resize(imgResizedMetadata.width,imgResizedMetadata.height).max().toBuffer().then(function (overlay) {
-						sharp(imgResized)
-						.overlayWith(overlay)
-						.toBuffer().then(function (imgOverlayed) {
-							resolve('data:image/jpeg;base64,' + imgOverlayed.toString('base64'));							
-						}).catch(function (err) {
-							logger.error(err);
-							reject(err);
+				fs.stat('./overlay.png', function (err, stat) {
+					if(err) {
+						//Error reading file (file does not exists? )
+						that.logger.warn('overlay file not found or not readable, cannot make overlay');
+						resolve('data:image/jpeg;base64,' + imgResized.toString('base64'));
+					} else {
+						sharp(imgResized).metadata().then(function (imgResizedMetadata) {
+							
+							sharp('./overlay.png').resize(imgResizedMetadata.width,imgResizedMetadata.height).max().toBuffer().then(function (overlay) {
+								sharp(imgResized)
+								.overlayWith(overlay)
+								.toBuffer().then(function (imgOverlayed) {
+									resolve('data:image/jpeg;base64,' + imgOverlayed.toString('base64'));							
+								}).catch(function (err) {
+									that.logger.error(err);
+									reject(err);
+								});
+							}).catch(function (err) {
+								that.logger.error(err);
+								reject(err);
+							});
+							
 						});
-					}).catch(function (err) {
-						logger.error(err);
-						reject(err);
-					});
+					}
 				});
 			});
 		});
@@ -297,6 +352,53 @@ CameraControl.prototype = {
 				}
 			 
 			})
+		});
+	},
+
+	getPrinterInfos: function () {
+		var printerName = printer.getDefaultPrinterName();
+		if(!printerName) {
+			this.canPrint = false;
+		}
+		return printerName;
+	},
+	
+	printPhoto(id, nberOfCopies) {
+		this.printerCount -= nberOfCopies;
+		this._storeDbValue('printerCount', this.printerCount);
+		if(this.printerCount < 5) {
+			this.canPrint = false;
+		}
+	},
+	
+	getCanPrint() {
+		var that = this;
+		return new Promise(function (resolve, reject) {
+			that._retrieveDbValue('canPrint',  true).then(function(data) {
+					that.canPrint = data;
+					resolve(data);
+				});
+		});
+	},
+	disablePrint() {
+		this.canPrint = false;
+		this._storeDbValue('canPrint', this.canPrint);
+	},
+	enablePrint() {
+		this.canPrint = true;
+		this._storeDbValue('canPrint', this.canPrint);
+	},
+	setPrintCount(capacity) {
+		this.printerCount = capacity;
+		this._storeDbValue('printerCount', this.printerCount);
+	},
+	getPrintCount() {
+		var that = this;
+		return new Promise(function (resolve, reject) {
+			that._retrieveDbValue('printerCount',  100).then(function(data) {
+					that.printerCount = data;
+					resolve(data);
+				});
 		});
 	}
 };

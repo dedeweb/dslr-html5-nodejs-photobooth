@@ -184,4 +184,55 @@
 			</div>
 		</div>
 	</div>
+	<div class="card card-printer">
+		<h4 class="card-header"> {{'card_printing' | translate }}</h4>
+		<div class="card-block">
+			<div class="container-fluid">
+			<div class="row">
+					<div class="col-2">
+						{{'print_left' | translate}} : 
+					</div>
+					<div class="col-2">
+						<input type="number" min="0" [(ngModel)]="numberOfPrint" class="form-control form-control-sm" />	
+					</div>
+					<div class="col-8">					
+						<a (click)="refreshNumberOfPrint()" class="refresh-button"   > 
+							<i class="fa fa-refresh" [ngClass]="{'fa-spin': numberOfPrintLoading }"></i> 
+						</a>
+						<a (click)="saveNumberOfPrint()" class="refresh-button"   > 
+							<i class="fa fa-floppy-o"></i>
+						</a>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-2">
+					</div>
+					<div class="col-10">
+						<button [hidden]="canPrint" (click)="setCanPrint(true)" class="btn btn-success btn-sm">
+							{{'enable_printer' | translate}}
+						</button>
+						<button [hidden]="!canPrint" (click)="setCanPrint(false)" class="btn btn-danger btn-sm">
+							{{'disable_printer' | translate}}
+						</button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-2 text-right">
+						{{'default_printer' | translate }} : 
+					</div>
+					<div class="col-10">
+						<span *ngIf="!printerInfosErr">
+							{{printerInfos}}
+						</span>
+						<span *ngIf="printerInfosErr" class="alert alert-danger">
+							{{'printer_infos_error' | translate }} : {{printerInfosErr}}
+						</span>
+						<a (click)="refreshPrinterInfos()" class="refresh-button"   > 
+							<i class="fa fa-refresh" [ngClass]="{'fa-spin': printerInfosLoading }"></i> 
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>

@@ -6,7 +6,7 @@
 			<i class="fa fa-repeat" aria-hidden="true"></i>
 			{{ 'restart' | translate}}
 		</button>
-		<button class="booth-button" type="button" (click)="print()">
+		<button class="booth-button" type="button" (click)="print()" [hidden]="!canPrint">
 			<i class="fa fa-print" aria-hidden="true"></i>
 			{{ 'print' | translate}}
 		</button>

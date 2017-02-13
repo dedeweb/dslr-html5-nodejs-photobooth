@@ -30,6 +30,7 @@ var logSignaling = require('./log-signaling');
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.text());
 app.use(cookieParser());
 app.use(express.static(__dirname));
 
@@ -157,18 +158,6 @@ app.get('/api/captureImage', function (req, res)  {
 		});
 });
 
-app.get('/api/printPreview/:imgId', function (req, res)  {
-	var imgId = req.params.imgId;
-	cameraControl.getPrintPreview(imgId)
-		.then(function (data) {
-			logger.log('return 200');
-			res.status(200).send(data);
-		})
-		.catch(function (data) {
-			res.status(500).send( '' + data);
-		});
-});
-
 app.get('/api/cameraMode', function (req, res)  {
 	res.json( {fakeCamera: cameraControl.getCameraMode() });
 });
@@ -199,6 +188,62 @@ app.post('/api/outputDir', function (req, res) {
 			res.status(500).send('' + err);
 		});
 });
+
+//printing
+app.get('/api/printPreview/:imgId', function (req, res)  {
+	var imgId = req.params.imgId;
+	cameraControl.getPrintPreview(imgId)
+		.then(function (data) {
+			logger.log('return 200');
+			res.status(200).send(data);
+		})
+		.catch(function (data) {
+			res.status(500).send( '' + data);
+		});
+});
+
+
+app.get('/api/printerInfos', function (req, res)  {
+	var printerInfos = cameraControl.getPrinterInfos();
+	if(printerInfos) {
+		res.status(200).send(printerInfos);
+	} else {
+		res.status(500).send('no default printers');
+	}
+});
+
+app.post('/api/canPrint', function (req, res) {
+	var data = req.body; 
+	logger.log('set can print  : ' + data);
+	//cameraControl.setFakeCamera(fakeCamera); 
+	if(data === "true") {
+		cameraControl.enablePrint();
+	} else {
+		cameraControl.disablePrint();
+	}
+	res.end(); 
+}); 
+
+app.get('/api/canPrint', function (req, res)  {
+	cameraControl.getCanPrint().then(function (data) {
+		res.status(200).send(data); 	
+	});
+});
+
+app.get('/api/printCapacity', function (req, res)  {
+	cameraControl.getPrintCount().then(function (data) {
+		res.status(200).send(''+data);
+	});
+});
+
+app.post('/api/printCapacity', function (req, res) {
+	var data = req.body; 
+	logger.log('set print count  : ' + data);
+	//cameraControl.setFakeCamera(fakeCamera); 
+	cameraControl.setPrintCount(data);
+	res.end(); 
+}); 
+//printCapacity
 
 
 httpServer.listen(3000, function () {
