@@ -165,9 +165,9 @@
 					<div class="col-2 text-right">
 					<label for="videoSource"> {{'camera.source' | translate}} : </label>
 					</div>
-					<div class="col-10">
+					<div class="col-10 form-inline">
 						<div *ngIf="p2pStreamService.devices.length > 0">
-							<select name="videoSource" [(ngModel)]="currentLocalDeviceId" >
+							<select name="videoSource" [(ngModel)]="currentLocalDeviceId" class="form-control form-control-sm">
 								<option *ngFor="let mediaDevice of p2pStreamService.devices; let i = index" [value]="mediaDevice.deviceId" >  
 								{{mediaDevice.label ? mediaDevice.label : ('camera ' + (i + 1)) }}
 								</option>
