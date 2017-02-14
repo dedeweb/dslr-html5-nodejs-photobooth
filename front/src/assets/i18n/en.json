@@ -6,5 +6,6 @@
 	"restart" : "restart",
 	"print": "print",
 	"numberOfCopies" : "Number of copies to print",
-	"cancel" : "cancel"
+	"cancel" : "cancel",
+	"print_job_sent" : "print job sent to printer"
 }

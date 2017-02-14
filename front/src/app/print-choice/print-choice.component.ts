@@ -15,15 +15,18 @@ export class PrintChoiceComponent implements OnInit {
 	private maxNbrOfCopies: number = 5;
 	private Array: any;
 	private arrayCopies: any;
+	private printJobSent:boolean = false;
 	
 	constructor() { 
-		this.arrayCopies =  Array(this.maxNbrOfCopies).fill(0).map(function (x, i) { return i + 1; })
+		this.arrayCopies =  Array(this.maxNbrOfCopies).fill(0).map(function (x, i) { return i + 1; });
+		
 	}
 
 	ngOnInit() {
 	}
 	
 	printPicture(nber: number) {
+		this.printJobSent = true;
 		this.onPrintChoice.emit(nber);
 	}
 	

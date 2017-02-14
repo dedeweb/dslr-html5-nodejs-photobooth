@@ -1,15 +1,20 @@
 <div class="area-print-choice" >
-	<div class="image-area">
-		<img id="cameraImagePrint" [src]="imgSrc" />
+	<div *ngIf="!printJobSent">
+		<div class="image-area">
+			<img id="cameraImagePrint" [src]="imgSrc" />
+		</div>
+		<div class="control-area">
+			<countdown class="countdown-print-choice" duration="10" theme="dark" (onComplete)="cancel()" ></countdown>
+			<h1>{{ 'numberOfCopies' | translate}} : </h1>
+			<button *ngFor="let i of arrayCopies" class="booth-button nber-copies-btn" type="button" (click)="printPicture(i)">{{i}}</button>
+			<br/>
+			<button class="booth-button cancel-button" type="button" (click)="cancel()">
+				<i class="fa fa-ban"></i>
+				{{ 'cancel' | translate}}
+			</button>
+		</div>
 	</div>
-	<div class="control-area">
-		<countdown class="countdown-print-choice" duration="10" theme="dark" (onComplete)="cancel()" ></countdown>
-		<h1>{{ 'numberOfCopies' | translate}} : </h1>
-		<button *ngFor="let i of arrayCopies" class="booth-button nber-copies-btn" type="button" (click)="printPicture(i)">{{i}}</button>
-		<br/>
-		<button class="booth-button cancel-button" type="button" (click)="cancel()">
-			<i class="fa fa-ban"></i>
-			{{ 'cancel' | translate}}
-		</button>
+	<div *ngIf="printJobSent" class="print-notif">
+		<i class="fa fa-print"></i> {{'print_job_sent' | translate}}
 	</div>
 </div>

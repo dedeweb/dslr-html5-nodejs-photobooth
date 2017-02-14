@@ -1,12 +1,22 @@
 @import '../app.common';
 
+
 .area-print-choice {
 	background: #ffffff;
 	position: absolute;
 	height: 100%;
 	width: 100%;
 	text-align: center;
-	
+	.print-notif {
+		position: absolute;
+		top: 50%;
+		vertical-align: middle;
+		left: 0;
+		right: 0;
+		height: 100px;
+		margin-top: -50px;
+		font-size: 60px;
+	}
 	.image-area {
 		width: 50%;
 		height: 100%;

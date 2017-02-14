@@ -108,9 +108,11 @@ export class AppComponent {
 		this.cameraService.printImage(this.imageId, nber).subscribe(
 			function success(data) {
 				that.logger.log('print succeeded');
+				setTimeout(function () { that.restart(); }, 1000);
 			},
 			function error(data) {
 				that.logger.error('print failed: \n' + data.text());
+				setTimeout(function () { that.restart(); }, 1000);
 			});
 	}
 }
