@@ -77,6 +77,13 @@ export class CameraService {
 		return result;
 	}
 	
+	public printImage(imgId:string, copies:number) {
+		let result = this.http
+			.post(`${this.baseUrl}/print/${imgId}`, {copies: copies});
+		
+		return result;
+	}
+	
 	public setMode(mode: boolean) {
 		let result = this.http
 			.post(`${this.baseUrl}/cameraMode`, {fakeCamera: mode});

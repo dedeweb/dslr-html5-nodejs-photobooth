@@ -243,7 +243,20 @@ app.post('/api/printCapacity', function (req, res) {
 	cameraControl.setPrintCount(data);
 	res.end(); 
 }); 
-//printCapacity
+
+app.post('/api/print/:imgId', function (req, res) {
+	var imgId = req.params.imgId,
+		copies = req.body.copies;
+	logger.log('print image ' + imgId + ' copies : ' + copies  );
+	cameraControl.printPhoto(imgId, copies)
+		.then(function () {
+			res.status(200).end();
+		})
+		.catch(function (err) {
+			res.status(500).send( '' + err);
+		});
+});
+
 
 
 httpServer.listen(3000, function () {

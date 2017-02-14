@@ -363,12 +363,79 @@ CameraControl.prototype = {
 		return printerName;
 	},
 	
-	printPhoto(id, nberOfCopies) {
-		this.printerCount -= nberOfCopies;
-		this._storeDbValue('printerCount', this.printerCount);
-		if(this.printerCount < 5) {
-			this.canPrint = false;
-		}
+	printPhoto(imageId, nberOfCopies) {
+		var file = path.join(this.outputDir, imageId + '.jpg'), that = this;
+		return new Promise(function (resolve, reject) {
+			
+			var printFile = function (data) {
+				printer.printDirect({
+					data: data, 
+					type: 'JPEG',
+					options: {
+						copies: nberOfCopies
+					},
+					success: function () {
+						that.getPrintCount().then(function () {
+							that.printerCount -= nberOfCopies;
+							that._storeDbValue('printerCount', that.printerCount);
+							if(that.printerCount < 5) {
+								that.canPrint = false;
+							}
+							that.logger.log('print success. capacity=' + that.printerCount );
+						});
+						
+						resolve();
+					}, 
+					error: function (err) {
+						that.logger.error('print failed : ' + err);
+						reject('print failed : ' + err);
+					}
+				});
+			};
+			
+			if(!that.canPrint) {
+				that.logger.error('cannot print (print disabled and print capacity = ' + that.printerCount+ ')  ');
+				reject('cannot print (print disabled and print capacity = ' + that.printerCount+ ')  ');
+			} else {
+				fs.stat(file, function (err, stat) {
+					if(err) {
+						that.logger.error('can\'t find file ' + file);
+						reject('can\'t find file ' + file);
+					} else {
+						sharp(file)
+						.resize(1920,1080).max().toBuffer()
+						.then(function (imgResized) {
+							fs.stat('./overlay.png', function (err, stat) {
+								if(err) {
+									//Error reading file (file does not exists? )
+									that.logger.warn('overlay file not found or not readable, cannot make overlay');
+									printFile(imgResized);
+								} else {
+									sharp(imgResized).metadata().then(function (imgResizedMetadata) {
+										
+										sharp('./overlay.png').resize(imgResizedMetadata.width,imgResizedMetadata.height).max().toBuffer().then(function (overlay) {
+											sharp(imgResized)
+											.overlayWith(overlay)
+											.withMetadata()
+											.toBuffer().then(function (imgOverlayed) {
+												printFile(imgOverlayed);
+											}).catch(function (err) {
+												that.logger.error(err);
+												reject(err);
+											});
+										}).catch(function (err) {
+											that.logger.error(err);
+											reject(err);
+										});
+										
+									});
+								}
+							});
+						});
+					}
+				});
+			}
+		});
 	},
 	
 	getCanPrint() {

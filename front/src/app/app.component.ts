@@ -103,6 +103,14 @@ export class AppComponent {
 	}
 	
 	printPicture(nber:number) {
+		var that = this;
 		this.logger.log('request print of ' + nber + ' copies');
+		this.cameraService.printImage(this.imageId, nber).subscribe(
+			function success(data) {
+				that.logger.log('print succeeded');
+			},
+			function error(data) {
+				that.logger.error('print failed: \n' + data.text());
+			});
 	}
 }
