@@ -50,14 +50,15 @@ For displaying the front on the tablet, I recommand the android app developped w
 
 ### usage
 
-Run server by typing : 
+Run server by typing :   
+	
 	$ node dist/app
 	
 Two servers are launched : http server on port 3000, and https server on port 3043 (usefull for using app with chrome : web RTC only work in https. )
 
-Webcam capture can be accessed through   http://server_address:3000/camera or https://server_address:3043/camera 
-Front can be accessed through   http://server_address:3000/front or https://server_address:3043/front 
-Admin panel can be accessed through   http://server_address:3000/admin or https://server_address:3043/admin
+* Webcam capture can be accessed through   http://server_address:3000/camera or https://server_address:3043/camera 
+* Front can be accessed through   http://server_address:3000/front or https://server_address:3043/front 
+* Admin panel can be accessed through   http://server_address:3000/admin or https://server_address:3043/admin
 
 	
 	
