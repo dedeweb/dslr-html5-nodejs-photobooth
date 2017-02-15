@@ -36,7 +36,7 @@ This page allow to capture image from webcam and display it on the front. If thi
 #### Admin
 The admin page allow user to control every aspect of the application. 
 
-	note : Server/Front/ and admin page can be opened only once at a time. If you try to open a page that is already opened, you will have an error. 
+**note :** Server, front and admin page can be opened only once at a time. If you try to open a page that is already opened, you will have an error. 
 
 For displaying the front on the tablet, I recommand the android app developped with this project : kiosapp, source code is here : https://github.com/dedeweb/kioskapp . This app display the page fullscreen, and user can not exit app. It is remote controlled by admin panel here. 
 
