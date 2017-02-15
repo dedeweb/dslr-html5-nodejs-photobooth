@@ -1,5 +1,5 @@
 # tamerbooth
-##/!\ this app is in early stage of devlopment, not working yet !
+##/!\ this app is in early stage of devlopment, not really stable. 
 
 ##/!\ this app use experimental new technologies likes WebRTC. Only (very) recent browser are supported. 
 A photobooth web app, used to control a DSLR connected to computer. 
@@ -17,56 +17,61 @@ backend made using express server. Setup inspered by  https://javascriptrocks.wo
 	* a gphoto2 compatible camera, plugged in usb to the server
 	* a device to display frontend to user (ideally a tablet)
 	* a printer if you want to allow user to print their picture
+	
+### general principle 
+	The aim of this app is to allow a user to control DSLR through a tablet. In order to show the user a real time view of the image that would be taken, we use a webcam. Of course, the DSLR lens have to be less wide than the webcam. 
+	Once DSLR and webcam are set, pointing in the same direction, the app allow to crop image from webcam to show a view that is almost the same as the image taken by DSLR. 
+	
+	The app divided in several parts : 
+	
+	#### Server
+	The server serve different pages of the application, and control DSLR and printer. 
+	
+	#### Front
+	The front page will be displayed to user, through a tablet or another device.
+	
+	#### Webcam capture
+	This page allow to capture image from webcam and display it on the front. If this page is not launched, camera will be captured directly on front. 
+	
+	#### Admin
+	The admin page allow user to control every aspect of the application. 
+	
+	For displaying the front on the tablet, I recommand the android app developped with this project : kiosapp, source code is here : https://github.com/dedeweb/kioskapp . This app display the page fullscreen, and user can not exit app. It is remote controlled by admin panel here. 
+	
+	![topology diagram](tamerbooth/topology.png)
+	
 
 ### install
 
 	$ npm install -g angular-cli
 	$ npm install -g webpack
 	$ npm run install-all
-	$ npm start
+	$ npm build
+
+### usage
+
+Run server by typing : 
+	$ node dist/app
+	
+Two servers are launched : http server on port 3000, and https server on port 3043 (usefull for using app with chrome : web RTC only work in https. )
+
+Webcam capture can be accessed through   http://server_address:3000/camera or https://server_address:3043/camera 
+Front can be accessed through   http://server_address:3000/front or https://server_address:3043/front 
+Admin panel can be accessed through   http://server_address:3000/admin or https://server_address:3043/admin
+
 	
 	
 ### dev commands : 
 #### launch backend (port 3000)
 
-	$ npm run server
+	$ node server/app
 	
-#### launch camera-capture (with server)
-	$npm run camera
+#### launch any of front modules : 
+	$ cd path_of_module
+	$ npm start
 
 
 
 ### Credits
 
 * somewhat inspired by https://github.com/porkbuns/shmile
-
-
-This project was generated with [angular-cli](https://github.com/angular/angular-cli) version 1.0.0-beta.19-3.
-
-## Development server
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive/pipe/service/class`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-Before running the tests make sure you are serving the app via `ng serve`.
-
-## Deploying to Github Pages
-
-Run `ng github-pages:deploy` to deploy to Github Pages.
-
-## Further help
-
-To get more help on the `angular-cli` use `ng --help` or go check out the [Angular-CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
