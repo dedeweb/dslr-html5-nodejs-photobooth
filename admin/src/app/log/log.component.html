@@ -39,6 +39,19 @@
 			</span>
 		</div>
 	</div>
+	<div class="row row-controls">
+		<div class="col-12 form-inline">
+			<label for="logLimit">{{ 'log.log_limit' | translate}} : </label>
+			<input type="number" class="form-control form-control-sm" id="logLimit" [(ngModel)]="logger.logLimit" >
+			<label for="logLevel">{{ 'log.log_level' | translate}} : </label>
+			<select id="logLevel"  class="form-control form-control-sm" [(ngModel)]="logger.logLevel" >
+				<option *ngFor="let key of logLevelKeys" [value]="key" [label]="LogLevel[key]"></option>
+			</select>
+			<button class="btn btn-primary btn-sm" (click)="clearLog()">
+				{{ 'log.clear_log' | translate}}
+			</button>
+		</div>
+	</div>
 </div>
 <div class="log-entries" scroll-glue>
 <app-log-entry *ngFor="let entry of logger.logEntries" [entry]="entry">

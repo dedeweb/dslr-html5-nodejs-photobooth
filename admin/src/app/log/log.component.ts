@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LogService } from 'log.service';
+import { LogService, LogLevel } from 'log.service';
 
 @Component({
   selector: 'app-log',
@@ -8,10 +8,19 @@ import { LogService } from 'log.service';
 })
 export class LogComponent implements OnInit {
 
-	constructor(public logger: LogService) { }
+	private logLevelKeys:string[];
+	private LogLevel = LogLevel;
+		
+	constructor(public logger: LogService) { 
+		this.logLevelKeys = Object.keys(this.LogLevel).filter(k => !isNaN(Number(k)));
+	}
 
 	ngOnInit() { 
 
+	}
+	
+	private clearLog() {
+		this.logger.logEntries = [];
 	}
 
 }

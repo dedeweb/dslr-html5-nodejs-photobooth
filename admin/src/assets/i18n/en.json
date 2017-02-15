@@ -43,6 +43,9 @@
 		"source" : "local source"
 	},
 	"log" : {
+		"log_limit" : "log limit",
+		"log_level" : "log level",
+		"clear_log" : "clear log",
 		"module" : {
 			"server" : "Server",
 			"front_end" : "Front",

@@ -19,7 +19,7 @@ export class KioskAppService {
 					that._url = url;
 				}
 			}, function error(data){
-				that.logger.error('error in kioskapp ws: ' + JSON.stringify(data));
+				that.logger.warn('error in kioskapp ws: ' + JSON.stringify(data));
 			});
 			
 		return result;

@@ -213,7 +213,7 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
 					that.kioskAppWSInfoLoading = false;
 					that.kioskAppReady = false;
 					that.toasterService.pop('error', 'error getting kioskApp ', data.text());
-					that.logger.error('error getting kioskApp ' + data.text() );
+					that.logger.warn('error getting kioskApp ' + data.text() );
 				}
 			);
 		}

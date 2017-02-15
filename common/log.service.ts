@@ -10,6 +10,8 @@ export class LogService {
 	public webcamConnected: boolean = false;
 	public webcamAddress: string = null;
 	public logEntries : LogMessage[] = [];
+	public logLevel: LogLevel = LogLevel.Warning;
+	public logLimit: number = 50;
 	
 	private socket : any;
 	private eventPlugged : boolean = false;
@@ -89,7 +91,14 @@ export class LogService {
 			});
 			
 			this.socket.on('log-message', function(logEntry : LogMessage) {
-				that.logEntries.push(logEntry);
+			
+				if(logEntry.logLevel >= that.logLevel) {
+					if(that.logEntries.length >= that.logLimit) {
+						that.logEntries.shift();
+					}
+					that.logEntries.push(logEntry);
+				}
+				
 			});
 			
 			console.log('________ logger event plugged ________');
