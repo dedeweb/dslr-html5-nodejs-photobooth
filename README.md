@@ -25,16 +25,16 @@ Once DSLR and webcam are set, pointing in the same direction, the app allow to c
 The app divided in several parts : 
 
 #### Server
-The server serve different pages and api of the application, and control DSLR and printer. 
+	The server serve different pages and api of the application, and control DSLR and printer. 
 
 #### Front
-The front page will be displayed to user, through a tablet or another device.
+	The front page will be displayed to user, through a tablet or another device.
 
 #### Webcam capture
-This page allow to capture image from webcam and display it on the front. If this page is not launched, camera will be captured directly on front. 
+	This page allow to capture image from webcam and display it on the front. If this page is not launched, camera will be captured directly on front. 
 
 #### Admin
-The admin page allow user to control every aspect of the application. 
+	The admin page allow user to control every aspect of the application. 
 
 **note :** Server, front and admin page can be opened only once at a time. If you try to open a page that is already opened, you will have an error. 
 
