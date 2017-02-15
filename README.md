@@ -25,7 +25,7 @@ Once DSLR and webcam are set, pointing in the same direction, the app allow to c
 The app divided in several parts : 
 
 #### Server
-The server serve different pages of the application, and control DSLR and printer. 
+The server serve different pages and api of the application, and control DSLR and printer. 
 
 #### Front
 The front page will be displayed to user, through a tablet or another device.
@@ -35,6 +35,8 @@ This page allow to capture image from webcam and display it on the front. If thi
 
 #### Admin
 The admin page allow user to control every aspect of the application. 
+
+	note : Server/Front/ and admin page can be opened only once at a time. If you try to open a page that is already opened, you will have an error. 
 
 For displaying the front on the tablet, I recommand the android app developped with this project : kiosapp, source code is here : https://github.com/dedeweb/kioskapp . This app display the page fullscreen, and user can not exit app. It is remote controlled by admin panel here. 
 
