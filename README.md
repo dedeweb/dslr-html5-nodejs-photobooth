@@ -1,6 +1,6 @@
 # tamerbooth
 
->A photobooth web app, used to control a DSLR connected to computer. A separated webcam is used to display live viewfinder. 
+A photobooth web app, used to control a DSLR connected to computer. A separated webcam is used to display live viewfinder. 
 
 **:bangbang: this app is in early stage of development, not really stable.**
 
@@ -61,9 +61,9 @@ Run server by typing :
 	
 Two servers are launched : http server on port 3000, and https server on port 3043 (usefull for using app with chrome : web RTC only work in https. )
 
-* Webcam capture can be accessed through   http://server_address:3000/camera or https://server_address:3043/camera 
-* Front can be accessed through   http://server_address:3000/front or https://server_address:3043/front 
-* Admin panel can be accessed through   http://server_address:3000/admin or https://server_address:3043/admin
+* Webcam capture can be accessed through   `http://server_address:3000/camera` or `https://server_address:3043/camera`
+* Front can be accessed through   `http://server_address:3000/front` or `https://server_address:3043/front` 
+* Admin panel can be accessed through   `http://server_address:3000/admin` or `https://server_address:3043/admin`
 
 	
 	
