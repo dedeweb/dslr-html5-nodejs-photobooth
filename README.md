@@ -44,14 +44,14 @@ For displaying the front on the tablet, I recommand the android app developped w
 ![topology diagram](/topology.png)
 	
 
-### install
+## install
 
 	$ npm install -g angular-cli
 	$ npm install -g webpack
 	$ npm run install-all
 	$ npm build
 
-### usage
+## usage
 
 Run server by typing :   
 	
@@ -65,18 +65,18 @@ Two servers are launched : http server on port 3000, and https server on port 30
 
 	
 	
-### dev commands : 
-#### launch backend (port 3000)
+## dev commands : 
+### launch backend (port 3000)
 
 	$ node server/app
 	
-#### launch any of front modules : 
+### launch any of front modules : 
 	$ cd path_of_module
 	$ npm start
 
 
 
-### Credits
+## Credits
 
 * somewhat inspired by https://github.com/porkbuns/shmile
 * setup inspered by  https://javascriptrocks.wordpress.com/2016/06/04/express-with-angular-cli-in-5-minutes/
