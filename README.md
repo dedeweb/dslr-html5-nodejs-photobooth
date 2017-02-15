@@ -1,10 +1,9 @@
 # tamerbooth
-##/!\ this app is in early stage of devlopment, not really stable. 
+##/!\ this app is in early stage of development, not really stable. 
 
 ##/!\ this app use experimental new technologies likes WebRTC. Only (very) recent browser are supported. 
-A photobooth web app, used to control a DSLR connected to computer. 
 
-backend made using express server. Setup inspered by  https://javascriptrocks.wordpress.com/2016/06/04/express-with-angular-cli-in-5-minutes/
+A photobooth web app, used to control a DSLR connected to computer. 
 
 
 ### prerequisite
@@ -39,7 +38,7 @@ The admin page allow user to control every aspect of the application.
 
 For displaying the front on the tablet, I recommand the android app developped with this project : kiosapp, source code is here : https://github.com/dedeweb/kioskapp . This app display the page fullscreen, and user can not exit app. It is remote controlled by admin panel here. 
 
-![topology diagram](tamerbooth/topology.png)
+![topology diagram](/topology.png)
 	
 
 ### install
@@ -76,3 +75,4 @@ Admin panel can be accessed through   http://server_address:3000/admin or https:
 ### Credits
 
 * somewhat inspired by https://github.com/porkbuns/shmile
+* setup inspered by  https://javascriptrocks.wordpress.com/2016/06/04/express-with-angular-cli-in-5-minutes/
