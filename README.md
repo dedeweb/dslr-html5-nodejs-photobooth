@@ -1,10 +1,12 @@
 # tamerbooth
 
+>A photobooth web app, used to control a DSLR connected to computer. A separated webcam is used to display live viewfinder. 
+
 **:bangbang: this app is in early stage of development, not really stable.**
 
 **:bangbang: this app use experimental new technologies likes WebRTC. Only (very) recent browser are supported.**
 
-A photobooth web app, used to control a DSLR connected to computer. 
+
 
 
 ## prerequisite
