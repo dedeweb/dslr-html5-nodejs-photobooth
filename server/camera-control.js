@@ -6,7 +6,7 @@ var path = require('path');
 var moment = require('moment');
 var printer = require('printer/lib');
 var instance = null;
-
+ 
 //Go to script directory
 process.chdir(__dirname);
 

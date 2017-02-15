@@ -1,5 +1,5 @@
-var express = require('express');
-var path = require('path');
+var express = require('express'); 
+var path = require('path'); 
 var favicon = require('serve-favicon');
 var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -11,7 +11,8 @@ var httpServer = require('http').Server(app);
 var https = require('https');
 var pem = require('pem');
 var io = require('socket.io')({ path : '/api/socket/', origins : '*:*'});
-var logger = require('./log-client')(io);
+var logSignaling = require('./log-signaling')(io);
+var logger = require('./log-client')(logSignaling); 
 var Datastore = require('nedb');
 var db = new Datastore({filename: './tamerbooth.db'});
 db.loadDatabase(function(err) {
@@ -24,7 +25,7 @@ db.loadDatabase(function(err) {
 
 var cameraControl = require('./camera-control')(logger, db);
 var liveCamSignaling = require('./livecam-signaling')(logger);
-var logSignaling = require('./log-signaling');
+
 
 
 app.use(morgan('dev'));
@@ -55,7 +56,7 @@ app.get('/front*', function (req, res) {
 io.on('connection', function (socket) {
 	logger.log('user connected');
 	liveCamSignaling.plugEvents(socket);
-	logSignaling.plugEvents(socket, io);
+	logSignaling.plugEvents(socket);
 	socket.on('request-calibration-images', function () {
 		socket.broadcast.emit('request-calibration-images');
 		//TODO : sending image from camera
