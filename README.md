@@ -19,26 +19,27 @@ backend made using express server. Setup inspered by  https://javascriptrocks.wo
 	* a printer if you want to allow user to print their picture
 	
 ### general principle 
-	The aim of this app is to allow a user to control DSLR through a tablet. In order to show the user a real time view of the image that would be taken, we use a webcam. Of course, the DSLR lens have to be less wide than the webcam. 
-	Once DSLR and webcam are set, pointing in the same direction, the app allow to crop image from webcam to show a view that is almost the same as the image taken by DSLR. 
-	
-	The app divided in several parts : 
-	
-	#### Server
-	The server serve different pages of the application, and control DSLR and printer. 
-	
-	#### Front
-	The front page will be displayed to user, through a tablet or another device.
-	
-	#### Webcam capture
-	This page allow to capture image from webcam and display it on the front. If this page is not launched, camera will be captured directly on front. 
-	
-	#### Admin
-	The admin page allow user to control every aspect of the application. 
-	
-	For displaying the front on the tablet, I recommand the android app developped with this project : kiosapp, source code is here : https://github.com/dedeweb/kioskapp . This app display the page fullscreen, and user can not exit app. It is remote controlled by admin panel here. 
-	
-	![topology diagram](tamerbooth/topology.png)
+
+The aim of this app is to allow a user to control DSLR through a tablet. In order to show the user a real time view of the image that would be taken, we use a webcam. Of course, the DSLR lens have to be less wide than the webcam. 
+Once DSLR and webcam are set, pointing in the same direction, the app allow to crop image from webcam to show a view that is almost the same as the image taken by DSLR. 
+
+The app divided in several parts : 
+
+#### Server
+The server serve different pages of the application, and control DSLR and printer. 
+
+#### Front
+The front page will be displayed to user, through a tablet or another device.
+
+#### Webcam capture
+This page allow to capture image from webcam and display it on the front. If this page is not launched, camera will be captured directly on front. 
+
+#### Admin
+The admin page allow user to control every aspect of the application. 
+
+For displaying the front on the tablet, I recommand the android app developped with this project : kiosapp, source code is here : https://github.com/dedeweb/kioskapp . This app display the page fullscreen, and user can not exit app. It is remote controlled by admin panel here. 
+
+![topology diagram](tamerbooth/topology.png)
 	
 
 ### install
