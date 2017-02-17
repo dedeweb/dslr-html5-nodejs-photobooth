@@ -6,7 +6,7 @@
   "scripts": {
     "test": "npm start",
     "start": "node app",
-    "build": "webpack"
+    "build": "node ../node_modules/webpack/bin/webpack"
   },
   "keywords": [
     "server",

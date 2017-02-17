@@ -49,9 +49,8 @@ For displaying the front on the tablet, I recommand the android app developped w
 ## install
 
 	$ npm install -g angular-cli
-	$ npm install -g webpack
 	$ npm run install-all
-	$ npm build
+	$ npm run build
 
 ## usage
 
