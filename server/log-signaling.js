@@ -50,21 +50,21 @@ LogSignaling.prototype = {
 			  address = address.substr(7)
 			}	
 			data.address = address;			
-			console.log(colors.green('    [remote] log connect id=' +socket.id+ ' moduleData=' + JSON.stringify(that.moduleArray[socket.id]) ));
+			console.log(colors.green('[logger] log connect id=' +socket.id+ ' moduleData=' + JSON.stringify(that.moduleArray[socket.id]) ));
 			
 			socket.broadcast.emit('log-connect', data);
 			
 			for(var i in that.moduleArray) {
 				
 				if(that.moduleArray[i]) {
-					console.log(colors.green('    [remote] log connect refresh ' + JSON.stringify(that.moduleArray[i])));
+					console.log(colors.green('[logger] log connect refresh ' + JSON.stringify(that.moduleArray[i])));
 					socket.emit('log-connect', that.moduleArray[i] );
 				}
 			}
 		});
 		
 		socket.on('disconnect', function () {
-			console.log(colors.green('    [remote] log disconnect id=' + socket.id + ' moduleData=' + JSON.stringify(that.moduleArray[socket.id]) ));
+			console.log(colors.green('[logger] log disconnect id=' + socket.id + ' moduleData=' + JSON.stringify(that.moduleArray[socket.id]) ));
 			if(that.moduleArray[socket.id]) {
 				that.nberOfConnection[that.moduleArray[socket.id].module] --;
 				socket.broadcast.emit('log-disconnect', that.moduleArray[socket.id] );
@@ -84,7 +84,7 @@ LogSignaling.prototype = {
 			switch(data.logLevel) {
 				case 1: //debug
 					message = '[debug] ' + message;
-					color = colors.gray;
+					color = colors.green;
 					break;
 				case 2: //info
 					message = '[info] ' + message;
@@ -92,7 +92,7 @@ LogSignaling.prototype = {
 					break;
 				case 3: //warning
 					message = '[warning] ' + message;
-					color= colors.magenta;
+					color= colors.magenta.inverse;
 					break;
 				case 4: //error
 					message = '[error] ' + message;
