@@ -24,7 +24,7 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
 	kioskAppWSInfoLoading: boolean = false;
 	kioskAppReady: boolean = false;
 	kioskAppVersion:string = '';
-	kioskAppBrowseUrl: string = '';
+	kioskAppBrowseUrl: string = window.location.origin + '/front';
 	currentLocalDeviceId: number;
 	outputDir: string = '';
 	outputDirLoading: boolean = false;
