@@ -45,35 +45,35 @@ export class P2pStreamService {
 		}
 		
 		this.pc.onaddstream = function (event) {
-			that.logger.log('stream received !!! (service)');
+			that.logger.debug('stream received !!! (service)');
 			that.onAddStream(event.stream);
 		};
 		this.pc.ontrack = function(event) {
-			that.logger.log('on track');
+			that.logger.debug('on track');
 		};
 		
 		this.pc.onsignalingstatechange  = function (state) {
-			that.logger.log('[WEBRTC]signaling state changed : ' + that.pc.signalingState);
-			that.logger.log('[WEBRTC]local streams : ' + that.pc.getLocalStreams().length);
-			that.logger.log('[WEBRTC]remote streams : ' + that.pc.getRemoteStreams().length);
+			that.logger.debug('[WEBRTC]signaling state changed : ' + that.pc.signalingState);
+			that.logger.debug('[WEBRTC]local streams : ' + that.pc.getLocalStreams().length);
+			that.logger.debug('[WEBRTC]remote streams : ' + that.pc.getRemoteStreams().length);
 		};
 		this.pc.oniceconnectionstatechange = function(event) {
-			that.logger.log('ICE connectionstate changed :  ' + that.pc.iceConnectionState);
+			that.logger.debug('ICE connectionstate changed :  ' + that.pc.iceConnectionState);
 			if(that.pc.iceConnectionState === 'disconnected' && that.onDisconnect) {
 				that.onDisconnect();
 			}
 		};
 		
 		this.pc.ondatachannel = function (ev) {
-			that.logger.log('Data channel is created!');
+			that.logger.debug('Data channel is created!');
 			ev.channel.onopen = function() {
-				that.logger.log('Data channel is open and ready to be used.');
+				that.logger.debug('Data channel is open and ready to be used.');
 			};
 		}
 		
 		this.pc.onicecandidate = function (e) {
 			if(e.candidate) {
-				that.logger.log(' ICE candidate: \n' + JSON.stringify(e.candidate) );
+				that.logger.debug(' ICE candidate: \n' + JSON.stringify(e.candidate) );
 				that.socket.emit('camera-client-ice-candidate', e.candidate);
 			}
 		};
@@ -86,10 +86,10 @@ export class P2pStreamService {
 		
 		this.socket.on('camera-ready', function (status){
 			if(status) {
-				that.logger.log('camera ready, requesting stream');
+				that.logger.debug('camera ready, requesting stream');
 				that.socket.emit('request-camera-stream');
 			} else {
-				console.log('camera not ready, disconnecting.');
+				console.debug('camera not ready, disconnecting.');
 				if(that.onDisconnect) {
 					that.onDisconnect();
 				}
@@ -98,7 +98,7 @@ export class P2pStreamService {
 		});
 		
 		this.socket.on('camera-connect', function (offer) {
-			that.logger.log('offer received : ' + JSON.stringify(offer));
+			that.logger.debug('offer received : ' + JSON.stringify(offer));
 			var sessionDescription = null;
 			
 			sessionDescription = new RTCSessionDescription(offer);
@@ -107,26 +107,26 @@ export class P2pStreamService {
 				var localOffer;
 				that.pc.createAnswer().then(function (answer) {
 					localOffer = answer;
-					that.logger.log('set local description');
+					that.logger.debug('set local description');
 					return that.pc.setLocalDescription(localOffer);
 				}).then(function () {
-					that.logger.log('send answer');
-					that.logger.log('SIGNALING STATE : ' + that.pc.signalingState);
-					that.logger.log('ICE STATE : ' + that.pc.iceConnectionState);
+					that.logger.debug('send answer');
+					that.logger.debug('SIGNALING STATE : ' + that.pc.signalingState);
+					that.logger.debug('ICE STATE : ' + that.pc.iceConnectionState);
 					that.socket.emit('camera-client-connect', localOffer);
 				}); 
 			});
 		});
 		
 		this.socket.on('camera-ice-candidate', function (candidate) {
-			that.logger.log('camera ice candidate received' + JSON.stringify(candidate));
+			that.logger.debug('camera ice candidate received' + JSON.stringify(candidate));
 		
 			that.pc.addIceCandidate(new RTCIceCandidate(candidate));
 		});
 		
 		this.socket.on('request-calibration-images', function () {
 			if(that.onRequestImage) {
-				that.logger.log('request for webcam image received.');
+				that.logger.debug('request for webcam image received.');
 				that.onRequestImage();
 			}
 		});
@@ -140,7 +140,7 @@ export class P2pStreamService {
 	}
 	
 	public sendCalibrationImage(image: any) {
-		this.logger.log('sending webcam image for calibration.');
+		this.logger.debug('sending webcam image for calibration.');
 		this.socket.emit('webcam-image', image);
 	}
 	

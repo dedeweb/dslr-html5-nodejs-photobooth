@@ -42,7 +42,7 @@ CameraControl.prototype = {
 			};
 			that.db.find({ key: key}, function (err, docs) {
 				if(docs && docs.length) {
-					that.logger.log('get ' + key +  ' : ' + JSON.stringify(docs[0].data) );
+					that.logger.debug('get ' + key +  ' : ' + JSON.stringify(docs[0].data) );
 					if(typeof docs[0].data !== 'undefined') {
 						resolve(docs[0].data);	
 					} else if(defaultValue){
@@ -149,7 +149,7 @@ CameraControl.prototype = {
 			}
 			else
 			{
-				that.logger.log('get summary command response : ' + summaryCmd.stdout);
+				that.logger.debug('get summary command response : ' + summaryCmd.stdout);
 				resolve(summaryCmd.stdout);
 				//res.json( {error: false, message : '' + summaryCmd.stdout});
 			}
@@ -175,7 +175,7 @@ CameraControl.prototype = {
 			}
 			else
 			{
-				logger.log('capture preview command response : ' + previewCommand.stdout);
+				logger.debug('capture preview command response : ' + previewCommand.stdout);
 				 // read binary data
 				var img = fs.readFileSync('capture_preview.jpg');
 				// convert binary data to base64 encoded string
@@ -214,7 +214,7 @@ CameraControl.prototype = {
 			
 			var jpegPromise = null, rawPromise = null;
 			captureCommand.stdout.on('data', function (data) {
-				logger.log('[capture command]' + data);
+				logger.debug('[capture command]' + data);
 				var matchJpeg = jpegRegex.exec('' + data);
 				if(matchJpeg && matchJpeg.length > 1 ) {
 					var jpegFile = matchJpeg[1] + '.jpg';
@@ -242,7 +242,7 @@ CameraControl.prototype = {
 							return rawPromise;
 						})
 						.then(function (data) {
-							logger.log('raw processed');
+							logger.debug('raw processed');
 						})
 						.catch(function (err) {
 							reject(err);
@@ -296,7 +296,7 @@ CameraControl.prototype = {
 	_processJpeg: function (jpegFile, uniqueFileName) {
 		var logger = this.logger, that = this;
 		return new Promise(function (resolve, reject) {
-			logger.log('['+new Date().toString()+'] resizing jpeg ' + jpegFile);
+			logger.debug('resizing jpeg ' + jpegFile);
 			fs.readFile(jpegFile, function (err, data) {
 
 				if(err) {
@@ -306,7 +306,7 @@ CameraControl.prototype = {
 				{
 					sharp(data).resize(1600,1200).max().toBuffer()
 					.then(function (imgResized) {
-						logger.log('['+new Date().toString()+'] sending jpeg ' + jpegFile );
+						logger.debug('sending jpeg ' + jpegFile );
 						resolve({ 
 							src: 'data:image/jpeg;base64,' + imgResized.toString('base64'),
 							id: uniqueFileName});

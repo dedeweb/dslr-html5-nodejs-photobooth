@@ -76,7 +76,8 @@ module.exports =
         new CopyWebpackPlugin([
             { from: 'fake_gphoto.sh' },
 			{ from: 'fake_gphoto_files/*'},
-			{ from: 'overlay.png'}
+			{ from: 'overlay.png'},
+			{ from: 'index.html'}
         ])
     ]
 };

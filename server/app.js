@@ -40,7 +40,7 @@ app.use(express.static(__dirname));
 //Serve angular apps
 
 app.get('/', function (req, res) {
-	res.sendFile('admin/index.html', {root: __dirname});
+	res.sendFile('index.html', {root: __dirname});
 });
 app.get('/admin*', function (req, res) {
 	res.sendFile('admin/index.html', {root: __dirname});
@@ -54,7 +54,7 @@ app.get('/front*', function (req, res) {
 
 //plug websocket events
 io.on('connection', function (socket) {
-	logger.log('user connected');
+	logger.debug('user connected');
 	liveCamSignaling.plugEvents(socket);
 	logSignaling.plugEvents(socket);
 	socket.on('request-calibration-images', function () {
@@ -261,14 +261,14 @@ app.post('/api/print/:imgId', function (req, res) {
 
 
 httpServer.listen(3000, function () {
-	logger.log('[http]tamerbooth api listening on port 3000!');
+	logger.log('[HTTP] api listening on port 3000!');
 });
 io.attach(httpServer);
 
 pem.createCertificate({days:7, selfSigned:true}, function(err, keys){
     var httpsServer = https.createServer({key: keys.serviceKey, cert: keys.certificate}, app);
 	httpsServer.listen(3043, function () {
-		logger.log('[https]tamerbooth api listening on port 3043!');
+		logger.log('[HTTP] api listening on port 3043!');
 	});
 	io.attach(httpsServer);
 });

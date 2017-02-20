@@ -24,7 +24,7 @@ export class PhotoCountdownComponent implements OnInit {
 		this.currentStep = -1;
 		var updateCountDown = function () {
 			that.currentStep = that.currentStep + 1;
-			that.logger.log('countdown:' + that.currentStep);
+			that.logger.debug('countdown:' + that.currentStep);
 			if (that.currentStep === 0) {
 				//first step (ready?) displayed longer
 				setTimeout(updateCountDown, 3000);

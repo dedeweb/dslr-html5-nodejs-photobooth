@@ -5,20 +5,25 @@
 <div class="container">
 	<div class="select">
 		<div class="row">
-			<div class="col-6">
+			<div class="col-6 form-inline">
 				<label for="videoSource"> {{'video_source' | translate}}: </label>
-				<select name="videoSource" [(ngModel)]="currentMedia" (ngModelChange)="startStream()">
+				<select class="form-control form-control-sm" name="videoSource" [(ngModel)]="currentMedia" (ngModelChange)="startStream()">
 					<option value="">{{'select_device' | translate}}</option>
 					<option *ngFor="let mediaDevice of mediaDevices; let i = index" [value]="mediaDevice.deviceId">  
 					{{mediaDevice.label ? mediaDevice.label : ('camera ' + (i + 1)) }}
 					</option>
 				</select>
 			</div>
-			<div class="col-6">
+			<div class="col-6 form-inline">
 				<label for="videoQuality"> {{'video_quality' | translate}}: </label>
-				<select name="videoQuality" [(ngModel)]="currentQuality" (ngModelChange)="startStream()">
+				<select class="form-control form-control-sm" name="videoQuality" [(ngModel)]="currentQuality" (ngModelChange)="startStream()">
 					<option *ngFor="let quality of videoQuality" [value]="quality.val">  
 						{{quality.label}}
+					</option>
+				</select>
+				<select class="form-control form-control-sm" name="videoFramerate" [(ngModel)]="currentFramerate" (ngModelChange)="startStream()">
+					<option *ngFor="let framerate of videoFramerate" [value]="framerate.val">  
+						{{framerate.label}}
 					</option>
 				</select>
 			</div>

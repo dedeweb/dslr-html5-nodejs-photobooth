@@ -25,7 +25,7 @@ export class P2pStreamService {
   
   private initPeerConnection() {
 	var that = this;
-	this.logger.log('creating front peer connection');
+	this.logger.debug('creating front peer connection');
 	if(this.pc) {
 		this.pc.close();
 		this.pc.ondatachannel = null;
@@ -46,16 +46,16 @@ export class P2pStreamService {
 	
 	
 	this.pc.ondatachannel = function (ev) {
-		this.logger.log('Data channel is created!');
+		this.logger.debug('Data channel is created!');
 		
 		ev.channel.onopen = function() {
-			that.logger.log('Data channel is open and ready to be used.');
+			that.logger.debug('Data channel is open and ready to be used.');
 		};
 	};
 	
 	this.pc.onicecandidate = function (e) {
 		if(e.candidate) {
-			that.logger.log(' ICE candidate: \n' + JSON.stringify(e.candidate));
+			that.logger.debug(' ICE candidate: \n' + JSON.stringify(e.candidate));
 			that.socket.emit('camera-ice-candidate', e.candidate);
 		}		
 	};
@@ -71,13 +71,13 @@ export class P2pStreamService {
 				that.onClientStatusChange(false);
 			}
 		}
-		that.logger.log('pc.iceconnectionstate = ' + that.pc.iceConnectionState);
+		that.logger.debug('pc.iceconnectionstate = ' + that.pc.iceConnectionState);
 	};
 	
 	this.pc.onsignalingstatechange  = function (state) {
-		that.logger.log('[WEBRTC]signaling state changed : ' + that.pc.signalingState);
-		that.logger.log('[WEBRTC]local streams : ' + that.pc.getLocalStreams().length);
-		that.logger.log('[WEBRTC]remote streams : ' + that.pc.getRemoteStreams().length);
+		that.logger.debug('[WEBRTC]signaling state changed : ' + that.pc.signalingState);
+		that.logger.debug('[WEBRTC]local streams : ' + that.pc.getLocalStreams().length);
+		that.logger.debug('[WEBRTC]remote streams : ' + that.pc.getRemoteStreams().length);
 	};
 	
   }
@@ -90,19 +90,19 @@ export class P2pStreamService {
 	});
 	
 	this.socket.on('camera-client-connect', function (offer) {
-		that.logger.log('offer received');
-		that.logger.log('SIGNALING STATE : ' + that.pc.signalingState);
-		that.logger.log('ICE STATE : ' + that.pc.iceConnectionState);
+		that.logger.debug('offer received');
+		that.logger.debug('SIGNALING STATE : ' + that.pc.signalingState);
+		that.logger.debug('ICE STATE : ' + that.pc.iceConnectionState);
 		
 			
 		that.pc.setRemoteDescription(new RTCSessionDescription(offer)).then(function () {
-			that.logger.log('camera client connected');
+			that.logger.debug('camera client connected');
 		}, function (error) {
 			that.logger.error('error connecting : ' + error);
 		});
 	});
 	this.socket.on('camera-client-ice-candidate', function (candidate) {
-		that.logger.log('camera ice candidate received' + JSON.stringify(candidate));
+		that.logger.debug('camera ice candidate received' + JSON.stringify(candidate));
 		that.pc.addIceCandidate(new RTCIceCandidate(candidate));		
 	});
   }
@@ -123,10 +123,10 @@ export class P2pStreamService {
 	this.initPeerConnection();
 	
 	if(!this.stream) {
-		this.logger.log('camera not ready, nothing to stream ! ');
+		this.logger.debug('camera not ready, nothing to stream ! ');
 		return;
 	}
-	this.logger.log('add stream to peer connection');
+	this.logger.debug('add stream to peer connection');
 	var socket = this.socket;
 	var pc = this.pc;
 	var that =this;
@@ -136,7 +136,7 @@ export class P2pStreamService {
 	pc.createOffer().then(function(desc) {
 		pc.setLocalDescription(desc).then(function () {
 			// send the offer to a server to be forwarded to the friend you're calling.
-			that.logger.log('local offer set, sending to remote peer.');
+			that.logger.debug('local offer set, sending to remote peer.');
 			socket.emit('camera-connect', desc);
 		});
 	}, function (err) {

@@ -18,10 +18,10 @@ LiveCamSignaling.prototype = {
 		
 		socket.on('camera-ready', function (data) {
 			if(data) {
-				that.logger.log('camera ready.');
+				that.logger.debug('camera ready.');
 				socketCamera = socket;
 			} else {
-				that.logger.log('camera unavailble.');	
+				that.logger.debug('camera unavailble.');	
 			}
 			that.cameraReady = data;
 			
@@ -33,7 +33,7 @@ LiveCamSignaling.prototype = {
 		});
 		
 		socket.on('disconnect', function () {
-			that.logger.log('client disconnect');
+			that.logger.debug('client disconnect');
 			if(socket === socketCamera) {
 				that.cameraReady = false;
 				socket.broadcast.emit('camera-ready', false);
@@ -42,25 +42,25 @@ LiveCamSignaling.prototype = {
 		});
 		
 		socket.on('camera-connect', function (data) {
-			that.logger.log('camera is ready');
-			console.log(JSON.stringify(data));
+			that.logger.debug('camera is ready');
+			//console.log(JSON.stringify(data));
 			
 			socket.broadcast.emit('camera-connect', data);
 		});
 		
 		socket.on('camera-client-connect', function (data) { 
-			that.logger.log('client is ready');
-			that.logger.log(JSON.stringify(data));
+			that.logger.debug('client is ready');
+			that.logger.debug(JSON.stringify(data));
 			
 			socket.broadcast.emit('camera-client-connect', data);
 		});
 		
 		socket.on('camera-ice-candidate', function (data) {
-			that.logger.log('camera ICE : \n' + JSON.stringify(data));
+			that.logger.debug('camera ICE : \n' + JSON.stringify(data));
 			socket.broadcast.emit('camera-ice-candidate', data);
 		});
 		socket.on('camera-client-ice-candidate', function (data) {
-			that.logger.log('client ICE : \n' + JSON.stringify(data));
+			that.logger.debug('client ICE : \n' + JSON.stringify(data));
 			socket.broadcast.emit('camera-client-ice-candidate', data);
 		});
 		

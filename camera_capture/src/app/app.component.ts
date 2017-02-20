@@ -13,7 +13,8 @@ declare var _:any;
 export class AppComponent {
 	title = 'app works!';
 	private currentMedia: string = '';
-	private currentQuality: string = '2';
+	private currentQuality: string = '1';
+	private currentFramerate: string = '10';
 	private mediaDevices = [];
 	private currentStream : MediaStream = null;
 	private videoElement : HTMLVideoElement;
@@ -25,6 +26,14 @@ export class AppComponent {
 		{ val: 2, label: "VGA (640x480)" },
 		{ val: 3, label: "XGA (1024x768)" 	},
 		{ val: 4, label: "UXGA (1600x1200)" }
+	];
+	
+	private videoFramerate : any[] = [
+		{ val: 10, label: "10 fps" },
+		{ val: 15, label: "15 fps" },
+		{ val: 20, label: "20 fps" },
+		{ val: 25, label: "25 fps" },
+		{ val: 35, label: "35 fps" }
 	];
 
 	constructor(translate: TranslateService,
@@ -93,17 +102,21 @@ export class AppComponent {
 		}
 	}
 
+	private getFramerate(): number {
+		return parseInt(this.currentFramerate);
+	}
 	startStream() {
 		if(this.currentMedia) {
-
-			this.logger.log('start stream : '  + this.currentMedia);
+			var videoWidth = this.getQualityWidth(), videoHeight = this.getQualityHeight(), videoFps = this.getFramerate();
+			this.logger.log('start stream. quality : ' + videoWidth + 'x' +videoHeight + '@' + videoFps + 'fps' );
 			var that = this;
 			navigator.mediaDevices.getUserMedia({
 				audio: false,
 				video: {
 					deviceId: this.currentMedia,
-					width: this.getQualityWidth(),
-					height: this.getQualityHeight()
+					width: videoWidth,
+					height: videoHeight,
+					frameRate: { ideal: videoFps, max: videoFps }
 				}
 			}).then(function (stream) {
 
