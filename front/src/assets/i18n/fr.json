@@ -1,0 +1,11 @@
+﻿{
+	"picture_button_help" : "Appuyez pour prendre une photo",
+	"countdown_ready" : "Prêt ?",
+	"generic_error_message" : "Une erreur non prévue est arrivée :-(",
+	"retry" : "Réessayer",
+	"restart" : "Recommencer",
+	"print": "Imprimer",
+	"numberOfCopies" : "Nombre de copies",
+	"cancel" : "Annuler",
+	"print_job_sent" : "Image envoyée à l'imprimante"
+}
