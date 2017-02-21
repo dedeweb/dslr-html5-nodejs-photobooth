@@ -11,7 +11,7 @@ A photobooth web app, used to control a DSLR connected to computer. A separated 
 
 ## prerequisite
 ### software
-* node and npm
+* node >= 6.9.0 and npm . For ubuntu you have to use ppa : `curl -sL https://deb.nodesource.com/setup_6.x | sudo bash -` and then `sudo apt-get install nodejs`
 * gphoto2
 	
 ### hardware
