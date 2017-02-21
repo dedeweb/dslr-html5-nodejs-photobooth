@@ -27,10 +27,10 @@
 		"../node_modules/bootstrap/dist/js/bootstrap.js",
 		"../node_modules/underscore/underscore.js",
 		"../node_modules/socket.io-client/dist/socket.io.js",
-    "../node_modules/webrtc-adapter/out/adapter.js"
+		"../node_modules/webrtc-adapter/out/adapter.js"
       ],
+	  "environmentSource": "environments/environment.ts",
       "environments": {
-        "source": "environments/environment.ts",
         "dev": "environments/environment.ts",
         "prod": "environments/environment.prod.ts"
       }
