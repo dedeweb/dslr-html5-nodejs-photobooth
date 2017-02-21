@@ -4,12 +4,8 @@
   "license": "MIT",
   "angular-cli": {},
   "scripts": {
-    "start": "ng serve --proxy-config proxy.conf.json  --host 0.0.0.0 --port 4201",
-    "lint": "tslint \"src/**/*.ts\"",
-    "test": "ng test",
-    "pree2e": "webdriver-manager update",
-    "e2e": "protractor",
-    "build": "ng build --prod --bh /front/"
+    "start": "node_modules/angular-cli/bin/ng serve --proxy-config proxy.conf.json  --host 0.0.0.0 --port 4201",
+    "build": "node_modules/angular-cli/bin/ng build --prod --bh /front/"
   },
   "private": true,
   "dependencies": {
