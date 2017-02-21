@@ -48,7 +48,6 @@ For displaying the front on the tablet, I recommand the android app developped w
 
 ## install
 
-	$ npm install -g angular-cli
 	$ npm run install-all
 	$ npm run build
 
