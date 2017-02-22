@@ -83,7 +83,6 @@ export class BackgroundVideoComponent implements OnInit {
 			componentClass.logger.debug('loaded video metadata');
 			imgCanvasElement.height = this.videoHeight;
 			imgCanvasElement.width = this.videoWidth;
-
 		}
 
 		this.videoElement.onloadeddata = function() {
@@ -94,13 +93,13 @@ export class BackgroundVideoComponent implements OnInit {
 			function success(data) {
 				if(data.text()) {
 					componentClass.cropCoords = data.json();
-					dispCanvasElement.height = componentClass.cropCoords.height;
-					dispCanvasElement.width  = componentClass.cropCoords.width;
+					//dispCanvasElement.height = componentClass.cropCoords.height;
+					//dispCanvasElement.width  = componentClass.cropCoords.width;
 					componentClass.logger.debug('retrieved coords : ' + JSON.stringify(data.json()));
 				} else {
 					componentClass.logger.warn('empty coords');
-					dispCanvasElement.height = 480;
-					dispCanvasElement.width = 640;
+					//dispCanvasElement.height = 480;
+					//dispCanvasElement.width = 640;
 				}
 
 			},
@@ -117,18 +116,27 @@ export class BackgroundVideoComponent implements OnInit {
 				
 				(function loop() {
 					if (!that.paused && !that.ended) {
+					
+						if( dispCanvasElement.height !== that.videoHeight || dispCanvasElement.width !== that.videoWidth) {
+							componentClass.logger.log('quality change ! old=' + dispCanvasElement.width + 'x' + dispCanvasElement.height + ' new=' + that.videoWidth + 'x' + that.videoHeight);
+							dispCanvasElement.height = that.videoHeight;
+							dispCanvasElement.width = that.videoWidth;
+						}
+						
 						if(componentClass.cropCoords) {
 							componentClass.manageCrop(
-								componentClass.cropCoords.x,
-								componentClass.cropCoords.y,
-								componentClass.cropCoords.width,
-								componentClass.cropCoords.height,
+								componentClass.cropCoords.x * that.videoWidth,
+								componentClass.cropCoords.y * that.videoHeight,
+								componentClass.cropCoords.width * that.videoWidth,
+								componentClass.cropCoords.height * that.videoHeight,
 								0, 0, dispCanvasElement.width, dispCanvasElement.height);
 						} else {
 							componentClass.manageCrop(
 								0, 0, that.videoWidth, that.videoHeight,
 								0, 0, dispCanvasElement.width, dispCanvasElement.height);
 						}
+						
+						
 						
 						dispCtx.drawImage(that,
 							componentClass.currentCrop.clipX,
@@ -138,7 +146,7 @@ export class BackgroundVideoComponent implements OnInit {
 							componentClass.currentCrop.x,
 							componentClass.currentCrop.y,
 							componentClass.currentCrop.width,
-							componentClass.currentCrop.height,);
+							componentClass.currentCrop.height);
 						
 						
 						setTimeout(loop, 1000 / 10); // drawing at 10fps
@@ -156,7 +164,6 @@ export class BackgroundVideoComponent implements OnInit {
 	
 	private manageCrop(clipX, clipY, clipWidth, clipHeight, x, y, width, height) {
 		let logMsg:string = '';
-		let warnUser:boolean = false;
 		let changeCrop = false;
 		if(!this.currentCrop) {
 			logMsg += 'previous crop null. ';
@@ -171,7 +178,6 @@ export class BackgroundVideoComponent implements OnInit {
 			this.currentCrop.width !== width ||
 			this.currentCrop.height !== height ) {
 			
-			warnUser = true;
 			changeCrop = true;
 			logMsg += 'crop change ! previous : ' + this.currentCropToString();
 		}
@@ -184,13 +190,10 @@ export class BackgroundVideoComponent implements OnInit {
 			this.currentCrop.y = y;
 			this.currentCrop.width = width;
 			this.currentCrop.height = height;
-			logMsg+= 'new crop : ' + this.currentCropToString();
+			logMsg+= ' new crop : ' + this.currentCropToString();
 			
-			if(warnUser) {
-				this.logger.warn(logMsg);
-			} else {
-				this.logger.log(logMsg);
-			}
+			this.logger.log(logMsg);
+			
 		}
 	}
 	
@@ -199,13 +202,13 @@ export class BackgroundVideoComponent implements OnInit {
 				+ this.currentCrop.clipX  + ', '
 				+ this.currentCrop.clipY  + ', '
 				+ this.currentCrop.clipWidth  + ', '
-				+ this.currentCrop.clipHeight  + ', '
+				+ this.currentCrop.clipHeight 
 				+ ']'
 				+ '[' 
 				+ this.currentCrop.x  + ', '
 				+ this.currentCrop.y  + ', '
 				+ this.currentCrop.width  + ', '
-				+ this.currentCrop.height  + ', '
+				+ this.currentCrop.height  
 				+ ']'
 	}
 	

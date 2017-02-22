@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, ElementRef } from '@angular/core';
 import {CameraService} from 'camera.service';
 import { LogService } from 'log.service';
 import {TranslateService} from 'ng2-translate';
@@ -9,11 +9,11 @@ declare var Cropper : any;
 	templateUrl: './calibrate-webcam.component.html',
 	styleUrls: ['./calibrate-webcam.component.scss']
 })
-export class CalibrateWebcamComponent implements OnInit {
+export class CalibrateWebcamComponent {
 	public webcamImgSrc : string = "";
 	public cameraImgSrc : string = "";
 	private cropper: any;
-	private webcamCoords: any;
+	private webcamCoords: any = null;
 	public loading: boolean = false;
 	public errorMsg: string = "";
 	public infoMsg: string = "";
@@ -44,6 +44,7 @@ export class CalibrateWebcamComponent implements OnInit {
 			  if(data.text()) {
 				  logger.log('retrieved coords : ' + JSON.stringify(data.json()));
 				  that.webcamCoords = data.json();
+				  that.bindCropperData();
 				} else {
 				  logger.log('coords null');
 				}
@@ -59,17 +60,25 @@ export class CalibrateWebcamComponent implements OnInit {
 			}
 		);
 	}
-	
-	ngOnInit() {
-	}
-	
+
 	public storeCoords() {
 		var that = this;
-		this.webcamCoords = this.cropper.getData();
+		var cropperData = this.cropper.getData(),
+			imageData = this.cropper.getImageData();
+		this.webcamCoords = {
+			x: cropperData.x / imageData.naturalWidth,
+			y: cropperData.y / imageData.naturalHeight,
+			width: cropperData.width / imageData.naturalWidth,
+			height: cropperData.height / imageData.naturalHeight
+		};
+		
+		
+		
 		this.logger.log('store coords : ' + JSON.stringify(this.webcamCoords));
 		this.loading = true;
 		this.errorMsg = '';
 		this.infoMsg = '';
+		
 		that.cameraService.setWebcamCoords(this.webcamCoords).subscribe(
 			function success() {
 				that.logger.log('coords successfully stored ! ');
@@ -86,9 +95,25 @@ export class CalibrateWebcamComponent implements OnInit {
 			});
 	}
 	
+	private bindCropperData() {
+		if(this.cropper && this.webcamCoords) {
+			let imageData =  this.cropper.getImageData();
+			this.cropper.setData({ 
+				x: imageData.naturalWidth * this.webcamCoords.x,
+				y: imageData.naturalHeight* this.webcamCoords.y,
+				width: imageData.naturalWidth * this.webcamCoords.width,
+				height: imageData.naturalHeight * this.webcamCoords.height,
+				rotate:0,
+				scaleX:1,
+				scaleY:1
+			});
+		}
+	}
+	
 	public initCropper() {
 		this.logger.log('launching cropper');
 		var image = this.el.nativeElement.querySelector('#imageCropper img');
+		
 		if(this.cropper) {
 			this.cropper.destroy();
 		}
@@ -96,9 +121,10 @@ export class CalibrateWebcamComponent implements OnInit {
 		  aspectRatio: 3 / 2,
 		  preview: '#croppedWebcamPreview',
 		  zoomable: false,
-		  viewMode: 1,
-		  data: this.webcamCoords
+		  viewMode: 1//,
+		  //data: this.webcamCoords
 		});
+		this.bindCropperData();
 	}
 	
 	public onResize(event) {
