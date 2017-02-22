@@ -118,7 +118,7 @@ export class BackgroundVideoComponent implements OnInit {
 					if (!that.paused && !that.ended) {
 					
 						if( dispCanvasElement.height !== that.videoHeight || dispCanvasElement.width !== that.videoWidth) {
-							componentClass.logger.log('quality change ! old=' + dispCanvasElement.width + 'x' + dispCanvasElement.height + ' new=' + that.videoWidth + 'x' + that.videoHeight);
+							componentClass.logger.log('quality change : ' + dispCanvasElement.width + 'x' + dispCanvasElement.height + ' -> ' + that.videoWidth + 'x' + that.videoHeight);
 							dispCanvasElement.height = that.videoHeight;
 							dispCanvasElement.width = that.videoWidth;
 						}
@@ -192,7 +192,7 @@ export class BackgroundVideoComponent implements OnInit {
 			this.currentCrop.height = height;
 			logMsg+= ' new crop : ' + this.currentCropToString();
 			
-			this.logger.log(logMsg);
+			this.logger.debug(logMsg);
 			
 		}
 	}
