@@ -17,42 +17,36 @@ LogSignaling.prototype = {
 		this.moduleArray= [];
 		this.nberOfConnection = [];
 	},
-	checkConnection : function (module) {
-		for(var i in this.moduleArray) {
-			if(this.moduleArray[i] === module) {
-				return true;
-			}
-		}
-		return false;
-	},
 	isAlreadyConnected : function (module) {
-		return (this.nberOfConnection[module] && this.nberOfConnection[module] > 0);
+		return (typeof(this.nberOfConnection[module]) !== 'undefined' && this.nberOfConnection[module] > 0);
 	},
 	plugEvents: function (socket) {
 		var that = this;
 		this.moduleArray[socket.id] = null;
-		
+
 		socket.on('log-message', function (data) {
 			that.signalLog(data);
 		}); 
 		
 		socket.on('log-connect', function (data) { 
+			
 			that.moduleArray[socket.id] = data;
-			if(that.checkConnection(data.module)) {
-				//module already connected ! 
-				that.nberOfConnection[data.module] = (that.nberOfConnection[data.module] ? that.nberOfConnection[data] + 1 : 1);
+			
+			if(typeof(that.nberOfConnection[data.module]) === 'undefined') {
+				that.nberOfConnection[data.module] = 1;
 			} else {
-				that.nberOfConnection[data.module] = 0;
+				that.nberOfConnection[data.module] ++;
 			}
+			
 			var address = socket.request.connection.remoteAddress;
 			//convert to v4 if needed
 			if (address.substr(0, 7) == "::ffff:") {
 			  address = address.substr(7)
 			}	
-			data.address = address;			
+			that.moduleArray[socket.id].address = address;			
 			console.log(colors.green('[logger] log connect id=' +socket.id+ ' moduleData=' + JSON.stringify(that.moduleArray[socket.id]) ));
 			
-			socket.broadcast.emit('log-connect', data);
+			socket.broadcast.emit('log-connect', that.moduleArray[socket.id]);
 			
 			for(var i in that.moduleArray) {
 				
@@ -61,6 +55,9 @@ LogSignaling.prototype = {
 					socket.emit('log-connect', that.moduleArray[i] );
 				}
 			}
+			
+			//console.log(that.nberOfConnection);
+			//console.log(that.moduleArray);
 		});
 		
 		socket.on('disconnect', function () {
@@ -69,7 +66,9 @@ LogSignaling.prototype = {
 				that.nberOfConnection[that.moduleArray[socket.id].module] --;
 				socket.broadcast.emit('log-disconnect', that.moduleArray[socket.id] );
 				that.moduleArray[socket.id] = null;
-			}			
+			}
+			//console.log(that.nberOfConnection);
+			//console.log(that.moduleArray);			
 		});
 		
 	},

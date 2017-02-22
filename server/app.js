@@ -89,8 +89,10 @@ app.post('/api/httpproxy', function (req, res) {
 //API part : authorize.
 app.get('/api/authorizeModule/:module', function (req, res)  {
 	if(logSignaling.isAlreadyConnected(req.params.module)) {
+		logger.error('Module ' + req.params.module + ' already connected !');
 		res.status(403).send('Module already launched. Please close the other window and refresh page.');
 	} else {
+		logger.debug('Module ' + req.params.module + ' authorized.');
 		res.status(200).send('OK');
 	}
 });
@@ -261,14 +263,14 @@ app.post('/api/print/:imgId', function (req, res) {
 
 
 httpServer.listen(3000, function () {
-	logger.log('[HTTP] api listening on port 3000!');
+	logger.log('[HTTP] api listening on port 3000');
 });
 io.attach(httpServer);
 
 pem.createCertificate({days:7, selfSigned:true}, function(err, keys){
     var httpsServer = https.createServer({key: keys.serviceKey, cert: keys.certificate}, app);
 	httpsServer.listen(3043, function () {
-		logger.log('[HTTP] api listening on port 3043!');
+		logger.log('[HTTP] api listening on port 3043');
 	});
 	io.attach(httpsServer);
 });
