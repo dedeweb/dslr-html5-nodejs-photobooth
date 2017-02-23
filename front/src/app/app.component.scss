@@ -5,6 +5,13 @@ body {
 	overflow: hidden;
 }
 
+.capture-background {
+	background: #585858;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+}
+
 .bottom-message {
     cursor: pointer;
     position: fixed;

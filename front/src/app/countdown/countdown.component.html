@@ -1,11 +1,5 @@
 <div class="countdown-wrapper">
 	<div class="countdown-circle" [ngClass]="{'animate' : animate, 'dark' : theme == 'dark', 'light' : theme != 'dark'}">
-		<div class="countdown-fg">
-			<div class="countdown-pie countdown-spinner"></div>
-			<div class="countdown-pie countdown-filler"></div>
-		</div>
-		<div class="countdown-bg">
-			<div class="countdown-value">{{currentStep}}</div>
-		</div>
 	</div>
+	<div class="countdown-value" [ngClass]="{'dark' : theme == 'dark', 'light' : theme != 'dark'}">{{currentStep}}</div>
 </div>

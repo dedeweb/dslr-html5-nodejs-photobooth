@@ -1,8 +1,10 @@
 <div class="capture-area">
+	<div class="capture-background"></div>
 	<background-video 
 	[blurred]="currentCaptureState == captureState.displayError || 
-				currentCaptureState == captureState.displayPicture ||
-				currentCaptureState == captureState.waitForImage" >
+				currentCaptureState == captureState.waitForImage" 
+	[hidden]="currentCaptureState == captureState.displayPicture || 
+				currentCaptureState == captureState.printChoice">
 	</background-video>
 	
 	<div class="area-capture-control" *ngIf="currentCaptureState == captureState.waitForInput">

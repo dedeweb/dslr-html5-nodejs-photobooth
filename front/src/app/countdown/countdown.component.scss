@@ -1,106 +1,53 @@
 $countdown-color : #ffffff;
 $countdown-color-dark : #757575;
 
+$light-color: #ffffff;
+$dark-color: lighten(#000000, 20);
+
 .countdown-circle {
 	position: relative;
 	//margin: 40px auto;
 	margin: 5px;
+    
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+	&.light{
+		border-top: 3px solid $light-color;
+		border-bottom: 3px solid darken($light-color, 40);
+		border-left: 3px solid darken($light-color, 40);
+		border-right: 3px solid darken($light-color, 40);
+		
+	}
+	&.dark{
+		border-top: 3px solid $dark-color;
+		border-bottom: 3px solid lighten($dark-color, 55);
+		border-left: 3px solid lighten($dark-color, 55);
+		border-right: 3px solid lighten($dark-color, 55);
+		
+	}
 	
+	&.animate{
+		animation: rotate 2s ease-out infinite;
+	}
 }
 
 .countdown-value {
-	width: 100%;
     text-align: center;
     font-size: 32px;
     font-weight: bold;
+    margin-top: -60px;
+	&.light {
+		color: darken($light-color, 10);	
+	}
+	&.dark {
+		color:  lighten($dark-color, 20);
+	}
+	
 }
 
-@mixin timer($item, $duration, $size, $bgColor, $thickness, $color) {
-    //#{$item}, #{$item} * { @include box-sizing(border-box); }
-	#{$item} .countdown-fg, #{$item} .countdown-fg * {
-		box-sizing: border-box;
-	}
-	#{$item} {
-		color: $color;
-		.countdown-fg { 
-			width: $size / 2 ;
-			height: $size ;
-			left: $size / 2;
-			
-			background: transparent;
-			overflow: hidden;	
-			position: relative;
-			
-			.countdown-pie {
-				width: $size/2;
-				height: 100%;
-				transform-origin: 100% 50%;
-				position: absolute;
-				right: $size/2;
-				background: transparent;
-				border: $thickness solid $color;
-				border-right: none ;
-				border-radius: 100% 0 0 100% / 50% 0 0 50%;
-			}
-			
-			.countdown-spinner {
-				z-index: 200;
-			}
-			
-			.countdown-filler {
-				visibility: hidden;
-				z-index: 100;
-				transform: rotate(180deg);
-			}
-		}
-		.countdown-bg { 
-			height: $size;
-			width: $size;
-			border: $thickness solid  $bgColor;
-			border-radius: 50%;
-			position: relative;
-			top:-$size;
-			left:0;
-		}
-	}
-	
-	#{$item}.animate {
-		.countdown-fg {
-			
-			animation: mask $duration + s steps(1,end) infinite;
-			
-			.countdown-spinner {
-				animation: rota $duration + s linear infinite;
-			}
-			
-			.countdown-filler {
-				animation: opa $duration + s steps(1,end) infinite;
-			}	
-		}
-	} 
 
-	
-	
-	@keyframes rota {
-		0% { transform: rotate(0deg); }
-		100% { transform: rotate(360deg); }
-	}
-
-	@keyframes pos {
-		50%, 100% { right: 0; }
-	}	
-
-	@keyframes opa {
-		50%, 100% { visibility: visible; }
-	}
-
-	@keyframes mask {
-		50%, 100% {
-			width: $size; 
-			left: 0;
-		}
-	} 
+@keyframes rotate {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
 }
-
-@include timer('.countdown-circle.light', 2, 60px, darken($countdown-color, 50%), 4px, $countdown-color);
-@include timer('.countdown-circle.dark', 2, 60px, lighten($countdown-color-dark, 30%), 4px, $countdown-color-dark);
