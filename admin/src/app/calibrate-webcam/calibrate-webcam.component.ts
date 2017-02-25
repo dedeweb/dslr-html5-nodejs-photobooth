@@ -17,7 +17,7 @@ export class CalibrateWebcamComponent {
 	public loading: boolean = false;
 	public errorMsg: string = "";
 	public infoMsg: string = "";
-	
+
 	constructor(
 		private cameraService : CameraService,
 		private el: ElementRef,
@@ -30,7 +30,7 @@ export class CalibrateWebcamComponent {
 				that.loading = false;
 			}
 		};
-		
+
 		cameraService.onCameraImageReceived = function (image) {
 			that.cameraImgSrc = image;
 			if(that.loading && that.webcamImgSrc) {
@@ -56,7 +56,7 @@ export class CalibrateWebcamComponent {
 				translate.get('webcam_coords_error').subscribe(function (res :string)  {
 					that.errorMsg = res + " : " +data;
 				});
-				
+
 			}
 		);
 	}
@@ -71,14 +71,14 @@ export class CalibrateWebcamComponent {
 			width: cropperData.width / imageData.naturalWidth,
 			height: cropperData.height / imageData.naturalHeight
 		};
-		
-		
-		
+
+
+
 		this.logger.log('store coords : ' + JSON.stringify(this.webcamCoords));
 		this.loading = true;
 		this.errorMsg = '';
 		this.infoMsg = '';
-		
+
 		that.cameraService.setWebcamCoords(this.webcamCoords).subscribe(
 			function success() {
 				that.logger.log('coords successfully stored ! ');
@@ -94,11 +94,11 @@ export class CalibrateWebcamComponent {
 				});
 			});
 	}
-	
+
 	private bindCropperData() {
 		if(this.cropper && this.webcamCoords) {
 			let imageData =  this.cropper.getImageData();
-			this.cropper.setData({ 
+			this.cropper.setData({
 				x: imageData.naturalWidth * this.webcamCoords.x,
 				y: imageData.naturalHeight* this.webcamCoords.y,
 				width: imageData.naturalWidth * this.webcamCoords.width,
@@ -109,11 +109,11 @@ export class CalibrateWebcamComponent {
 			});
 		}
 	}
-	
+
 	public initCropper() {
 		this.logger.log('launching cropper');
 		var image = this.el.nativeElement.querySelector('#imageCropper img');
-		
+
 		if(this.cropper) {
 			this.cropper.destroy();
 		}
@@ -126,14 +126,14 @@ export class CalibrateWebcamComponent {
 		});
 		this.bindCropperData();
 	}
-	
+
 	public onResize(event) {
 		this.logger.log('window resize');
         this.initCropper();
-    }
-	
-	
-	
+  }
+
+
+
 	public  requestCalibration() {
 		this.loading = true;
 		this.infoMsg = '';

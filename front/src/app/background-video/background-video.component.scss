@@ -1,19 +1,23 @@
-video {
-	display: none;
+
+#bgVideoWrapper{
+  width: 100%;
+  margin: auto;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  position: absolute;
+
+  video {
+    height:100%;
+    width: 100%;
+  }
 }
 
 .blurred {
 	filter: blur(10px);
 }
-#displayCanvas {
-	width: 100%;
-	margin: auto;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    position: absolute;
-}
+
 #getImgCanvas {
 	display: none;
 }

@@ -27,7 +27,7 @@ export class AppComponent {
 		{ val: 3, label: "XGA (1024x768)" 	},
 		{ val: 4, label: "UXGA (1600x1200)" }
 	];
-	
+
 	private videoFramerate : any[] = [
 		{ val: 10, label: "10 fps" },
 		{ val: 15, label: "15 fps" },

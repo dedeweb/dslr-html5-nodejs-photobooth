@@ -1,3 +1,13 @@
-<video autoplay [srcObject]="currentStream"></video>
-<canvas id="displayCanvas" [ngClass]="{ 'blurred': blurred}"></canvas>
+<div id="bgVideoWrapper" (window:resize)="onResize($event)">
+  <video autoplay [srcObject]="currentStream"
+         [style.margin-top]="currentCrop.top"
+         [style.margin-bottom]="currentCrop.bottom"
+         [style.margin-left]="currentCrop.left"
+         [style.margin-right]="currentCrop.right"
+         [style.width]="currentCrop.width"
+         [style.height]="currentCrop.height"
+
+         [ngClass]="{ 'blurred': blurred}"
+  ></video>
+</div>
 <canvas id="getImgCanvas"></canvas>

@@ -16,9 +16,9 @@ export class BackgroundVideoComponent implements OnInit {
 
 	private currentStream : MediaStream = null;
 	private videoElement: any;
-	private requestImage: boolean = false;
+	//private requestImage: boolean = false;
 	private cropCoords: any;
-	private currentCrop : any = null;
+	private currentCrop : any = { };
 	private localMediaDevices = [];
 	private remoteStream: boolean = false;
 	private localDeviceId: string;
@@ -51,9 +51,6 @@ export class BackgroundVideoComponent implements OnInit {
 
 		};
 
-		p2pStreamService.onRequestImage =  function () {
-			that.requestImage = true;
-		};
 
 		p2pStreamService.onDisconnect = function () {
 			that.currentStream = null;
@@ -65,6 +62,22 @@ export class BackgroundVideoComponent implements OnInit {
 			that.currentStream = null;
 			that.playLocalStream();
 		};
+
+    cameraService.getWebcamCoords().subscribe(
+      function success(data) {
+        if(data.text()) {
+          that.cropCoords = data.json();
+          that.cropVideo();
+          that.logger.debug('retrieved coords : ' + JSON.stringify(data.json()));
+        } else {
+          that.logger.warn('empty coords');
+        }
+
+      },
+      function error(data) {
+        that.logger.error('cannot get coords : ' + data);
+      });
+
 	}
 
 	ngOnInit() {
@@ -73,11 +86,11 @@ export class BackgroundVideoComponent implements OnInit {
 			componentClass.playLocalStream();
 		});
 
-		var dispCanvasElement = this.el.nativeElement.querySelector('#displayCanvas');
 		var imgCanvasElement = this.el.nativeElement.querySelector('#getImgCanvas');
-		this.videoElement = this.el.nativeElement.querySelector('video');
-		var dispCtx= dispCanvasElement.getContext('2d');
-		var imgCtx= imgCanvasElement.getContext('2d');
+    var imgCtx= imgCanvasElement.getContext('2d');
+
+    this.videoElement = this.el.nativeElement.querySelector('video');
+
 
 		this.videoElement.onloadedmetadata = function() {
 			componentClass.logger.debug('loaded video metadata');
@@ -89,132 +102,55 @@ export class BackgroundVideoComponent implements OnInit {
 			componentClass.logger.debug('loaded video data');
 		};
 
-		this.cameraService.getWebcamCoords().subscribe(
-			function success(data) {
-				if(data.text()) {
-					componentClass.cropCoords = data.json();
-					//dispCanvasElement.height = componentClass.cropCoords.height;
-					//dispCanvasElement.width  = componentClass.cropCoords.width;
-					componentClass.logger.debug('retrieved coords : ' + JSON.stringify(data.json()));
-				} else {
-					componentClass.logger.warn('empty coords');
-					//dispCanvasElement.height = 480;
-					//dispCanvasElement.width = 640;
-				}
-
-			},
-			function error(data) {
-				componentClass.logger.error('cannot get coords : ' + data);
-			});
-
-
-
-		this.videoElement.addEventListener('play', function () {
-				componentClass.logger.log('video is playing ' + ( componentClass.remoteStream ? 'in remote mode' : 'in local mode'));
-				componentClass.p2pStreamService.announceStreamPlaying(componentClass.remoteStream);
-				var that = this;
-
-				(function loop() {
-					if (!that.paused && !that.ended) {
-
-						if( dispCanvasElement.height !== that.videoHeight || dispCanvasElement.width !== that.videoWidth) {
-							componentClass.logger.log('quality change : ' + dispCanvasElement.width + 'x' + dispCanvasElement.height + ' -> ' + that.videoWidth + 'x' + that.videoHeight);
-							dispCanvasElement.height = that.videoHeight;
-							dispCanvasElement.width = that.videoWidth;
-						}
-
-						if(componentClass.cropCoords) {
-							componentClass.manageCrop(
-								componentClass.cropCoords.x,// * that.videoWidth,
-								componentClass.cropCoords.y, //* that.videoHeight,
-								componentClass.cropCoords.width, //* that.videoWidth,
-								componentClass.cropCoords.height, //* that.videoHeight,
-								0, 0, dispCanvasElement.width, dispCanvasElement.height, that.videoWidth, that.videoHeight);
-						} else {
-							componentClass.manageCrop(
-								0, 0, 1, 1,
-								0, 0, dispCanvasElement.width, dispCanvasElement.height, that.videoWidth, that.videoHeight);
-						}
-
-
-
-						dispCtx.drawImage(that,
-							componentClass.currentCrop.clipX,
-							componentClass.currentCrop.clipY,
-							componentClass.currentCrop.clipWidth,
-							componentClass.currentCrop.clipHeight,
-							componentClass.currentCrop.x,
-							componentClass.currentCrop.y,
-							componentClass.currentCrop.width,
-							componentClass.currentCrop.height);
-
-
-						setTimeout(loop, 1000 / 20); // drawing at 10fps
-					}
-					if(componentClass.requestImage) {
-						componentClass.requestImage = false;
-
-						imgCtx.drawImage(that,0, 0, that.videoWidth, that.videoHeight,
-								  0, 0, imgCanvasElement.width, imgCanvasElement.height);
-						componentClass.p2pStreamService.sendCalibrationImage(imgCanvasElement.toDataURL());
-					}
-				})();
-			},false);
+    this.p2pStreamService.onRequestImage =  function () {
+      imgCtx.drawImage(componentClass.videoElement,0, 0, componentClass.videoElement.videoWidth, componentClass.videoElement.videoHeight,
+        0, 0, imgCanvasElement.width, imgCanvasElement.height);
+      componentClass.p2pStreamService.sendCalibrationImage(imgCanvasElement.toDataURL());
+    };
 	}
 
-	private manageCrop(clipXRatio, clipYRatio, clipWidthRatio, clipHeightRatio, x, y, width, height, videoWidth, videoHeight) {
-		let logMsg:string = '';
-		let changeCrop = false;
-		if(!this.currentCrop) {
-			logMsg += 'previous crop null. ';
-			this.currentCrop = {};
-			changeCrop = true;
-		}else if( this.currentCrop.clipXRatio !== clipXRatio ||
-			this.currentCrop.clipYRatio !== clipYRatio ||
-			this.currentCrop.clipWidthRatio !== clipWidthRatio ||
-			this.currentCrop.clipHeightRatio !== clipHeightRatio ||
-			this.currentCrop.x !== x ||
-			this.currentCrop.y !== y ||
-			this.currentCrop.width !== width ||
-			this.currentCrop.height !== height ) {
+  public onResize(event) {
+    this.logger.log('window resize');
+    this.cropVideo();
+  }
 
-			changeCrop = true;
-			logMsg += 'crop change ! previous : ' + this.currentCropToString();
-		}
-		if(changeCrop) {
-			this.currentCrop.clipX = Math.floor(clipXRatio * videoWidth);
-			this.currentCrop.clipY = Math.floor(clipYRatio * videoHeight);
-			this.currentCrop.clipWidth = Math.floor(clipWidthRatio * videoWidth);
-			this.currentCrop.clipHeight = Math.floor(clipHeightRatio * videoHeight);
-      this.currentCrop.clipXRatio = clipXRatio ;
-      this.currentCrop.clipYRatio = clipYRatio;
-      this.currentCrop.clipWidthRatio = clipWidthRatio;
-      this.currentCrop.clipHeightRatio = clipHeightRatio ;
-			this.currentCrop.x = x;
-			this.currentCrop.y = y;
-			this.currentCrop.width = width;
-			this.currentCrop.height = height;
-			logMsg+= ' new crop : ' + this.currentCropToString();
+  private cropVideo() {
 
-			this.logger.debug(logMsg);
+    if(this.cropCoords) {
 
-		}
-	}
+      var width, height, gapWidth, gapHeight;
 
-	private currentCropToString():string {
-		return '['
-				+ this.currentCrop.clipX  + ', '
-				+ this.currentCrop.clipY  + ', '
-				+ this.currentCrop.clipWidth  + ', '
-				+ this.currentCrop.clipHeight
-				+ ']'
-				+ '['
-				+ this.currentCrop.x  + ', '
-				+ this.currentCrop.y  + ', '
-				+ this.currentCrop.width  + ', '
-				+ this.currentCrop.height
-				+ ']'
-	}
+      if(window.innerWidth / window.innerHeight > 1.5) {
+        //screen wider than picture : image will be cropped on top and bottom
+        width = window.innerWidth;
+        height = Math.floor(window.innerWidth / 1.5);
+        gapWidth = 0;
+        gapHeight = Math.floor((height - window.innerHeight)/2);
+      } else {
+        //screen less wide than picture : image will be cropped on left and right
+        height = window.innerHeight;
+        width = window.innerHeight * 1.5;
+        gapHeight = 0;
+        gapWidth = Math.floor((width - window.innerWidth)/2);
+      }
+
+      var totalWidth = Math.floor(width / this.cropCoords.width);
+      var totalHeight = Math.floor(height / this.cropCoords.height);
+
+
+
+      this.logger.debug('crop : total : ' + totalWidth + 'x' + totalHeight +  'gap: ' +gapWidth + 'x' + gapHeight );
+
+      this.currentCrop.top =  -(totalHeight * this.cropCoords.y + gapHeight) + 'px';
+      this.currentCrop.bottom = -(totalHeight * (1 - (this.cropCoords.height + this.cropCoords.y)) + gapHeight) + 'px';
+      this.currentCrop.left = -(totalWidth * this.cropCoords.x + gapWidth) + 'px';
+      this.currentCrop.right  = -(totalWidth * (1 - (this.cropCoords.x + this.cropCoords.width)) + gapWidth) + 'px';
+      this.currentCrop.width = totalWidth + 'px';
+      this.currentCrop.height = totalHeight + 'px';
+      //this.currentCrop.wrapperHeight =
+    }
+
+  }
 
 	private enumerateLocalStream() {
 		var that = this;
@@ -226,7 +162,7 @@ export class BackgroundVideoComponent implements OnInit {
 					}
 				}
 				if(that.localMediaDevices.length > 0 ) {
-					that.localDeviceId = that.localMediaDevices[0].deviceId
+					that.localDeviceId = that.localMediaDevices[0].deviceId;
 					that.p2pStreamService.announceLocalDeviceEnumerate(that.localMediaDevices);
 				}
 
