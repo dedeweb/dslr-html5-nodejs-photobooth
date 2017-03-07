@@ -1,8 +1,8 @@
 # tamerbooth
 
-A photobooth web app, used to control a DSLR connected to computer. A separated webcam is used to display live viewfinder. 
+A node.js photobooth, used to control a DSLR connected to computer. A separated webcam is used to display live view to user. 
 
-**:bangbang: this app is in early stage of development, not really stable.**
+**:bangbang: This app is in alpha version.**
 
 **:bangbang: this app use experimental new technologies likes WebRTC. Only (very) recent browser are supported.**
 
@@ -66,11 +66,11 @@ Two servers are launched : http server on port 3000, and https server on port 30
 	
 	
 ## dev commands : 
-### launch backend (port 3000)
+### launch backend (http on port 3000, https on port 3043)
 
 	$ node server/app
 	
-### launch any of front modules : 
+### launch any of front modules (webcam/admin/front): 
 	$ cd path_of_module
 	$ npm start
 
