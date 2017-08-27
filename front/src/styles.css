@@ -3,7 +3,8 @@
 body {
 	overflow:hidden;
 	/*background: #000000;*/
-	user-select: none; 
+	user-select: none;
+	-webkit-user-select: none; 
 }
 
 .app-root-wrapper {
