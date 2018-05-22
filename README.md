@@ -6,6 +6,8 @@ A node.js photobooth, used to control a DSLR connected to computer. A separated 
 
 **:bangbang: this app use experimental new technologies likes WebRTC. Only (very) recent browser are supported.**
 
+Just a preview of what It looks like in action : 
+![oreview](/preview.jpg)
 
 
 
