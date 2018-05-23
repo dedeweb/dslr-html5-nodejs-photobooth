@@ -30,7 +30,7 @@ module.exports =
 	},
     entry: './app.js',
     output: {
-        path: '../dist/',
+        path: path.resolve(__dirname, '../dist/') ,
         //publicPath: 'bin/',
         filename: 'app.js'
     },
@@ -58,7 +58,7 @@ module.exports =
 		"colors/safe" : "commonjs colors/safe"
 	},
     module: {
-        loaders: [
+        rules: [
             { test: /\.js$/,
 
                 loaders: [
