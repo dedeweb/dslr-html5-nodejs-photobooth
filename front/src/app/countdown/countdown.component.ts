@@ -12,8 +12,8 @@ export class CountdownComponent implements OnInit {
   @Input() theme: string;
   @Output() onComplete: EventEmitter<any> = new EventEmitter();
 
-  private currentStep: number;
-  private animate: boolean;
+  public currentStep: number;
+  public animate: boolean;
 
   ngOnInit() {
     // this.onComplete.emit([clickedEntry, this.query]);

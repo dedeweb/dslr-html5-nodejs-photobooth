@@ -12,7 +12,7 @@ export class PhotoDisplayComponent implements OnInit {
   @Output() onRestart: EventEmitter<any> = new EventEmitter();
   @Output() onPrint: EventEmitter<any> = new EventEmitter();
 
-  private canPrint = false;
+  public canPrint = false;
 
   constructor(private cameraService : CameraService) { }
 

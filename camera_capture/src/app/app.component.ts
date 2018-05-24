@@ -10,23 +10,23 @@ import { LogService } from 'log.service';
 })
 export class AppComponent implements OnInit {
 
-  private currentMedia = '';
-  private currentQuality = '1';
-  private currentFramerate = '10';
-  private mediaDevices: MediaDeviceInfo[] = [];
-  private currentStream: MediaStream = null;
   private videoElement: HTMLVideoElement;
-  private remoteStream: MediaStream = null;
-  private clientConnected = false;
 
-  private videoQuality: any[] = [
+  public currentMedia = '';
+  public currentQuality = '1';
+  public currentFramerate = '10';
+  public mediaDevices: MediaDeviceInfo[] = [];
+  public currentStream: MediaStream = null;
+  public clientConnected = false;
+
+  public videoQuality: any[] = [
     { val: 1, label: 'QVGA (320x240)' },
     { val: 2, label: 'VGA (640x480)' },
     { val: 3, label: 'XGA (1024x768)'	},
     { val: 4, label: 'UXGA (1600x1200)' }
     ];
 
-  private videoFramerate: any[] = [
+  public videoFramerate: any[] = [
     { val: 10, label: '10 fps' },
     { val: 15, label: '15 fps' },
     { val: 20, label: '20 fps' },

@@ -36,7 +36,6 @@ import { HttpClientModule } from '@angular/common/http';
   providers: [
     P2pStreamService,
     CameraService,
-    Location,
     { provide: LogService, useFactory : function () { return new LogService(LogModule.FrontEnd); } }
   ],
   bootstrap: [AppComponent]

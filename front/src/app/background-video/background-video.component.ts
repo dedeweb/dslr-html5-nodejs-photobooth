@@ -14,10 +14,10 @@ export class BackgroundVideoComponent implements OnInit {
 
   @Input() blurred: boolean;
 
-  private currentStream: MediaStream = null;
+  public currentStream: MediaStream = null;
+  public currentCrop: any = { };
   private videoElement: any;
   private cropCoords: any;
-  private currentCrop: any = { };
   private localMediaDevices = [];
   private remoteStream = false;
   private localDeviceId: string;

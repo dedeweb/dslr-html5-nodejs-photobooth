@@ -25,11 +25,7 @@ import { LogService, LogModule } from 'log.service';
   providers: [
     P2pStreamService,
     {
-      provide: LogService, useFactory : function () {
-        let logService =  new LogService(LogModule.CameraCapture);
-        logService.plugLogEvents();
-        return logService;
-      }
+      provide: LogService, useFactory : function () { return new LogService(LogModule.CameraCapture); }
     }
     ],
   bootstrap: [AppComponent]

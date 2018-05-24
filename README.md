@@ -50,7 +50,7 @@ For displaying the front on the tablet, I recommand the android app developped w
 
 ## install
 
-	$ npm run install-all
+	$ npm install
 	$ npm run build
 
 ## usage
@@ -70,11 +70,13 @@ Two servers are launched : http server on port 3000, and https server on port 30
 ## dev commands : 
 ### launch backend (http on port 3000, https on port 3043)
 
-	$ node server/app
+	$ npm run start:server
 	
 ### launch any of front modules (webcam/admin/front): 
-	$ cd path_of_module
-	$ npm start
+	$ npm run start:camera
+	$ npm run start:front
+	$ npm run start:admin
+	
 
 
 

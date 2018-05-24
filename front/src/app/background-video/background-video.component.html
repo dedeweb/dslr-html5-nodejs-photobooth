@@ -1,4 +1,4 @@
-<div id="bgVideoWrapper" (window:resize)="onResize($event)">
+<div id="bgVideoWrapper" (window:resize)="onResize()">
   <video autoplay [srcObject]="currentStream"
          [style.margin-top]="currentCrop.top"
          [style.margin-bottom]="currentCrop.bottom"

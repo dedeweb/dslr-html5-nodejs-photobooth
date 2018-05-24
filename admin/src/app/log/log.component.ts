@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { LogService, LogLevel } from 'log.service';
 
 @Component({
@@ -6,21 +6,16 @@ import { LogService, LogLevel } from 'log.service';
   templateUrl: './log.component.html',
   styleUrls: ['./log.component.scss']
 })
-export class LogComponent implements OnInit {
+export class LogComponent {
 
-	private logLevelKeys:string[];
-	private LogLevel = LogLevel;
-		
-	constructor(public logger: LogService) { 
-		this.logLevelKeys = Object.keys(this.LogLevel).filter(k => !isNaN(Number(k)));
-	}
+  public logLevelKeys: string[];
+  private LogLevel = LogLevel;
 
-	ngOnInit() { 
+  constructor(public logger: LogService) {
+    this.logLevelKeys = Object.keys(this.LogLevel).filter(k => !isNaN(Number(k)));
+  }
 
-	}
-	
-	private clearLog() {
-		this.logger.logEntries = [];
-	}
-
+  public clearLog() {
+    this.logger.logEntries = [];
+  }
 }

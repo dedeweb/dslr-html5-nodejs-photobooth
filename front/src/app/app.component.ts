@@ -20,7 +20,7 @@ enum captureState {
 export class AppComponent {
 
   public captureState = captureState; // export enum type
-  private currentCaptureState: captureState = captureState.waitForInput;
+  public currentCaptureState: captureState = captureState.waitForInput;
 
   private capturedImage: string;
   private capturedPrintableImage: string;

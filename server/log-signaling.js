@@ -6,8 +6,8 @@ var instance = null;
 function LogSignaling(io){
 	if(instance !== null){
 		throw new Error("Cannot instantiate more than one LogSignaling, use LogSignaling.getInstance()");
-	} 
-	
+	}
+
 	this.initialize(io);
 }
 LogSignaling.prototype = {
@@ -26,40 +26,40 @@ LogSignaling.prototype = {
 
 		socket.on('log-message', function (data) {
 			that.signalLog(data);
-		}); 
-		
-		socket.on('log-connect', function (data) { 
-			
+		});
+
+		socket.on('log-connect', function (data) {
+
 			that.moduleArray[socket.id] = data;
-			
+
 			if(typeof(that.nberOfConnection[data.module]) === 'undefined') {
 				that.nberOfConnection[data.module] = 1;
 			} else {
 				that.nberOfConnection[data.module] ++;
 			}
-			
+
 			var address = socket.request.connection.remoteAddress;
 			//convert to v4 if needed
 			if (address.substr(0, 7) == "::ffff:") {
 			  address = address.substr(7)
-			}	
-			that.moduleArray[socket.id].address = address;			
+			}
+			that.moduleArray[socket.id].address = address;
 			console.log(colors.green('[logger] log connect id=' +socket.id+ ' moduleData=' + JSON.stringify(that.moduleArray[socket.id]) ));
-			
+
 			socket.broadcast.emit('log-connect', that.moduleArray[socket.id]);
-			
+
 			for(var i in that.moduleArray) {
-				
+
 				if(that.moduleArray[i]) {
 					console.log(colors.green('[logger] log connect refresh ' + JSON.stringify(that.moduleArray[i])));
 					socket.emit('log-connect', that.moduleArray[i] );
 				}
 			}
-			
+
 			//console.log(that.nberOfConnection);
 			//console.log(that.moduleArray);
 		});
-		
+
 		socket.on('disconnect', function () {
 			console.log(colors.green('[logger] log disconnect id=' + socket.id + ' moduleData=' + JSON.stringify(that.moduleArray[socket.id]) ));
 			if(that.moduleArray[socket.id]) {
@@ -68,18 +68,18 @@ LogSignaling.prototype = {
 				that.moduleArray[socket.id] = null;
 			}
 			//console.log(that.nberOfConnection);
-			//console.log(that.moduleArray);			
+			//console.log(that.moduleArray);
 		});
-		
+
 	},
 	signalLog: function (data) {
-		
+
 		if(data) {
 			var message =  data.message;
 			var color = colors.black;
-			
-			
-			
+
+
+
 			switch(data.logLevel) {
 				case 1: //debug
 					message = '[debug] ' + message;
@@ -98,7 +98,7 @@ LogSignaling.prototype = {
 					color = colors.redBG;
 					break;
 			}
-			
+
 			switch(data.module) {
 				case 1: //server
 					message = '[server]' + message;
@@ -113,22 +113,22 @@ LogSignaling.prototype = {
 					message = '[webcam]' + message;
 					break;
 			}
-			
+
 			message =  '[' + moment(data.time).format('ddd MMM DD HH:mm:ss.SS') + ']'  + message;
-			
+
 			console.log(color(message));
-			fs.appendFile('tamerbooth.log', message + '\n');
+			fs.appendFile('tamerbooth.log', message + '\n', () => { /* nothing to do after. */ });
 			this.io.emit('log-message', data);
 		} else {
-			console.log(colors.redBG('empty log received.'));	
+			console.log(colors.redBG('empty log received.'));
 		}
 	}
-	
+
 };
 LogSignaling.getInstance = function(io){
 	// summary:
-	//      Gets an instance of the singleton. It is better to use 
-	
+	//      Gets an instance of the singleton. It is better to use
+
 	if(instance === null){
 		instance = new LogSignaling(io);
 	}

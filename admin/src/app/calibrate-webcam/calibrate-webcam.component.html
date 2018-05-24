@@ -1,4 +1,4 @@
-<div class="container-fluid panel-webcam"  (window:resize)="onResize($event)">
+<div class="container-fluid panel-webcam"  (window:resize)="onResize()">
 	<div class="button-bar">
 		<div class="button-refresh">
 			<button type="button" class="btn btn-primary" (click)="requestCalibration()" [disabled]="loading" >{{'refresh_images' | translate}}</button>
@@ -7,7 +7,7 @@
 			<button type="button" class="btn btn-danger" (click)="storeCoords()" [disabled]="!cropper" >{{'store_calibration' | translate}}</button>
 		</div>
 		<div class="area-spinner">
-			<i class="fa fa-refresh fa-spin" [hidden]="!loading"></i> 
+			<i class="fa fa-refresh fa-spin" [hidden]="!loading"></i>
 		</div>
 		<div class="area-feedback">
 			<div class="alert alert-danger" [hidden]="!errorMsg">
@@ -17,7 +17,7 @@
 				{{infoMsg}}
 			</div>
 		</div>
-		
+
 	</div>
 	<div class="calibrate-images-wrapper">
 		<div class="left-col" >
@@ -31,7 +31,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<!--<div class="row">
 		<div class="col-xs-8">
 			<h4>{{'viewfinder' | translate}}</h4>
@@ -42,10 +42,10 @@
 	</div>
 	<div class="row">
 		<div class="col-xs-8">
-			
+
 		</div>
 		<div class="col-xs-4">
-			
+
 		</div>
 	</div>-->
 </div>

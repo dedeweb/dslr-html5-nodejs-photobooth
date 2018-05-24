@@ -14,7 +14,7 @@ export class PrintChoiceComponent {
 
   private maxNbrOfCopies = 5;
   private arrayCopies: any;
-  private printJobSent = false;
+  public printJobSent = false;
 
   constructor() {
     this.arrayCopies =  Array(this.maxNbrOfCopies).fill(0).map(function (x, i) { return i + 1; });

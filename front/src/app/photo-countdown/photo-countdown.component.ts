@@ -11,7 +11,7 @@ export class PhotoCountdownComponent implements OnInit {
   @Output() onFinish: EventEmitter<any> = new EventEmitter();
   @Output() onTriggerCapture: EventEmitter<any> = new EventEmitter();
 
-  private currentStep = -1;
+  public currentStep = -1;
 
   constructor(private logger: LogService) { }
 

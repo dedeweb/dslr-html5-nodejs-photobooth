@@ -40,7 +40,7 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
     private cameraService: CameraService,
     public logger: LogService,
     private kioskAppService: KioskAppService,
-    private p2pStreamService: P2pStreamService,
+    public p2pStreamService: P2pStreamService,
     private toasterService: ToasterService) {
     // this language will be used as a fallback when a translation isn't found in the current language
     translate.setDefaultLang('en');
