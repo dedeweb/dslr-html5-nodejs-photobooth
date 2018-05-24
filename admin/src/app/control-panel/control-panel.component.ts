@@ -105,7 +105,6 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
         },
       (data: string) => {
           this.printerInfosLoading = false;
-          debugger;
           this.printerInfosErr = data;
       });
   }
@@ -190,11 +189,11 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
       this.kioskAppService.test('http://' + this.kioskAppUrl).subscribe(
         (data: string) => {
             this.kioskAppWSInfoLoading = false;
-            let kioskObj = {};
+            let kioskObj;
             try {
               kioskObj = JSON.parse(data);
             } catch (e) {
-              kioskObj = {};
+              kioskObj = { app : '', version: ''}
             }
             if (kioskObj.app === 'kioskApp') {
               this.kioskAppReady = true;

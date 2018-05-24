@@ -1,6 +1,6 @@
 {
   "name": "tamerbooth",
-  "version": "1.0.0",
+  "version": "1.0.2-alpha",
   "description": "A photobooth webapp using DSLR to take pictures with gphoto2",
   "main": "index.js",
   "dependencies": {
@@ -74,15 +74,16 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:server": "node server/app",
     "build:server": "cd server && node ../node_modules/webpack-cli/bin/webpack",
-    "start:admin": "cd admin && ng serve --proxy-config proxy.conf.json  --host 0.0.0.0 --port 4202",
-    "build:admin": "cd admin && ng build --prod --bh /admin/",
+    "start:camera": "cd camera_capture && ng serve --proxy-config proxy.conf.json  --host 0.0.0.0 --port 4200",
+    "build:camera": "cd camera_capture && ng build --prod --bh /front/",
     "start:front": "cd front && ng serve --proxy-config proxy.conf.json  --host 0.0.0.0 --port 4201",
     "build:front": "cd front && ng build --prod --bh /front/",
+    "start:admin": "cd admin && ng serve --proxy-config proxy.conf.json  --host 0.0.0.0 --port 4202",
+    "build:admin": "cd admin && ng build --prod --bh /admin/",
     "server": "node server/app",
     "camera": "concurrently --kill-others \"npm run server\" \"cd camera_capture && ng serve --proxy-config proxy.conf.json  --host 0.0.0.0\"",
     "start": "npm run build && node dist/app",
-    "build": "cd admin && npm run build && cd ../camera_capture && npm run build && cd ../front && npm run build && cd ../server && npm run build",
-    "install-all": "npm install && cd admin && npm install && cd ../camera_capture && npm install && cd ../front && npm install && cd ../common && npm install"
+    "build": "cd admin && npm run build && cd ../camera_capture && npm run build && cd ../front && npm run build && cd ../server && npm run build"
   },
   "repository": {
     "type": "git",

@@ -1,4 +1,4 @@
-<nav class="navbar navbar-toggleable  navbar-inverse bg-inverse">
+<nav class="navbar navbar-toggleable navbar-dark bg-dark">
   <span class="navbar-brand">{{'camera_capture_title' | translate}}</span>
 </nav>
 
@@ -7,28 +7,28 @@
 		<div class="row">
 			<div class="col-6 form-inline">
 				<label for="videoSource"> {{'video_source' | translate}}: </label>
-				<select class="form-control form-control-sm" name="videoSource" [(ngModel)]="currentMedia" (ngModelChange)="startStream()">
+				<select id="videoSource" class="form-control form-control-sm" name="videoSource" [(ngModel)]="currentMedia" (ngModelChange)="startStream()">
 					<option value="">{{'select_device' | translate}}</option>
-					<option *ngFor="let mediaDevice of mediaDevices; let i = index" [value]="mediaDevice.deviceId">  
+					<option *ngFor="let mediaDevice of mediaDevices; let i = index" [value]="mediaDevice.deviceId">
 					{{mediaDevice.label ? mediaDevice.label : ('camera ' + (i + 1)) }}
 					</option>
 				</select>
 			</div>
 			<div class="col-6 form-inline">
 				<label for="videoQuality"> {{'video_quality' | translate}}: </label>
-				<select class="form-control form-control-sm" name="videoQuality" [(ngModel)]="currentQuality" (ngModelChange)="startStream()">
-					<option *ngFor="let quality of videoQuality" [value]="quality.val">  
+				<select id="videoQuality" class="form-control form-control-sm" name="videoQuality" [(ngModel)]="currentQuality" (ngModelChange)="startStream()">
+					<option *ngFor="let quality of videoQuality" [value]="quality.val">
 						{{quality.label}}
 					</option>
 				</select>
 				<select class="form-control form-control-sm" name="videoFramerate" [(ngModel)]="currentFramerate" (ngModelChange)="startStream()">
-					<option *ngFor="let framerate of videoFramerate" [value]="framerate.val">  
+					<option *ngFor="let framerate of videoFramerate" [value]="framerate.val">
 						{{framerate.label}}
 					</option>
 				</select>
 			</div>
 		</div>
-		<div class="row"> 
+		<div class="row">
 			<div class="col-12">
 			<span>{{'client_status' | translate}} : </span>
 			<span [hidden]="!clientConnected" class="client-connected client-status"></span>
@@ -39,7 +39,7 @@
 			<div class="col-12">
 				<h5 class="text-center">{{'image' | translate}} :</h5>
 			</div>
-			
+
 		</div>
 		<div class="row">
 			<div class="col-12">
