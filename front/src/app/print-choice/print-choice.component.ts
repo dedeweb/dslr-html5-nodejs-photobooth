@@ -1,37 +1,32 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
-	selector: 'print-choice',
-	templateUrl: './print-choice.component.html',
-	styleUrls: ['./print-choice.component.scss']
+  selector: 'print-choice',
+  templateUrl: './print-choice.component.html',
+  styleUrls: ['./print-choice.component.scss']
 })
-export class PrintChoiceComponent implements OnInit {
+export class PrintChoiceComponent {
 
 
-	@Input() imgSrc: string;
-	@Output() onCancel: EventEmitter<any> = new EventEmitter();
-	@Output() onPrintChoice: EventEmitter<number> = new EventEmitter<number>();
+  @Input() imgSrc: string;
+  @Output() onCancel: EventEmitter<any> = new EventEmitter();
+  @Output() onPrintChoice: EventEmitter<number> = new EventEmitter<number>();
 
-	private maxNbrOfCopies: number = 5;
-	private Array: any;
-	private arrayCopies: any;
-	private printJobSent:boolean = false;
-	
-	constructor() { 
-		this.arrayCopies =  Array(this.maxNbrOfCopies).fill(0).map(function (x, i) { return i + 1; });
-		
-	}
+  private maxNbrOfCopies = 5;
+  private arrayCopies: any;
+  private printJobSent = false;
 
-	ngOnInit() {
-	}
-	
-	printPicture(nber: number) {
-		this.printJobSent = true;
-		this.onPrintChoice.emit(nber);
-	}
-	
-	cancel() {
-		this.onCancel.emit();
-	}
+  constructor() {
+    this.arrayCopies =  Array(this.maxNbrOfCopies).fill(0).map(function (x, i) { return i + 1; });
+  }
+
+  public printPicture(nber: number): void {
+    this.printJobSent = true;
+    this.onPrintChoice.emit(nber);
+  }
+
+  public cancel(): void {
+    this.onCancel.emit();
+  }
 
 }

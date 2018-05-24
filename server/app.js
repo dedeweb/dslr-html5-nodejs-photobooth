@@ -1,5 +1,5 @@
-var express = require('express'); 
-var path = require('path'); 
+var express = require('express');
+var path = require('path');
 var favicon = require('serve-favicon');
 var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -12,7 +12,7 @@ var https = require('https');
 var pem = require('pem');
 var io = require('socket.io')({ path : '/api/socket/', origins : '*:*'});
 var logSignaling = require('./log-signaling')(io);
-var logger = require('./log-client')(logSignaling); 
+var logger = require('./log-client')(logSignaling);
 var Datastore = require('nedb');
 var db = new Datastore({filename: './tamerbooth.db'});
 db.loadDatabase(function(err) {
@@ -177,7 +177,7 @@ app.get('/api/outputDir', function (req, res) {
 		.then(function (dir) {
 			res.status(200).send({dir: dir});
 		});
-	
+
 });
 
 app.post('/api/outputDir', function (req, res) {
@@ -216,20 +216,20 @@ app.get('/api/printerInfos', function (req, res)  {
 });
 
 app.post('/api/canPrint', function (req, res) {
-	var data = req.body; 
+	var data = req.body;
 	logger.log('set can print  : ' + data);
-	//cameraControl.setFakeCamera(fakeCamera); 
+	//cameraControl.setFakeCamera(fakeCamera);
 	if(data === "true") {
 		cameraControl.enablePrint();
 	} else {
 		cameraControl.disablePrint();
 	}
-	res.end(); 
-}); 
+	res.end();
+});
 
 app.get('/api/canPrint', function (req, res)  {
 	cameraControl.getCanPrint().then(function (data) {
-		res.status(200).send(data); 	
+		res.status(200).send(data);
 	});
 });
 
@@ -240,12 +240,12 @@ app.get('/api/printCapacity', function (req, res)  {
 });
 
 app.post('/api/printCapacity', function (req, res) {
-	var data = req.body; 
+	var data = req.body;
 	logger.log('set print count  : ' + data);
-	//cameraControl.setFakeCamera(fakeCamera); 
+	//cameraControl.setFakeCamera(fakeCamera);
 	cameraControl.setPrintCount(data);
-	res.end(); 
-}); 
+	res.end();
+});
 
 app.post('/api/print/:imgId', function (req, res) {
 	var imgId = req.params.imgId,

@@ -13,10 +13,10 @@ if (environment.production) {
 }
 
 $.get('/api/authorizeModule/' + LogModule.FrontEnd ).done(function () {
-	platformBrowserDynamic().bootstrapModule(AppModule);
+  platformBrowserDynamic().bootstrapModule(AppModule);
 }).fail(function (error) {
-	$('app-root').hide();
-	$('.app-err').append(error.responseText);
-	$('.app-err').show();
+  $('app-root').hide();
+  $('.app-err').append(error.responseText);
+  $('.app-err').show();
 });
 

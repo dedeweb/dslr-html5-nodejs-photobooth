@@ -4,142 +4,131 @@ import {CameraService} from 'camera.service';
 import { LogService } from 'log.service';
 
 @Component({
-	selector: 'background-video',
-	templateUrl: './background-video.component.html',
-	styleUrls: ['./background-video.component.scss']
+  selector: 'background-video',
+  templateUrl: './background-video.component.html',
+  styleUrls: ['./background-video.component.scss']
 })
 
 export class BackgroundVideoComponent implements OnInit {
 
 
-	@Input() blurred: boolean;
+  @Input() blurred: boolean;
 
-	private currentStream : MediaStream = null;
-	private videoElement: any;
-	//private requestImage: boolean = false;
-	private cropCoords: any;
-	private currentCrop : any = { };
-	private localMediaDevices = [];
-	private remoteStream: boolean = false;
-	private localDeviceId: string;
+  private currentStream: MediaStream = null;
+  private videoElement: any;
+  private cropCoords: any;
+  private currentCrop: any = { };
+  private localMediaDevices = [];
+  private remoteStream = false;
+  private localDeviceId: string;
 
-	constructor(private p2pStreamService : P2pStreamService,
-				private el: ElementRef,
-				private logger: LogService,
-				private cameraService : CameraService) {
-
-		var that = this;
-		p2pStreamService.onAddStream = function(stream) {
-			if(that.currentStream && that.currentStream.getVideoTracks().length > 0 ) {
-				that.currentStream.getVideoTracks()[0].stop();
-				that.currentStream = null;
-			}
-			that.logger.log('stream received. video tracks : ' + stream.getVideoTracks().length);
-			if(stream.getVideoTracks().length == 0) {
-				that.logger.error('no video track !!!');
-			}
-			stream.onaddtrack = function () {
-				that.logger.debug('track added');
-			};
-			that.currentStream = stream;
-			/*that.videoElement.play().then(function () {
-				that.logger.log('video playing.');
-			}).catch(function (err) {
-				that.logger.error('error playing video ! ' + err.message);
-			});*/
-			that.remoteStream = true;
-
-		};
-
-
-		p2pStreamService.onDisconnect = function () {
-			that.currentStream = null;
-			that.playLocalStream();
-		};
-
-		p2pStreamService.onRequestLocalPlay = function(deviceId) {
-			that.localDeviceId = deviceId;
-			that.currentStream = null;
-			that.playLocalStream();
-		};
-
-    cameraService.getWebcamCoords().subscribe(
-      function success(data) {
-        if(data.text()) {
-          that.cropCoords = data.json();
-          that.cropVideo();
-          that.logger.debug('retrieved coords : ' + JSON.stringify(data.json()));
-        } else {
-          that.logger.warn('empty coords');
+  constructor(
+    private p2pStreamService: P2pStreamService,
+    private el: ElementRef,
+    private logger: LogService,
+    private cameraService: CameraService) {
+      p2pStreamService.onAddStream = (stream) => {
+        if (this.currentStream && this.currentStream.getVideoTracks().length > 0 ) {
+          this.currentStream.getVideoTracks()[0].stop();
+          this.currentStream = null;
         }
 
+        this.logger.log('stream received. video tracks : ' + stream.getVideoTracks().length);
+        if (stream.getVideoTracks().length === 0) {
+          this.logger.error('no video track !!!');
+        }
+        stream.onaddtrack = () => {
+          this.logger.debug('track added');
+        };
+        this.currentStream = stream;
+        this.remoteStream = true;
+      };
+
+      p2pStreamService.onDisconnect = () => {
+        this.currentStream = null;
+        this.playLocalStream();
+      };
+
+      p2pStreamService.onRequestLocalPlay = (deviceId) => {
+        this.localDeviceId = deviceId;
+        this.currentStream = null;
+        this.playLocalStream();
+      };
+
+      cameraService.getWebcamCoords().subscribe(
+        (data: any) => {
+        if (data) {
+          this.cropCoords = data;
+          this.cropVideo();
+          this.logger.debug('retrieved coords : ' + JSON.stringify(data));
+        } else {
+          this.logger.warn('empty coords');
+        }
       },
-      function error(data) {
-        that.logger.error('cannot get coords : ' + data);
+      (data: any) => {
+        this.logger.error('cannot get coords : ' + data);
       });
+  }
 
-	}
+  ngOnInit() {
+    this.enumerateLocalStream().then(() => {
+      this.playLocalStream();
+    });
 
-	ngOnInit() {
-		var componentClass = this;
-		this.enumerateLocalStream().then(function () {
-			componentClass.playLocalStream();
-		});
-
-		var imgCanvasElement = this.el.nativeElement.querySelector('#getImgCanvas');
-    var imgCtx= imgCanvasElement.getContext('2d');
+    let imgCanvasElement = this.el.nativeElement.querySelector('#getImgCanvas');
+    let imgCtx = imgCanvasElement.getContext('2d');
 
     this.videoElement = this.el.nativeElement.querySelector('video');
 
-
-		this.videoElement.onloadedmetadata = function() {
-			componentClass.logger.debug('loaded video metadata');
-			imgCanvasElement.height = this.videoHeight;
-			imgCanvasElement.width = this.videoWidth;
-		}
-
-		this.videoElement.onloadeddata = function() {
-			componentClass.logger.debug('loaded video data');
-		};
-
-    this.p2pStreamService.onRequestImage =  function () {
-      imgCtx.drawImage(componentClass.videoElement,0, 0, componentClass.videoElement.videoWidth, componentClass.videoElement.videoHeight,
-        0, 0, imgCanvasElement.width, imgCanvasElement.height);
-      componentClass.p2pStreamService.sendCalibrationImage(imgCanvasElement.toDataURL());
+    let componentClass = this;
+    this.videoElement.onloadedmetadata = function() {
+      componentClass.logger.debug('loaded video metadata');
+      imgCanvasElement.height = this.videoHeight;
+      imgCanvasElement.width = this.videoWidth;
     };
-	}
 
-  public onResize(event) {
+    this.videoElement.onloadeddata = () => {
+      this.logger.debug('loaded video data');
+    };
+
+    this.p2pStreamService.onRequestImage =  () => {
+      imgCtx.drawImage(this.videoElement, 0, 0, this.videoElement.videoWidth, this.videoElement.videoHeight,
+        0, 0, imgCanvasElement.width, imgCanvasElement.height);
+      this.p2pStreamService.sendCalibrationImage(imgCanvasElement.toDataURL());
+    };
+  }
+
+  public onResize() {
     this.logger.log('window resize');
     this.cropVideo();
   }
 
   private cropVideo() {
 
-    if(this.cropCoords) {
+    if (this.cropCoords) {
 
-      var width, height, gapWidth, gapHeight;
+      let width, height, gapWidth, gapHeight;
 
-      if(window.innerWidth / window.innerHeight > 1.5) {
-        //screen wider than picture : image will be cropped on top and bottom
+      if (window.innerWidth / window.innerHeight > 1.5) {
+        // screen wider than picture : image will be cropped on top and bottom
         width = window.innerWidth;
         height = Math.floor(window.innerWidth / 1.5);
         gapWidth = 0;
-        gapHeight = Math.floor((height - window.innerHeight)/2);
+        gapHeight = Math.floor((height - window.innerHeight) / 2);
       } else {
-        //screen less wide than picture : image will be cropped on left and right
+        // screen less wide than picture : image will be cropped on left and right
         height = window.innerHeight;
         width = window.innerHeight * 1.5;
         gapHeight = 0;
-        gapWidth = Math.floor((width - window.innerWidth)/2);
+        gapWidth = Math.floor((width - window.innerWidth) / 2);
       }
 
-      var totalWidth = Math.floor(width / this.cropCoords.width);
-      var totalHeight = Math.floor(height / this.cropCoords.height);
+      let totalWidth = Math.floor(width / this.cropCoords.width);
+      let totalHeight = Math.floor(height / this.cropCoords.height);
 
 
 
-      this.logger.debug('crop : total : ' + totalWidth + 'x' + totalHeight +  'gap: ' +gapWidth + 'x' + gapHeight );
+      this.logger.debug('crop : total : ' + totalWidth + 'x' + totalHeight +  'gap: ' + gapWidth + 'x' + gapHeight );
 
       this.currentCrop.top =  -(totalHeight * this.cropCoords.y + gapHeight) + 'px';
       this.currentCrop.bottom = -(totalHeight * (1 - (this.cropCoords.height + this.cropCoords.y)) + gapHeight) + 'px';
@@ -147,54 +136,49 @@ export class BackgroundVideoComponent implements OnInit {
       this.currentCrop.right  = -(totalWidth * (1 - (this.cropCoords.x + this.cropCoords.width)) + gapWidth) + 'px';
       this.currentCrop.width = totalWidth + 'px';
       this.currentCrop.height = totalHeight + 'px';
-      //this.currentCrop.wrapperHeight =
     }
 
   }
 
-	private enumerateLocalStream() {
-		var that = this;
-		return new Promise(function(resolve, reject) {
-			navigator.mediaDevices.enumerateDevices().then(function (deviceInfos) {
-				for(let device of deviceInfos) {
-					if(device.kind == 'videoinput') {
-						that.localMediaDevices.push(device);
-					}
-				}
-				if(that.localMediaDevices.length > 0 ) {
-					that.localDeviceId = that.localMediaDevices[0].deviceId;
-					that.p2pStreamService.announceLocalDeviceEnumerate(that.localMediaDevices);
-				}
+  private enumerateLocalStream(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      navigator.mediaDevices.enumerateDevices().then( (deviceInfos) => {
+        for (let device of deviceInfos) {
+          if (device.kind === 'videoinput') {
+            this.localMediaDevices.push(device);
+          }
+        }
+        if (this.localMediaDevices.length > 0 ) {
+          this.localDeviceId = this.localMediaDevices[0].deviceId;
+          this.p2pStreamService.announceLocalDeviceEnumerate(this.localMediaDevices);
+        }
+        resolve();
+      }).catch( (error) => {
+        this.logger.error('navigator.getUserMedia error: ' + JSON.stringify(error));
+        reject();
+      });
+    });
+  }
 
-				resolve();
-			}).catch(function (error) {
-				that.logger.error('navigator.getUserMedia error: ' + JSON.stringify(error));
-				reject();
-			});
-		});
-	}
-
-	private playLocalStream() {
-		var that = this;
-		if(!this.currentStream && that.localDeviceId) {
-			//should play local device
-			this.logger.log('start local stream');
-				navigator.mediaDevices.getUserMedia({
-				audio: false,
-				video: {
-					deviceId: that.localDeviceId,
-					width: 320,
-					height: 240,
-					frameRate:  { ideal: 10, max: 25 }
-				}
-			}).then(function (stream) {
-				that.logger.debug('local stream received');
-				that.currentStream = stream;
-				that.remoteStream = false;
-			});
-		} else {
-			this.logger.warn('cannot play local device');
-		}
-	}
-
+  private playLocalStream(): void {
+    if (!this.currentStream && this.localDeviceId) {
+      // should play local device
+      this.logger.log('start local stream');
+      navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: {
+          deviceId: this.localDeviceId,
+          width: 320,
+          height: 240,
+          frameRate:  { ideal: 10, max: 25 }
+        }
+      }).then((stream) => {
+        this.logger.debug('local stream received');
+        this.currentStream = stream;
+        this.remoteStream = false;
+      });
+    } else {
+      this.logger.warn('cannot play local device');
+    }
+  }
 }
