@@ -17,7 +17,7 @@ Just a preview of what It looks like in action :
 
 ## prerequisite
 ### software
-* node >= 6.9.0 and npm . For ubuntu you have to use ppa : `curl -sL https://deb.nodesource.com/setup_6.x | sudo bash -` and then `sudo apt-get install nodejs`
+* node >= 8.9 and npm . For ubuntu you have to use ppa : `curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -` and then `sudo apt-get install -y nodejs`
 * gphoto2
 	
 ### hardware
