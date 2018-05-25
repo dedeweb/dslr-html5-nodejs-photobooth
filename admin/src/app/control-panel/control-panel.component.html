@@ -5,7 +5,7 @@
 			<div class="container-fluid">
 				<div class="row">
 					<div class="col-2 text-right">
-						{{'camera_mode' | translate }} : 
+						{{'camera_mode' | translate }} :
 					</div>
 					<div class="col-10">
 						<button [hidden]="useFakeCamera" (click)="setCameraMode(true)" type="button" class="btn btn-success btn-sm">
@@ -14,12 +14,12 @@
 						<button [hidden]="!useFakeCamera" (click)="setCameraMode(false)" type="button" class="btn btn-danger btn-sm">
 							{{'fake_camera' | translate }}
 						</button>
-						<i class="fa fa-refresh fa-spin" [hidden]="!cameraModeWSLoading"></i> 
+						<i class="fa fa-refresh fa-spin" [hidden]="!cameraModeWSLoading"></i>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-2 text-right">
-						{{'camera_status' | translate }} : 
+						{{'camera_status' | translate }} :
 					</div>
 					<div class="col-1">
 						<span [hidden]="!cameraReady" class="status-ok client-status">
@@ -28,8 +28,8 @@
 						<span [hidden]="cameraReady" class="status-nok client-status">
 							<i class="fa fa-times-circle"></i>
 						</span>
-						<a (click)="getCameraStatus()" class="refresh-button"   > 
-							<i class="fa fa-refresh" [ngClass]="{'fa-spin': cameraWSLoading }"></i> 
+						<a (click)="getCameraStatus()" class="refresh-button"   >
+							<i class="fa fa-refresh" [ngClass]="{'fa-spin': cameraWSLoading }"></i>
 						</a>
 					</div>
 					<div class="col-9">
@@ -38,7 +38,7 @@
 				</div>
 				<div class="row">
 					<div class="col-2 text-right">
-						{{'output_directory' | translate }} : 
+						{{'output_directory' | translate }} :
 					</div>
 					<div class="col-6">
 						<input type="text" [(ngModel)]="outputDir" class="form-control form-control-sm" />
@@ -47,7 +47,7 @@
 						<button (click)="updateOutputDir()" class="btn btn-primary btn-sm">
 							{{ 'change' | translate}}
 						</button>
-						<i class="fa fa-refresh fa-spin" [hidden]="!outputDirLoading"></i> 
+						<i class="fa fa-refresh fa-spin" [hidden]="!outputDirLoading"></i>
 					</div>
 				</div>
 			</div>
@@ -59,7 +59,7 @@
 			<div class="container-fluid">
 				<div class="row">
 					<div class="col-2 text-right">
-						{{'ip_address' | translate }} : 
+						{{'ip_address' | translate }} :
 					</div>
 					<div class="col-10">
 						<span *ngIf="logger.frontEndAddress">
@@ -84,8 +84,8 @@
 						<span [hidden]="kioskAppReady" class="status-nok client-status">
 							<i class="fa fa-times-circle"></i>
 						</span>
-						<a (click)="refreshKioskApp()" class="refresh-button"   > 
-							<i class="fa fa-refresh" [ngClass]="{'fa-spin': kioskAppWSInfoLoading }"></i> 
+						<a (click)="refreshKioskApp()" class="refresh-button"   >
+							<i class="fa fa-refresh" [ngClass]="{'fa-spin': kioskAppWSInfoLoading }"></i>
 						</a>
 					</div>
 				</div>
@@ -121,7 +121,7 @@
 						<button (click)="enterFs()" class="btn btn-primary btn-sm">
 							{{ 'kioskapp_enter_fs' | translate}}
 						</button>
-						
+
 					</div>
 				</div>
 			</div>
@@ -133,7 +133,7 @@
 			<div class="container-fluid">
 				<div class="row">
 					<div class="col-2 text-right">
-						{{'ip_address' | translate }} : 
+						{{'ip_address' | translate }} :
 					</div>
 					<div class="col-10">
 						<span *ngIf="logger.webcamAddress">
@@ -146,7 +146,7 @@
 				</div>
 				<div class="row">
 					<div class="col-2 text-right">
-						{{'camera.mode' | translate }} : 
+						{{'camera.mode' | translate }} :
 					</div>
 					<div class="col-10">
 						<span *ngIf="p2pStreamService.cameraMode == -1" class="text-danger">
@@ -158,7 +158,7 @@
 						<span *ngIf="p2pStreamService.cameraMode == 1">
 							<code>{{'camera.remote_mode' | translate}}</code>
 						</span>
-						
+
 					</div>
 				</div>
 				<div class="row">
@@ -167,8 +167,8 @@
 					</div>
 					<div class="col-10 form-inline">
 						<div *ngIf="p2pStreamService.devices.length > 0">
-							<select name="videoSource" [(ngModel)]="currentLocalDeviceId" class="form-control form-control-sm">
-								<option *ngFor="let mediaDevice of p2pStreamService.devices; let i = index" [value]="mediaDevice.deviceId" >  
+							<select id="videoSource" name="videoSource" [(ngModel)]="currentLocalDeviceId" class="form-control form-control-sm">
+								<option *ngFor="let mediaDevice of p2pStreamService.devices; let i = index" [value]="mediaDevice.deviceId" >
 								{{mediaDevice.label ? mediaDevice.label : ('camera ' + (i + 1)) }}
 								</option>
 							</select>
@@ -190,16 +190,16 @@
 			<div class="container-fluid">
 			<div class="row">
 					<div class="col-2">
-						{{'print_left' | translate}} : 
+						{{'print_left' | translate}} :
 					</div>
 					<div class="col-2">
-						<input type="number" min="0" [(ngModel)]="numberOfPrint" class="form-control form-control-sm" />	
+						<input type="number" min="0" [(ngModel)]="numberOfPrint" class="form-control form-control-sm" />
 					</div>
-					<div class="col-8">					
-						<a (click)="refreshNumberOfPrint()" class="refresh-button"   > 
-							<i class="fa fa-refresh" [ngClass]="{'fa-spin': numberOfPrintLoading }"></i> 
+					<div class="col-8">
+						<a (click)="refreshNumberOfPrint()" class="refresh-button"   >
+							<i class="fa fa-refresh" [ngClass]="{'fa-spin': numberOfPrintLoading }"></i>
 						</a>
-						<a (click)="saveNumberOfPrint()" class="refresh-button"   > 
+						<a (click)="saveNumberOfPrint()" class="refresh-button"   >
 							<i class="fa fa-floppy-o"></i>
 						</a>
 					</div>
@@ -218,7 +218,7 @@
 				</div>
 				<div class="row">
 					<div class="col-2 text-right">
-						{{'default_printer' | translate }} : 
+						{{'default_printer' | translate }} :
 					</div>
 					<div class="col-10">
 						<span *ngIf="!printerInfosErr">
@@ -227,8 +227,8 @@
 						<span *ngIf="printerInfosErr" class="alert alert-danger">
 							{{'printer_infos_error' | translate }} : {{printerInfosErr}}
 						</span>
-						<a (click)="refreshPrinterInfos()" class="refresh-button"   > 
-							<i class="fa fa-refresh" [ngClass]="{'fa-spin': printerInfosLoading }"></i> 
+						<a (click)="refreshPrinterInfos()" class="refresh-button"   >
+							<i class="fa fa-refresh" [ngClass]="{'fa-spin': printerInfosLoading }"></i>
 						</a>
 					</div>
 				</div>

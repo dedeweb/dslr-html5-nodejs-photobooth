@@ -141,9 +141,9 @@ export class ControlPanelComponent implements OnInit, DoCheck  {
           this.outputDirLoading = false;
           this.refreshOutputDir();
         },
-      (data: string) => {
+      (data: any) => {
           this.outputDirLoading = false;
-          this.toasterService.pop('error', 'Error setting output dir', '' + data);
+          this.toasterService.pop('error', 'Error setting output dir', '' + data.error);
           this.refreshOutputDir();
       });
   }

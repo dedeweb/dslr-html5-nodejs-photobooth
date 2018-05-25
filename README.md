@@ -3,6 +3,8 @@
 
 A node.js photobooth, used to control a DSLR connected to computer. A separated webcam is used to display live view to user. 
 
+**:bangbang: This app won't work on windows. You have to use linux with gphoto2 installed.**
+
 **:bangbang: This app is in alpha version.**
 
 **:bangbang: this app use experimental new technologies likes WebRTC. Only (very) recent browser are supported.**

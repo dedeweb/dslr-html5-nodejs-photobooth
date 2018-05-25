@@ -1,5 +1,6 @@
 .client-status {
 	font-size: 1.2em;
+  margin: 0 5px;
 }
 
 .status-ok {
@@ -12,6 +13,7 @@
 
 .refresh-button {
 	cursor: pointer;
+  margin: 0 5px;
 }
 
 .camera-message {
@@ -36,7 +38,7 @@
 			margin-bottom: 5px;
 		}
 	}
-} 
+}
 
 .card-printer {
 	.refresh-button {
@@ -45,5 +47,5 @@
 	.alert {
 	    padding: 0 1rem;
 	}
-	
+
 }

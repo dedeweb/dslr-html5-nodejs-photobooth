@@ -97,7 +97,7 @@ export class CameraService {
 
   public setOutputDir(dir: string) {
     let result = this.http
-      .post(`${this.baseUrl}/outputDir`, {dir: dir});
+      .post(`${this.baseUrl}/outputDir`, {dir: dir}, {responseType: 'text'});
 
     return result;
   };

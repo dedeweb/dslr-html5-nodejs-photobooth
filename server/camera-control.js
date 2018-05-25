@@ -5,8 +5,9 @@ var sharp = require('sharp');
 var path = require('path');
 var moment = require('moment');
 var printer = require('printer/lib');
+var commandExists = require('command-exists');
 var instance = null;
- 
+
 //Go to script directory
 process.chdir(__dirname);
 
@@ -44,7 +45,7 @@ CameraControl.prototype = {
 				if(docs && docs.length) {
 					that.logger.debug('get ' + key +  ' : ' + JSON.stringify(docs[0].data) );
 					if(typeof docs[0].data !== 'undefined') {
-						resolve(docs[0].data);	
+						resolve(docs[0].data);
 					} else if(defaultValue){
 						resolveDefaultValue();
 					} else {
@@ -57,7 +58,7 @@ CameraControl.prototype = {
 					} else {
 						reject();
 					}
-					
+
 				}
 			});
 		});
@@ -76,18 +77,18 @@ CameraControl.prototype = {
 							if(err) {
 								that.logger.error('error inserting in db :(');
 							} else {
-								resolve();		
+								resolve();
 							}
 						});
 					} else {
 						that.logger.log('data ' + key + ' saved with value ' + value +'. Num replaced = ' + numReplaced);
-						resolve();	
+						resolve();
 					}
 				}
 			});
 		});
 	},
-	
+
 	getOutputDirectory : function () {
 		var that = this;
 		return new Promise(function (resolve, reject) {
@@ -96,7 +97,7 @@ CameraControl.prototype = {
 			});
 		});
 	},
-	
+
 	setOutputDirectory: function (dir) {
 		var that = this;
 		return new Promise(function (resolve, reject) {
@@ -114,12 +115,12 @@ CameraControl.prototype = {
 						reject(err);
 					});
 				}
-				
+
 			});
-			
+
 		});
 	},
-	
+
 	setFakeCamera : function (flag) {
 		this.fakeCamera = flag;
 	},
@@ -129,33 +130,43 @@ CameraControl.prototype = {
 
 	getStatus: function (res) {
 		var that = this;
-		
+
 		return new Promise(function (resolve, reject) {
 			var summaryCmd;
-		
-			if(that.fakeCamera) {
-				//summaryCmd = child.spawnSync('server/fake_gphoto.sh', ['--summary']);
-				summaryCmd = child.spawnSync('sh', ['fake_gphoto.sh', '--summary']);
-			} else {
-				summaryCmd = child.spawnSync('gphoto2', ['--summary']);
-			}
+      commandExists('gphoto2', function(err, commandExists) {
 
-			if('' + summaryCmd.stderr ) {
-				that.logger.error('get summary command response : ' + summaryCmd.stderr);
-				//res.json( {error: true, message: ''+summaryCmd.stderr});
-				reject(summaryCmd.stderr);
-				//res.json( {error: true, message: '' + summaryCmd.stderr});
+        if(!that.fakeCamera && !commandExists) {
+          //gphoto2 not installed, in real mode. return info.
+          that.logger.error('gphoto2 not installed  ');
+          reject('please install gphoto2');
+        } else {
+          if(that.fakeCamera) {
+            //summaryCmd = child.spawnSync('server/fake_gphoto.sh', ['--summary']);
+            summaryCmd = child.spawnSync('sh', ['fake_gphoto.sh', '--summary']);
+          } else {
+            summaryCmd = child.spawnSync('gphoto2', ['--summary']);
+          }
 
-			}
-			else
-			{
-				that.logger.debug('get summary command response : ' + summaryCmd.stdout);
-				resolve(summaryCmd.stdout);
-				//res.json( {error: false, message : '' + summaryCmd.stdout});
-			}
-			
-		});
-		
+          if('' + summaryCmd.stderr ) {
+            that.logger.error('get summary command response : ' + summaryCmd.stderr);
+            //res.json( {error: true, message: ''+summaryCmd.stderr});
+            reject(summaryCmd.stderr);
+            //res.json( {error: true, message: '' + summaryCmd.stderr});
+
+          }
+          else
+          {
+            that.logger.debug('get summary command response : ' + summaryCmd.stdout);
+            resolve(summaryCmd.stdout);
+            //res.json( {error: false, message : '' + summaryCmd.stdout});
+          }
+        }
+      });
+
+
+      });
+
+
 	},
 
 	capturePreview: function() {
@@ -211,7 +222,7 @@ CameraControl.prototype = {
 			var rawRegex = /Deleting file \/(.*)?\.cr2 on the camera/g;
 
 			var uniqueFileName = moment().format('YYYYMMDD_HHmmss');
-			
+
 			var jpegPromise = null, rawPromise = null;
 			captureCommand.stdout.on('data', function (data) {
 				logger.debug('[capture command]' + data);
@@ -221,21 +232,21 @@ CameraControl.prototype = {
 					shouldFailPromise = false;
 					jpegPromise = that._processJpeg(jpegFile, uniqueFileName);
 				}
-				
+
 				var matchRaw = rawRegex.exec('' + data);
 				if(matchRaw && matchRaw.length > 1 ) {
 					var rawFile = matchRaw[1] + '.cr2';
 					rawPromise = that._processRaw(rawFile, uniqueFileName);
-				}				
-			});	
-			
-			
+				}
+			});
+
+
 
 			captureCommand.on('close', function() {
 				if(shouldFailPromise || !jpegPromise || !rawPromise ) {
 					reject(errorMessage);
 				} else {
-					//chaining jpeg and raw promises. 
+					//chaining jpeg and raw promises.
 					jpegPromise
 						.then(function (data) {
 							resolve(data);
@@ -248,7 +259,7 @@ CameraControl.prototype = {
 							reject(err);
 						});
 				}
-				
+
 			});
 		});
 		/*
@@ -257,7 +268,7 @@ CameraControl.prototype = {
 		});*/
 
 	},
-	
+
 	getPrintPreview: function (imageId) {
 		var file = path.join(this.outputDir, imageId + '.jpg'), that = this;
 		return new Promise(function (resolve, reject) {
@@ -271,12 +282,12 @@ CameraControl.prototype = {
 						resolve('data:image/jpeg;base64,' + imgResized.toString('base64'));
 					} else {
 						sharp(imgResized).metadata().then(function (imgResizedMetadata) {
-							
+
 							sharp('./overlay.png').resize(imgResizedMetadata.width,imgResizedMetadata.height).max().toBuffer().then(function (overlay) {
 								sharp(imgResized)
 								.overlayWith(overlay)
 								.toBuffer().then(function (imgOverlayed) {
-									resolve('data:image/jpeg;base64,' + imgOverlayed.toString('base64'));							
+									resolve('data:image/jpeg;base64,' + imgOverlayed.toString('base64'));
 								}).catch(function (err) {
 									that.logger.error(err);
 									reject(err);
@@ -285,14 +296,14 @@ CameraControl.prototype = {
 								that.logger.error(err);
 								reject(err);
 							});
-							
+
 						});
 					}
 				});
 			});
 		});
 	},
-	
+
 	_processJpeg: function (jpegFile, uniqueFileName) {
 		var logger = this.logger, that = this;
 		return new Promise(function (resolve, reject) {
@@ -301,22 +312,22 @@ CameraControl.prototype = {
 
 				if(err) {
 					logger.error('error reading file !' + err);
-				}	
+				}
 				else
 				{
 					sharp(data).resize(1600,1200).max().toBuffer()
 					.then(function (imgResized) {
 						logger.debug('sending jpeg ' + jpegFile );
-						resolve({ 
+						resolve({
 							src: 'data:image/jpeg;base64,' + imgResized.toString('base64'),
 							id: uniqueFileName});
-							
-						
-						
-						
-						
+
+
+
+
+
 						//res.status(200).send(data.toString('base64'));
-						
+
 						var output = path.join(that.outputDir, uniqueFileName + '.jpg');
 						fs.move(jpegFile, output, function (err) {
 							if(err) {
@@ -324,23 +335,23 @@ CameraControl.prototype = {
 							} else {
 								logger.log('jpeg copied to ' + output );
 							}
-						 
+
 						});
 					}).catch(function(err) {
 						logger.error(err);
 						reject(err);
 						//res.status(500).send(err);
 					});
-					
+
 				}
 			});
 		});
 	},
-	
+
 	_processRaw: function (rawFile, uniqueFileName) {
 		var logger = this.logger, that = this;
 		return new Promise(function (resolve, reject) {
-			//copy raw file to output dir. 
+			//copy raw file to output dir.
 			var output = path.join(that.outputDir, uniqueFileName + '.cr2');
 			fs.move(rawFile, output, function (err) {
 				if(err) {
@@ -350,7 +361,7 @@ CameraControl.prototype = {
 					logger.log('raw copied to ' + output );
 					resolve();
 				}
-			 
+
 			})
 		});
 	},
@@ -362,14 +373,14 @@ CameraControl.prototype = {
 		}
 		return printerName;
 	},
-	
+
 	printPhoto(imageId, nberOfCopies) {
 		var file = path.join(this.outputDir, imageId + '.jpg'), that = this;
 		return new Promise(function (resolve, reject) {
-			
+
 			var printFile = function (data) {
 				printer.printDirect({
-					data: data, 
+					data: data,
 					type: 'JPEG',
 					options: {
 						copies: nberOfCopies
@@ -383,16 +394,16 @@ CameraControl.prototype = {
 							}
 							that.logger.log('print success. capacity=' + that.printerCount );
 						});
-						
+
 						resolve();
-					}, 
+					},
 					error: function (err) {
 						that.logger.error('print failed : ' + err);
 						reject('print failed : ' + err);
 					}
 				});
 			};
-			
+
 			if(!that.canPrint) {
 				that.logger.error('cannot print (print disabled and print capacity = ' + that.printerCount+ ')  ');
 				reject('cannot print (print disabled and print capacity = ' + that.printerCount+ ')  ');
@@ -412,7 +423,7 @@ CameraControl.prototype = {
 									printFile(imgResized);
 								} else {
 									sharp(imgResized).metadata().then(function (imgResizedMetadata) {
-										
+
 										sharp('./overlay.png').resize(imgResizedMetadata.width,imgResizedMetadata.height).max().toBuffer().then(function (overlay) {
 											sharp(imgResized)
 											.overlayWith(overlay)
@@ -427,7 +438,7 @@ CameraControl.prototype = {
 											that.logger.error(err);
 											reject(err);
 										});
-										
+
 									});
 								}
 							});
@@ -437,7 +448,7 @@ CameraControl.prototype = {
 			}
 		});
 	},
-	
+
 	getCanPrint() {
 		var that = this;
 		return new Promise(function (resolve, reject) {
