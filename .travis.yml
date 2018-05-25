@@ -8,6 +8,10 @@ branches:
   only:
     - master
 
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y libcups2-dev
+
 before_script:
   - npm install -g firebase-tools
   - npm install -g @angular/cli
