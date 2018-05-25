@@ -1,6 +1,4 @@
-var webpack = require('webpack');
 var path = require('path');
-var fs = require('fs');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 
@@ -22,19 +20,20 @@ module.exports =
 
 {
     // The configuration for the server-side rendering
-    name: 'server',
-    target: 'node',
+  name: 'server',
+  target: 'node',
+  mode: 'production',
 	node: {
 	  __dirname: false,
 	  __filename: false,
 	},
-    entry: './app.js',
-    output: {
+  entry: './app.js',
+  output: {
         path: path.resolve(__dirname, '../dist/') ,
         //publicPath: 'bin/',
         filename: 'app.js'
     },
-    externals: {
+  externals: {
 		"express" : "commonjs express",
 		"path" : "commonjs path",
 		"serve-favicon" : "commonjs serve-favicon",
@@ -57,7 +56,7 @@ module.exports =
 		"printer/lib" : "commonjs printer/lib",
 		"colors/safe" : "commonjs colors/safe"
 	},
-    module: {
+  module: {
         rules: [
             { test: /\.js$/,
 

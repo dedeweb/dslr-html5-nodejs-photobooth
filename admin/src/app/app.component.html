@@ -1,18 +1,20 @@
-<nav class="navbar navbar-toggleable  navbar-inverse bg-inverse">
+<nav class="navbar navbar-dark bg-dark navbar-expand-lg">
 	<span class="navbar-brand">{{'admin_title' | translate}}</span>
-	<ul class="navbar-nav">
-		<li class="nav-item"  routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-			<a routerLink="/" class="nav-link">{{'control_panel' | translate}}</a>
-		</li>
-		<li class="nav-item" routerLinkActive="active">
-			<a routerLink="/calibrate" class="nav-link" >{{'webcam_calibration' | translate}}</a>
-		</li>
-		<li class="nav-item" routerLinkActive="active">
-			<a routerLink="/log" class="nav-link" >{{'log_header' | translate}}</a>
-		</li>
-	</ul>
-	
-	
+  <div class="collapse navbar-collapse">
+    <ul class="navbar-nav">
+      <li class="nav-item"  routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <a routerLink="/" class="nav-link">{{'control_panel' | translate}}</a>
+      </li>
+      <li class="nav-item" routerLinkActive="active">
+        <a routerLink="/calibrate" class="nav-link" >{{'webcam_calibration' | translate}}</a>
+      </li>
+      <li class="nav-item" routerLinkActive="active">
+        <a routerLink="/log" class="nav-link" >{{'log_header' | translate}}</a>
+      </li>
+    </ul>
+  </div>
+
+
 </nav>
 <toaster-container></toaster-container>
 <router-outlet></router-outlet>

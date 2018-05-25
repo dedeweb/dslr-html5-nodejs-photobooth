@@ -6,8 +6,9 @@ A node.js photobooth, used to control a DSLR connected to computer. A separated 
 
 **:bangbang: this app use experimental new technologies likes WebRTC. Only (very) recent browser are supported.**
 
-Just a preview of what It looks like in action : 
-![oreview](/preview.jpg)
+Just a preview of what It looks like in action :
+ 
+![oreview](./preview.jpg)
 
 
 
@@ -45,7 +46,7 @@ The admin page allow user to control every aspect of the application.
 
 For displaying the front on the tablet, I recommand the android app developped with this project : kiosapp, source code is here : https://github.com/dedeweb/kioskapp . This app display the page fullscreen, and user can not exit app. It is remote controlled by admin panel here. 
 
-![topology diagram](/topology.png)
+![topology diagram](./topology.png)
 	
 
 ## install
