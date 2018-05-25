@@ -1,4 +1,5 @@
-# tamerbooth
+# tamerbooth    [![Build Status](https://api.travis-ci.com/dedeweb/tamerbooth.png?branch=master)](https://travis-ci.com/dedeweb/tamerbooth)
+
 
 A node.js photobooth, used to control a DSLR connected to computer. A separated webcam is used to display live view to user. 
 
