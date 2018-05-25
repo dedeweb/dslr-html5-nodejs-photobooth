@@ -81,8 +81,6 @@
     "build:front": "cd front && ng build --prod --base-href /front/",
     "start:admin": "cd admin && ng serve --proxy-config proxy.conf.json  --host 0.0.0.0 --port 4202",
     "build:admin": "cd admin && ng build --prod  --base-href /admin/",
-    "server": "node server/app",
-    "camera": "concurrently --kill-others \"npm run server\" \"cd camera_capture && ng serve --proxy-config proxy.conf.json  --host 0.0.0.0\"",
     "start": "npm run build && node dist/app",
     "build": "npm run build:admin && npm run build:front && npm run build:camera && npm run build:server"
   },
