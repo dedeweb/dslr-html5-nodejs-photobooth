@@ -12,10 +12,17 @@ export class KioskAppService {
   public test(url: string) {
     let result = this.http
       .post(this._proxyUrl, { url : `${url}/version`, verb : 'GET' }, {responseType: 'text'})
-      .do((data: any) => {
-          if (data.app === 'kioskApp') {
-            this._url = url;
+      .do((data: string) => {
+          try {
+            let dataObj = JSON.parse(data);
+            if (dataObj.app === 'kioskApp') {
+              this._url = url;
+            }
           }
+          catch (e) {
+            console.error('Error parsing kioskapp respone', e);
+          }
+
         }, (data) => {
         this.logger.warn('error in kioskapp ws: ' + JSON.stringify(data));
       });
